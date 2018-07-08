@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JavaScript," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：laravel基础">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Laravel框架基础-1">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2016/11/20/2016-11-21-laravel-1/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：laravel基础">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-05-03T12:40:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Laravel框架基础-1">
+<meta name="twitter:description" content="摘要：laravel基础">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2016/11/20/2016-11-21-laravel-1/"/>
+
+
+
+
+
+  <title>Laravel框架基础-1 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2016/11/20/2016-11-21-laravel-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Laravel框架基础-1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-20T23:32:24+08:00">
+                2016-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：laravel基础
+</strong><br><a id="more"></a></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><the rest="" of="" contents="" |="" 余下全文=""></the></h2><h2 id="1、laravel-概述"><a href="#1、laravel-概述" class="headerlink" title="1、laravel 概述"></a>1、laravel 概述</h2><ul>
+<li style="list-style: none"><input type="checkbox"> laravel的基本特点<ul>
+<li style="list-style: none"><input type="checkbox" checked> 使用PHP新版本的最新特性增加了代码复用性 , 扩展性 . 目前要求PHP 5.5.9以上版本 , 并支持PHP7</li>
+<li style="list-style: none"><input type="checkbox" checked> 项目基于PHP最先进的包管理工具composer构建</li>
+<li style="list-style: none"><input type="checkbox" checked> 大量使用了成熟的第三方依赖 , 如symfony , monolog等.</li>
+<li style="list-style: none"><input type="checkbox" checked> 完全使用组件式开发 , 高度灵活的文件结构 , 可以按需使用组件重构出自己的项目</li>
+<li style="list-style: none"><input type="checkbox" checked> 基于面向接口编程 , 并广泛使用依赖注入 , 使之非常适合敏捷开发的高速迭代</li>
+<li style="list-style: none"><input type="checkbox" checked> 支持迁移 , 命令行工具 , 反向路由 , 中间件 , RESTFul 等web开发先进理念</li>
+<li style="list-style: none"><input type="checkbox" checked> 特别强大的 Eloquent ORM , 对各种关联查询实现得非常全面</li>
+<li style="list-style: none"><input type="checkbox" checked> 作为全栈式框架 , 实现了队列 , 事件机制 , 异步任务 , 广播 , 统一的计划任务等各种先进功能</li>
+<li style="list-style: none"><input type="checkbox" checked> 内置登录 ,权限验证等常用功能</li>
+<li style="list-style: none"><input type="checkbox" checked> 使用了 gulp , node 等先进Web工具进行资源管理</li>
+<li style="list-style: none"><input type="checkbox" checked> 框架本身通过闭包 , 依赖注入 , IoC容器等手段 , 能够很灵活地扩展基本功能</li>
+<li style="list-style: none"><input type="checkbox" checked> 能够快速开发和植入扩展包 , 只需要composer和几条命令行</li>
+<li style="list-style: none"><input type="checkbox" checked> 真正的测试驱动 , 绝大多数底层功能为实现单元测试而构建</li>
+<li style="list-style: none"><input type="checkbox" checked> 默认支持 git , phpunit 等相关开发技术</li>
+</ul>
+</li>
+<li style="list-style: none"><input type="checkbox"> 类库管理神器composer<ul>
+<li style="list-style: none"><input type="checkbox" checked> PHP最先进的包管理工具 托管PHP文件的autoload</li>
+<li style="list-style: none"><input type="checkbox" checked> 直接引入第三方依赖</li>
+<li style="list-style: none"><input type="checkbox" checked> 发布自己的依赖包</li>
+</ul>
+</li>
+</ul>
+<h2 id="2、laravel-安装与配置"><a href="#2、laravel-安装与配置" class="headerlink" title="2、laravel 安装与配置"></a>2、laravel 安装与配置</h2><p>###2.1 Composer直接下载安装laraval</p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.<span class="string">composer </span><span class="built_in">create-project</span> <span class="string">laravel/</span><span class="string">laravel</span></span><br><span class="line"><span class="string">2.</span><span class="string">composer </span><span class="built_in">create-project</span> <span class="string">laravel/</span><span class="string">laravel </span> <span class="string">blog</span></span><br><span class="line"><span class="string">3.</span><span class="string">curl </span>-<span class="string">sS </span><span class="string">https:</span>//<span class="string">getcomposer.</span><span class="string">org/</span><span class="string">installer </span>| <span class="string">php</span></span><br></pre></td></tr></table></figure>
+<p>###2.2 一键安装包<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">下载地址：<span class="string">http:</span><span class="comment">//www.golaravel.com/download/</span></span><br><span class="line">打开命令后</span><br><span class="line">cd <span class="regexp">/usr/</span>local/bin</span><br><span class="line">然后执行</span><br><span class="line">curl -sS <span class="string">https:</span><span class="comment">//getcomposer.org/installer | php</span></span><br><span class="line">接下来</span><br><span class="line">sudo mv composer.phar composer</span><br><span class="line">修改权限</span><br><span class="line">sudo chmod a+x composer</span><br></pre></td></tr></table></figure></p>
+<p>###2.3 Github下载<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Download <span class="string">ZIP:</span> <span class="string">https:</span><span class="comment">//github.com/laravel/laravel</span></span><br></pre></td></tr></table></figure></p>
+<p>###2.4 laravel相关配置<br><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.wamp的版本要求（PHP版本&gt;=5.5.9|wamp2.5）</span><br><span class="line">2.开启rewrite模式和vhost(apache/conf/httpd.conf)</span><br><span class="line"><span class="comment">#LoadModule rewrite_module modules/mod_rewrite.so</span></span><br><span class="line"><span class="comment">#LoadModule vhost_alias_module modules/mod_vhost_alias.so</span></span><br><span class="line">3.开启php扩展(php.ini)</span><br><span class="line">extension=php_openssl.dll</span><br><span class="line">extension=php_mbstring.dll</span><br><span class="line">extension=php_pdo_mysql.dll</span><br></pre></td></tr></table></figure></p>
+<p>###2.5 Laravel5.2目录结构<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">目录或文件	说明</span><br><span class="line">｜–　app	包含Controller、Model、路由等在内的应用目录，大部分业务将在该目录下进行</span><br><span class="line">｜　　｜–　Console	命令行程序目录</span><br><span class="line">｜　　｜　　｜–　Commands	包含了用于命令行执行的类，可在该目录下自定义类</span><br><span class="line">｜　　｜　　｜–　Kernel<span class="selector-class">.php</span>	命令调用内核文件，包含commands变量(命令清单，自定义的命令需加入到这里)和schedule方法(用于任务调度，即定时任务)</span><br><span class="line">｜　　｜–　Events	事件目录</span><br><span class="line">｜　　｜–　Exceptions	包含了自定义错误和异常处理类</span><br><span class="line">｜　　｜–　Http	HTTP传输层相关的类目录</span><br><span class="line">｜　　｜　　｜–　Controllers	控制器目录</span><br><span class="line">｜　　｜　　｜–　Kernel<span class="selector-class">.php</span>	包含http中间件和路由中间件的内核文件</span><br><span class="line">｜　　｜　　｜–　Middleware	中间件目录</span><br><span class="line">｜　　｜　　｜–　Requests	请求类目录</span><br><span class="line">｜　　｜　　｜–　routes<span class="selector-class">.php</span>	强大的路由</span><br><span class="line">｜　　｜–　Jobs	该目录下包含队列的任务类</span><br><span class="line">｜　　｜–　Listeners	监听器目录</span><br><span class="line">｜　　｜–　Providers	服务提供者目录</span><br><span class="line">｜　　｜–　User<span class="selector-class">.php</span>	自带的模型实例，我们新建的Model默认也存储在该目录</span><br><span class="line">｜–　artisan	强大的命令行接口，你可以在app/Console/Commands下编写自定义命令</span><br><span class="line">｜–　bootstrap	框架启动载入目录</span><br><span class="line">｜　　｜–　app<span class="selector-class">.php</span>	创建框架应用实例</span><br><span class="line">｜　　｜–　autoload<span class="selector-class">.php</span>	自动加载</span><br><span class="line">｜　　｜–　cache	存放框架启动缓存，web服务器需要有该目录的写入权限</span><br><span class="line">｜–　composer<span class="selector-class">.json</span>	存放依赖关系的文件</span><br><span class="line">｜–　composer<span class="selector-class">.lock</span>	锁文件，存放安装时依赖包的真实版本</span><br><span class="line">｜–　config	各种配置文件的目录</span><br><span class="line">｜　　｜–　app<span class="selector-class">.php</span>	系统级配置文件</span><br><span class="line">｜　　｜–　auth<span class="selector-class">.php</span>	用户身份认证配置文件，指定好table和model就可以很方便地用身份认证功能了</span><br><span class="line">｜　　｜–　broadcasting<span class="selector-class">.php</span>	事件广播配置文件</span><br><span class="line">｜　　｜–　cache<span class="selector-class">.php</span>	缓存配置文件</span><br><span class="line">｜　　｜–　compile<span class="selector-class">.php</span>	编译额外文件和类需要的配置文件，一般用户很少用到</span><br><span class="line">｜　　｜–　database<span class="selector-class">.php</span>	数据库配置文件</span><br><span class="line">｜　　｜–　filesystems<span class="selector-class">.php</span>	文件系统配置文件，这里可以配置云存储参数</span><br><span class="line">｜　　｜–　mail<span class="selector-class">.php</span>	电子邮件配置文件</span><br><span class="line">｜　　｜–　queue<span class="selector-class">.php</span>	消息队列配置文件</span><br><span class="line">｜　　｜–　services<span class="selector-class">.php</span>	可存放第三方服务的配置信息</span><br><span class="line">｜　　｜–　session<span class="selector-class">.php</span>	配置session的存储方式、生命周期等信息</span><br><span class="line">｜　　｜–　view<span class="selector-class">.php</span>	模板文件配置文件，包含模板目录和编译目录等</span><br><span class="line">｜–　database	数据库相关目录</span><br><span class="line">｜　　｜–　factories	<span class="number">5.1</span>版本的新特性，工厂类目录，也是用于数据填充</span><br><span class="line">｜　　｜　　｜–　ModelFactory<span class="selector-class">.php</span>	在该文件可定义不同Model所需填充的数据类型</span><br><span class="line">｜　　｜–　migrations	存储数据库迁移文件</span><br><span class="line">｜　　｜–　seeds	存放数据填充类的目录</span><br><span class="line">｜　　　　　｜–　DatabaseSeeder<span class="selector-class">.php</span>	执行php artisan db:seed命令将会调用该类的run方法。该方法可调用执行该目录下其他Seeder类，也可调用factories方法生成ModelFactory里定义的数据模型</span><br><span class="line">｜–　<span class="selector-class">.env</span>	环境配置文件。config目录下的配置文件会使用该文件里面的参数，不同生产环境使用不同的.env文件即可。</span><br><span class="line">｜–　gulpfile<span class="selector-class">.js</span>	gulp（一种前端构建工具）配置文件</span><br><span class="line">｜–　package<span class="selector-class">.json</span>	gulp配置文件</span><br><span class="line">｜–　phpspec<span class="selector-class">.yml</span>	phpspec（一种PHP测试框架）配置文件</span><br><span class="line">｜–　phpunit<span class="selector-class">.xml</span>	phpunit（一种PHP测试框架）配置文件</span><br><span class="line">｜–　public	网站入口，应当将ip或域名指向该目录而不是根目录。可供外部访问的css、js和图片等资源皆放置于此</span><br><span class="line">｜　　｜–　index<span class="selector-class">.php</span>	入口文件</span><br><span class="line">｜　　｜–　<span class="selector-class">.htaccess</span>	Apache服务器用该文件重写URL</span><br><span class="line">｜　　｜–　web<span class="selector-class">.config</span>	IIS服务器用该文件重写URL</span><br><span class="line">｜–　resources	资源文件目录</span><br><span class="line">｜　　｜–　assets	可存放包含LESS、SASS、CoffeeScript在内的原始资源文件</span><br><span class="line">｜　　｜–　lang	本地化文件目录</span><br><span class="line">｜　　｜–　views	视图文件就放在这啦</span><br><span class="line">｜–　server<span class="selector-class">.php</span>	PHP内置的Web服务器将把这个文件作为入口。以public/index.php为入口的可以忽略掉该文件</span><br><span class="line">｜–　storage	存储目录。web服务器需要有该目录及所有子目录的写入权限</span><br><span class="line">｜　　｜–　app	可用于存储应用程序所需的一些文件？待补充</span><br><span class="line">｜　　｜–　framework	该目录下包括缓存、sessions和编译后的视图文件</span><br><span class="line">｜　　｜–　logs	日志目录</span><br><span class="line">｜–　tests	测试目录</span><br><span class="line">｜–　vendor	该目录下包含Laravel源代码和第三方依赖包</span><br></pre></td></tr></table></figure></p>
+<p>###2.6 composer.json配置文件解读<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"laravel/laravel"</span>,</span><br><span class="line">    <span class="attr">"description"</span>: <span class="string">"The Laravel Framework."</span>,</span><br><span class="line">    <span class="attr">"keywords"</span>: [</span><br><span class="line">        <span class="string">"framework"</span>,</span><br><span class="line">        <span class="string">"laravel"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"license"</span>: <span class="string">"MIT"</span>,</span><br><span class="line">    <span class="attr">"type"</span>: <span class="string">"project"</span>,</span><br><span class="line">    <span class="attr">"require"</span>: &#123;</span><br><span class="line">        <span class="attr">"php"</span>: <span class="string">"&gt;=5.5.9"</span>,</span><br><span class="line">        <span class="attr">"laravel/framework"</span>: <span class="string">"5.2.*"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"require-dev"</span>: &#123;</span><br><span class="line">        <span class="attr">"fzaninotto/faker"</span>: <span class="string">"~1.4"</span>,</span><br><span class="line">        <span class="attr">"mockery/mockery"</span>: <span class="string">"0.9.*"</span>,</span><br><span class="line">        <span class="attr">"phpunit/phpunit"</span>: <span class="string">"~4.0"</span>,</span><br><span class="line">        <span class="attr">"symfony/css-selector"</span>: <span class="string">"2.8.*|3.0.*"</span>,</span><br><span class="line">        <span class="attr">"symfony/dom-crawler"</span>: <span class="string">"2.8.*|3.0.*"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"autoload"</span>: &#123;</span><br><span class="line">        <span class="attr">"classmap"</span>: [</span><br><span class="line">            <span class="string">"database"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">"psr-4"</span>: &#123;</span><br><span class="line">            <span class="attr">"App\\"</span>: <span class="string">"app/"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"autoload-dev"</span>: &#123;</span><br><span class="line">        <span class="attr">"classmap"</span>: [</span><br><span class="line">            <span class="string">"tests/TestCase.php"</span></span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">        <span class="attr">"post-root-package-install"</span>: [</span><br><span class="line">            <span class="string">"php -r \"copy('.env.example', '.env');\""</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">"post-create-project-cmd"</span>: [</span><br><span class="line">            <span class="string">"php artisan key:generate"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">"post-install-cmd"</span>: [</span><br><span class="line">            <span class="string">"php artisan clear-compiled"</span>,</span><br><span class="line">            <span class="string">"php artisan optimize"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">"pre-update-cmd"</span>: [</span><br><span class="line">            <span class="string">"php artisan clear-compiled"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">"post-update-cmd"</span>: [</span><br><span class="line">            <span class="string">"php artisan optimize"</span></span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"config"</span>: &#123;</span><br><span class="line">        <span class="attr">"preferred-install"</span>: <span class="string">"dist"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>##3、Laravel5.2框架基础</p>
+<p>###3.0 artisan命令<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">① php artisan <span class="string">route:</span>list <span class="comment">//查看路由的方式或者检查文件的缺失</span></span><br><span class="line">② php artisan <span class="string">make:</span>controller ArticleController <span class="comment">//创建控制器</span></span><br><span class="line">③ php artisan <span class="comment">//artisn相关命令</span></span><br><span class="line">④ php artisan <span class="string">make:</span>middleware AdminLogin <span class="comment">//创建中间件</span></span><br></pre></td></tr></table></figure></p>
+<p>###3.1 HTTP 路由<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">① 注册路由来响应任何HTTP请求</span><br><span class="line">Route::get($uri, $callback);</span><br><span class="line">Route::post($uri, $callback);</span><br><span class="line">Route::put($uri, $callback);</span><br><span class="line">Route::patch($uri, $callback);</span><br><span class="line">Route::delete($uri, $callback);</span><br><span class="line">Route::options($uri, $callback);</span><br><span class="line">② match方法注册路由响应多个HTTP请求</span><br><span class="line">Route::match([<span class="string">'get'</span>, <span class="string">'post'</span>], <span class="string">'/'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line">③ any方法注册一个路由来响应所有 HTTP 请求</span><br><span class="line">Route::any(<span class="string">'foo'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>###3.2 路由参数</p>
+<p>###3.3 命名路由<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">①生成 URL 或重定向</span><br><span class="line">Route::get(<span class="string">'user/profile'</span>, [<span class="string">'as'</span> =&gt; <span class="string">'profile'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">echo</span> route(<span class="string">'profile'</span>);<span class="comment">//http://www.laravel.com/user</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h2&gt;命名路由&lt;/h2&gt;'</span>;</span><br><span class="line">&#125;]);</span><br><span class="line">②为控制器动作指定路由名称</span><br><span class="line">Route::get(<span class="string">'test'</span>, [</span><br><span class="line">    <span class="string">'as'</span> =&gt; <span class="string">'profile'</span>, <span class="string">'uses'</span> =&gt; <span class="string">'Admin\IndexController@index'</span></span><br><span class="line">]);</span><br><span class="line">③路由定义之后使用 name 方法链的方式</span><br><span class="line">Route::get(<span class="string">'test'</span>,<span class="string">'Admin\IndexController@index'</span>)-&gt;name(<span class="string">'profile'</span>);<span class="comment">//http://www.laravel.com/test</span></span><br><span class="line">④路由前缀+命名空间</span><br><span class="line">Route::group([<span class="string">'prefix'</span> =&gt; <span class="string">'admin'</span>,<span class="string">'namespace'</span>=&gt;<span class="string">'Admin'</span>], <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    Route::get(<span class="string">'login'</span>,<span class="string">'IndexController@login'</span>);</span><br><span class="line">    Route::get(<span class="string">'index'</span>,<span class="string">'IndexController@index'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>###3.4 RESTful 资源控制器<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">① php artisan <span class="string">route:</span>list <span class="comment">//查看路由的方式或者检查文件的缺失</span></span><br><span class="line">② php artisan <span class="string">make:</span>controller ArticleController <span class="comment">//快速创建控制器</span></span><br><span class="line">③ <span class="string">Route:</span>:resource(<span class="string">'article'</span>, <span class="string">'ArticleController'</span>); <span class="comment">//为控制器注册一个资源路由</span></span><br><span class="line">④ <span class="string">Route:</span>:resource(<span class="string">'article'</span>, <span class="string">'ArticleController'</span>,</span><br><span class="line">[<span class="string">'except'</span> =&gt; [<span class="string">'create'</span>, <span class="string">'store'</span>, <span class="string">'update'</span>, <span class="string">'destroy'</span>]]);<span class="comment">//只定义部分资源路由</span></span><br><span class="line">⑤ <span class="string">Route:</span>:get(<span class="string">'article/popular'</span>, <span class="string">'ArticleController@method'</span>);</span><br><span class="line"><span class="string">Route:</span>:resource(<span class="string">'article'</span>, <span class="string">'ArticleController'</span>);<span class="comment">//补充资源路由，在调用 Route::resource 之前定义这些路由</span></span><br></pre></td></tr></table></figure></p>
+<p>###3.5 HTTP中间件(过滤HTTP请求层，对路由规则起拦截和保护的作用)<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">① php artisan make:middleware OldMiddleware <span class="comment">//创建新的中间件</span></span><br><span class="line">② 提出前缀和命名空间</span><br><span class="line">Route::group([<span class="string">'middleware'</span>=&gt;[<span class="string">'web'</span>,<span class="string">'admin.login'</span>],<span class="string">'prefix'</span>=&gt;<span class="string">'admin'</span>,<span class="string">'namespace'</span>=&gt;<span class="string">'Admin'</span>],<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Route::any(<span class="string">'index'</span>,<span class="string">'IndexController@index'</span>);<span class="comment">//主页</span></span><br><span class="line">    Route::any(<span class="string">'info'</span>,<span class="string">'IndexController@info'</span>);</span><br><span class="line">    Route::get(<span class="string">'quit'</span>,<span class="string">'LoginController@quit'</span>);<span class="comment">//退出</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>###3.6 HTTP视图<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">① Route::get(<span class="string">'/view'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span>  view(<span class="string">'my_laravel'</span>);</span><br><span class="line">&#125;);<span class="comment">//通过路由分配视图 （resources/views/my_laravel.blade.php）blade模板引擎</span></span><br><span class="line">②   $data = [</span><br><span class="line">            <span class="string">'name'</span>=&gt;<span class="string">'lensxiong'</span>,</span><br><span class="line">            <span class="string">'sex'</span>=&gt;<span class="string">'male'</span>,</span><br><span class="line">        ];</span><br><span class="line">        <span class="keyword">return</span> view(<span class="string">'my_laravel'</span>,$data);<span class="comment">//通过控制器分配视图 接收时直接使用$name,$sex</span></span><br><span class="line">③ $data = [</span><br><span class="line">            <span class="string">'name'</span>=&gt;<span class="string">'lensxiong'</span>,</span><br><span class="line">            <span class="string">'sex'</span>=&gt;<span class="string">'male'</span>,</span><br><span class="line">        ];</span><br><span class="line">        $title = <span class="string">'title'</span>;</span><br><span class="line">        <span class="keyword">return</span> view(<span class="string">'my_laravel'</span>,compact(<span class="string">'data'</span>,<span class="string">'title'</span>));<span class="comment">//compact</span></span><br></pre></td></tr></table></figure></p>
+<p>###3.7 blade模板</p>
+<h4 id="session相关"><a href="#session相关" class="headerlink" title="session相关"></a>session相关</h4><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">① 问题：Undefined <span class="keyword">variable</span>: _SESSION</span><br><span class="line">原因：laravel没有开启原生的session，导致不能去存储。</span><br><span class="line">解决：在入口文件处加session_start();打开原生的session</span><br></pre></td></tr></table></figure>
+<h4 id="验证码相关"><a href="#验证码相关" class="headerlink" title="验证码相关"></a>验证码相关</h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">① 验证码点击事件刷新代码</span><br><span class="line">onclick=<span class="string">"this.src='&#123;&#123;url('admin/code')&#125;&#125;?'+Math.random()"</span></span><br></pre></td></tr></table></figure>
+<h4 id="函数相关"><a href="#函数相关" class="headerlink" title="函数相关"></a>函数相关</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">① Input::all() 等同于tp中的is_post()；</span><br><span class="line">② back()-&gt;with(<span class="string">'msg'</span>,<span class="string">'验证码错误'</span>);</span><br><span class="line">③ Crypt::encrypt($str) <span class="comment">//加密</span></span><br><span class="line">④ Crypt::decrypt($str_p); <span class="comment">//解密</span></span><br><span class="line">⑤ $_SERVER 环境服务器相关信息</span><br><span class="line">⑥ session([<span class="string">'user=&gt;null'</span>]);<span class="comment">//清除session</span></span><br><span class="line">⑦ $input = Input::except(<span class="string">'_token'</span>);<span class="comment">//除之外</span></span><br></pre></td></tr></table></figure>
+<h4 id="相关错误"><a href="#相关错误" class="headerlink" title="相关错误"></a>相关错误</h4><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10.1</span> 错误：TokenMismatchException <span class="keyword">in</span> VerifyCsrfToken.php line <span class="number">67</span><span class="symbol">:</span></span><br><span class="line">解决：提交的时候加上 &#123;&#123;csrf_field()&#125;&#125;</span><br><span class="line"><span class="number">10.2</span> 错误：Non-static method App\Http\Model\<span class="symbol">Category:</span><span class="symbol">:tree</span>() should <span class="keyword">not</span> be called statically</span><br><span class="line">解决一：new 一个对象调用-&gt;</span><br><span class="line">解决二：public static function</span><br><span class="line"><span class="number">10.3</span> 错误：Fatal <span class="symbol">error:</span> Using <span class="variable">$this</span> <span class="keyword">when</span> <span class="keyword">not</span> <span class="keyword">in</span> object context</span><br><span class="line">解决：使用类似<span class="symbol">Category:</span><span class="symbol">:all</span>();</span><br><span class="line"><span class="number">10.4</span> 问题: <span class="keyword">return</span> back()-&gt;withErrors(<span class="variable">$validator</span>)前台无法接收到值</span><br><span class="line">原因：web中间件从<span class="number">5.2</span>.<span class="number">27</span>版本以后默认全局加载，不需要自己手动载入，如果自己手动重复载入，会导致session无法加载的情况</span><br><span class="line">解决：php artisan --version看一下版本，如果是<span class="number">5.2</span>.<span class="number">26</span>以上的，在路由处删除web中间件分组</span><br><span class="line"><span class="number">10.5</span> 问题 create()方法时的黑名单和白名单</span><br><span class="line">原因：Eloquent ORM —— 起步中的基本更新下的批量赋值</span><br><span class="line">解决一：protected <span class="variable">$guarded</span> = [<span class="string">'price'</span>];<span class="regexp">//</span>加入黑名单</span><br><span class="line">解决二：protected <span class="variable">$fillable</span> = [<span class="string">'name'</span>];<span class="regexp">//</span>加入白名单</span><br><span class="line"><span class="number">10.6</span> 问题：默认选中框</span><br><span class="line">解决：<span class="variable">@if</span>(<span class="variable">$d</span>-&gt;cate_id==<span class="variable">$field</span>-&gt;cate_pid) selected <span class="variable">@endif</span></span><br><span class="line"><span class="number">10.7</span> put提交表单的方法</span><br><span class="line">解决：&lt;input type=<span class="string">"hidden"</span> name=<span class="string">"_method"</span> value=<span class="string">"put"</span>&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="php获取服务器操作系统等信息"><a href="#php获取服务器操作系统等信息" class="headerlink" title="php获取服务器操作系统等信息"></a>php获取服务器操作系统等信息</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">PHP程式版本： <span class="php"><span class="meta">&lt;?PHP</span> <span class="keyword">echo</span> PHP_VERSION; <span class="meta">?&gt;</span></span></span><br><span class="line">ZEND版本： <span class="php"><span class="meta">&lt;?PHP</span> <span class="keyword">echo</span> zend_version(); <span class="meta">?&gt;</span></span></span><br><span class="line">MYSQL支持： <span class="php"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> function_exists (mysql_close)?<span class="string">"是"</span>:<span class="string">"否"</span>; <span class="meta">?&gt;</span></span></span><br><span class="line">MySQL数据库持续连接 ： <span class="php"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> @get_cfg_var(<span class="string">"mysql.allow_persistent"</span>)?<span class="string">"是 "</span>:<span class="string">"否"</span>; <span class="meta">?&gt;</span></span></span><br><span class="line">MySQL最大连接数： <span class="php"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> @get_cfg_var(<span class="string">"mysql.max_links"</span>)==<span class="number">-1</span> ? <span class="string">"不限"</span> : @get_cfg_var(<span class="string">"mysql.max_links"</span>);<span class="meta">?&gt;</span></span></span><br><span class="line">服务器操作系统： <span class="php"><span class="meta">&lt;?PHP</span> <span class="keyword">echo</span> PHP_OS; <span class="meta">?&gt;</span></span></span><br><span class="line">服务器端信息： <span class="php"><span class="meta">&lt;?PHP</span> <span class="keyword">echo</span> $_SERVER [<span class="string">'SERVER_SOFTWARE'</span>]; <span class="meta">?&gt;</span></span></span><br><span class="line">最大上传限制： <span class="php"><span class="meta">&lt;?PHP</span> <span class="keyword">echo</span> get_cfg_var (<span class="string">"upload_max_filesize"</span>)?get_cfg_var (<span class="string">"upload_max_filesize"</span>):<span class="string">"不允许上传附件"</span>; <span class="meta">?&gt;</span></span></span><br><span class="line">最 大执行时间： <span class="php"><span class="meta">&lt;?PHP</span> <span class="keyword">echo</span> get_cfg_var(<span class="string">"max_execution_time"</span>).<span class="string">"秒 "</span>; <span class="meta">?&gt;</span></span></span><br><span class="line">脚本运行占用最大内存： <span class="php"><span class="meta">&lt;?PHP</span> <span class="keyword">echo</span> get_cfg_var (<span class="string">"memory_limit"</span>)?get_cfg_var(<span class="string">"memory_limit"</span>):<span class="string">"无"</span> <span class="meta">?&gt;</span></span></span><br><span class="line">查询当前连接的MYSQL数据库的版本 php自带函数 mysql_get_server_info()</span><br><span class="line">获得服务器系统时间 date_default_timezone_set (PRC); echo date("Y-m-d G:i:s");</span><br><span class="line"></span><br><span class="line">查询当前连接的MYSQL数据库的版本 php自带函数 mysql_get_server_info()</span><br><span class="line">获得服务器系统时间 date_default_timezone_set (PRC); echo date("Y-m-d G:i:s");</span><br></pre></td></tr></table></figure>
+<h4 id="表单验证相关"><a href="#表单验证相关" class="headerlink" title="表单验证相关"></a>表单验证相关</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">① $validator = Validator::make($input,$rules，$messages);</span><br><span class="line">② $validator-&gt;passes()<span class="comment">//验证通过</span></span><br><span class="line">③ $validator-&gt;errors()-&gt;all() <span class="comment">//验证错误信息</span></span><br><span class="line">④  <span class="string">'password'</span>=&gt;<span class="string">'required|between:6,20|confirmed'</span>,<span class="comment">//验证规则confirmed需要将验证的字段改写成password_confirmation</span></span><br></pre></td></tr></table></figure>
+<h4 id="CSRF-token禁用方法"><a href="#CSRF-token禁用方法" class="headerlink" title="CSRF token禁用方法"></a>CSRF token禁用方法</h4><p>① 打开文件：app\Http\Kernel.php<br><figure class="highlight moonscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\App\Http\Middleware\VerifyCsrfToken::<span class="class"><span class="keyword">class</span>,//注释掉</span></span><br></pre></td></tr></table></figure></p>
+<p>② 打开文件：app\Http\Middleware\VerifyCsrfToken.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">handle</span><span class="params">($request, Closure $next)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">parent</span>::handle($request, $next);<span class="comment">// 使用CSRF</span></span><br><span class="line"><span class="keyword">return</span> $next($request);<span class="comment">// 禁用CSRF</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="文件上传方法"><a href="#文件上传方法" class="headerlink" title="文件上传方法"></a>文件上传方法</h4><p>客户端<br><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method=<span class="string">"<span class="keyword">POST</span>"</span> action=<span class="string">""</span> enctype=<span class="string">"muitipart/form-data"</span>&gt;</span><br><span class="line">    &lt;input type=<span class="string">"file"</span> name=<span class="string">"myfile"</span> /&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> name=<span class="string">"submit"</span> value=<span class="string">"Submit"</span> /&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
+<p>服务器端<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$file</span> = <span class="symbol">Input:</span><span class="symbol">:file</span>(<span class="string">'myfile'</span>);</span><br><span class="line">if(<span class="variable">$file</span> -&gt; isValid())&#123;</span><br><span class="line">    /<span class="regexp">/检验一下上传的文件是否有效.</span></span><br><span class="line"><span class="regexp">    $clientName = $file -&gt; getClientOriginalName();  /</span><span class="regexp">/获取文件名称</span></span><br><span class="line"><span class="regexp">    $tmpName = $file -&gt;getFileName(); /</span><span class="regexp">/ 缓存在tmp文件夹中的文件名 例如 php9372.tmp 这种类型的.</span></span><br><span class="line"><span class="regexp">    $realPath = $file -&gt; getRealPath();    /</span><span class="regexp">/这个表示的是缓存在tmp文件夹下的文件的绝对路径，例如我的是: C:\wamp\tmp\php9372.tmp</span></span><br><span class="line"><span class="regexp">    $entension = $file -&gt; getClientOriginalExtension(); /</span><span class="regexp">/上传文件的后缀.</span></span><br><span class="line"><span class="regexp">    $mimeTye = file -&gt; getMimeType();/</span><span class="regexp">/大家对mimeType应该不陌生了. 我得到的结果是 image/jpeg</span>.</span><br><span class="line">    <span class="variable">$path</span> = <span class="variable">$file</span> -&gt; move(<span class="string">'storage/uploads'</span>);</span><br><span class="line">  如果你这样写的话,默认是会放置在 我们 public/storage/uploads/php79DB.tmp</span><br><span class="line">  貌似不是我们希望的,如果我们希望将其放置在app的storage目录下的uploads目录中,并且需要改名的话..</span><br><span class="line">  <span class="variable">$path</span> = <span class="variable">$file</span> -&gt; move(app_path().<span class="string">'/storage/uploads'</span>,<span class="variable">$newName</span>);</span><br><span class="line">  这里app_path()就是app文件夹所在的路径.<span class="variable">$newName</span> 可以是你通过某种算法获得的文件的名称.主要是不能重复产生冲突即可.   比如 <span class="variable">$newName</span> = md5(date(<span class="string">'ymdhis'</span>).<span class="variable">$clientName</span>).<span class="string">"."</span>.<span class="variable">$extension</span>;</span><br><span class="line">  利用日期和客户端文件名结合 使用md5 算法加密得到结果.不要忘记在后面加上文件原始的拓展名.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="数据库迁移"><a href="#数据库迁移" class="headerlink" title="数据库迁移"></a>数据库迁移</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">① <span class="selector-tag">php</span> <span class="selector-tag">artisan</span> <span class="selector-tag">make</span><span class="selector-pseudo">:migration</span> <span class="selector-tag">create_users_table</span></span><br><span class="line">② <span class="selector-tag">php</span> <span class="selector-tag">artisan</span> <span class="selector-tag">migrate</span></span><br></pre></td></tr></table></figure>
+<h4 id="laravel发送邮件"><a href="#laravel发送邮件" class="headerlink" title="laravel发送邮件"></a>laravel发送邮件</h4><p>.env配置信息<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">MAIL_DRIVER</span>=smtp //邮件发送驱动:smtp、Mailgun、Maildrill、Amazon SES、mail和sendmail</span><br><span class="line"><span class="attr">MAIL_HOST</span>=smtp.<span class="number">163</span>.com</span><br><span class="line"><span class="attr">MAIL_PORT</span>=<span class="number">25</span></span><br><span class="line"><span class="attr">MAIL_USERNAME</span>=php<span class="number">28_28</span>@<span class="number">163</span>.com</span><br><span class="line"><span class="attr">MAIL_PASSWORD</span>=*****</span><br><span class="line"><span class="attr">MAIL_ENCRYPTION</span>=null</span><br><span class="line"><span class="attr">MAIL_ADDRESS</span> =php<span class="number">28_28</span>@<span class="number">163</span>.com</span><br><span class="line"><span class="attr">MAIL_NAME</span> =wangxiong</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">① 错误：Address <span class="keyword">in</span> mailbox <span class="keyword">given</span> [php28_28] <span class="keyword">does</span> <span class="keyword">not</span> comply <span class="keyword">with</span> RFC <span class="number">2822</span>, <span class="number">3.6</span><span class="number">.2</span>.</span><br><span class="line">② 解决：发送者的邮件地址必须完整并正确</span><br></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$sendResult = Mail::send(<span class="string">'emails.activation'</span>, [<span class="string">'email'</span> =&gt; <span class="keyword">$this</span>-&gt;email,</span><br><span class="line"><span class="string">'uid'</span> =&gt; <span class="keyword">$this</span>-&gt;user_id, <span class="string">'email_code'</span> =&gt; <span class="keyword">$this</span>-&gt;emailCode], <span class="function"><span class="keyword">function</span> <span class="params">($message)</span> </span>&#123;</span><br><span class="line">$message-&gt;to(<span class="keyword">$this</span>-&gt;email)-&gt;subject(<span class="string">'激活邮箱'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="开启sql语句打印"><a href="#开启sql语句打印" class="headerlink" title="开启sql语句打印"></a>开启sql语句打印</h4><figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vendor<span class="symbol">\l</span>aravel<span class="symbol">\f</span>ramework<span class="symbol">\s</span>rc<span class="symbol">\I</span>lluminate<span class="symbol">\D</span>atabase<span class="symbol">\c</span>onnection.php</span><br><span class="line"> protected <span class="keyword">$loggingQueries = true;</span></span><br><span class="line"><span class="keyword"> DB::connection</span>()-&gt;enableQueryLog();</span><br><span class="line"> <span class="keyword">$queries = DB::getQueryLog</span>();</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2016/11/04/2016-11-05-linux-command-1/" rel="next" title="Linux命令-1">
+                <i class="fa fa-chevron-left"></i> Linux命令-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2016/12/08/2016-12-09-redis-1/" rel="prev" title="Redis 学习笔记 (上)">
+                Redis 学习笔记 (上) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1、laravel-概述"><span class="nav-number">2.</span> <span class="nav-text">1、laravel 概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、laravel-安装与配置"><span class="nav-number">3.</span> <span class="nav-text">2、laravel 安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#session相关"><span class="nav-number">3.0.1.</span> <span class="nav-text">session相关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#验证码相关"><span class="nav-number">3.0.2.</span> <span class="nav-text">验证码相关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数相关"><span class="nav-number">3.0.3.</span> <span class="nav-text">函数相关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关错误"><span class="nav-number">3.0.4.</span> <span class="nav-text">相关错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#php获取服务器操作系统等信息"><span class="nav-number">3.0.5.</span> <span class="nav-text">php获取服务器操作系统等信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#表单验证相关"><span class="nav-number">3.0.6.</span> <span class="nav-text">表单验证相关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CSRF-token禁用方法"><span class="nav-number">3.0.7.</span> <span class="nav-text">CSRF token禁用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件上传方法"><span class="nav-number">3.0.8.</span> <span class="nav-text">文件上传方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库迁移"><span class="nav-number">3.0.9.</span> <span class="nav-text">数据库迁移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#laravel发送邮件"><span class="nav-number">3.0.10.</span> <span class="nav-text">laravel发送邮件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开启sql语句打印"><span class="nav-number">3.0.11.</span> <span class="nav-text">开启sql语句打印</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

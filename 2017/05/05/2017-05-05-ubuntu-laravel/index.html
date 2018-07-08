@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="LNMP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：如果你不亲自去编译安装lamp,你就无法知道这些分开之后的产品有什么特性。更多是你需要根据项目的需求去配置他们，nginx的配置文件、mysql的配置文件、PHP的配置文件，然后根据基本的配置，能不能再做优化，比如加缓存、加速的一些辅助工具。">
+<meta name="keywords" content="LNMP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu上部署Laravel项目">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/05/05/2017-05-05-ubuntu-laravel/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：如果你不亲自去编译安装lamp,你就无法知道这些分开之后的产品有什么特性。更多是你需要根据项目的需求去配置他们，nginx的配置文件、mysql的配置文件、PHP的配置文件，然后根据基本的配置，能不能再做优化，比如加缓存、加速的一些辅助工具。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-06-10T03:31:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ubuntu上部署Laravel项目">
+<meta name="twitter:description" content="摘要：如果你不亲自去编译安装lamp,你就无法知道这些分开之后的产品有什么特性。更多是你需要根据项目的需求去配置他们，nginx的配置文件、mysql的配置文件、PHP的配置文件，然后根据基本的配置，能不能再做优化，比如加缓存、加速的一些辅助工具。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/05/05/2017-05-05-ubuntu-laravel/"/>
+
+
+
+
+
+  <title>Ubuntu上部署Laravel项目 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/05/05/2017-05-05-ubuntu-laravel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ubuntu上部署Laravel项目</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-05T00:17:24+08:00">
+                2017-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：如果你不亲自去编译安装lamp,你就无法知道这些分开之后的产品有什么特性。更多是你需要根据项目的需求去配置他们，nginx的配置文件、mysql的配置文件、PHP的配置文件，然后根据基本的配置，能不能再做优化，比如加缓存、加速的一些辅助工具。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="购买VPS服务器"><a href="#购买VPS服务器" class="headerlink" title="购买VPS服务器"></a>购买VPS服务器</h1><p>详情可点击<a href="http://www.vultr.com/?ref=6959672" target="_blank" rel="noopener">vultr官网</a>进行注册。具体教程这里不做讲解，如果有需要可参照<a href="https://www.jiloc.com/41805.html" target="_blank" rel="noopener">Vultr账号注册及购买使用教程</a>进行注册和购买。在选择服务器时最好选择Ubuntu 14.04 LTS版本。</p>
+<h1 id="安装LNMP环境（PHP7-1）"><a href="#安装LNMP环境（PHP7-1）" class="headerlink" title="安装LNMP环境（PHP7.1）"></a>安装LNMP环境（PHP7.1）</h1><h2 id="安装基础工具"><a href="#安装基础工具" class="headerlink" title="安装基础工具"></a>安装基础工具</h2><p>先进行软件源的更新操作：<br><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></span><br></pre></td></tr></table></figure></p>
+<p>设置语言安装支持中文：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> install -<span class="keyword">y</span> <span class="keyword">language</span>-pack-<span class="keyword">en</span>-base</span><br></pre></td></tr></table></figure></p>
+<p>命令设置语言环境：<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">locale</span><span class="params">-gen</span> en_US.UTF<span class="number">-8</span> <span class="built_in">locale</span></span><br></pre></td></tr></table></figure></p>
+<p>安装vim编辑器、htop系统监控和进程管理软件、zip压缩文件的解压缩软件：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> install -y vim htop git unzip</span><br></pre></td></tr></table></figure></p>
+<p>安装 add-apt-repository工具，ubuntu 14下面需要安装这个包：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">sudo</span> apt-<span class="meta">get</span> install software-properties-<span class="meta">common</span></span><br></pre></td></tr></table></figure></p>
+<p>将ppa/ondrej/php这个源添加到apt-get的源列表里面。加上LC_ALL=C.UTF-8是因为非utf-8下面会有一个bug：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo LC_ALL=en_US.UTF-8<span class="built_in"> add-apt-repository </span>ppa:ondrej/php</span><br></pre></td></tr></table></figure></p>
+<p>再一次更新软件源：<br><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="安装PHP相关"><a href="#安装PHP相关" class="headerlink" title="安装PHP相关"></a>安装PHP相关</h2><p>安装php7.1：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> -y install php7.1</span><br></pre></td></tr></table></figure></p>
+<p>安装php7.1-mysql：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> -y install php7.1-mysql</span><br></pre></td></tr></table></figure></p>
+<p>安装PHPFastCGI管理器：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> install php7.1-fpm</span><br></pre></td></tr></table></figure></p>
+<p>安装php7.1的其它扩展：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">apt-get</span> <span class="selector-tag">install</span> <span class="selector-tag">php7</span><span class="selector-class">.1-curl</span> <span class="selector-tag">php7</span><span class="selector-class">.1-xml</span> <span class="selector-tag">php7</span><span class="selector-class">.1-mcrypt</span> <span class="selector-tag">php7</span><span class="selector-class">.1-json</span> <span class="selector-tag">php7</span><span class="selector-class">.1-gd</span> <span class="selector-tag">php7</span><span class="selector-class">.1-mbstring</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="安装Nginx服务器"><a href="#安装Nginx服务器" class="headerlink" title="安装Nginx服务器"></a>安装Nginx服务器</h2><p>运行以下命令：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> -y install nginx</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装Mysql数据库"><a href="#安装Mysql数据库" class="headerlink" title="安装Mysql数据库"></a>安装Mysql数据库</h2><p>运行以下命令：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> -y install mysql-server-5.6</span><br></pre></td></tr></table></figure></p>
+<h1 id="配置环境，运行Laravel"><a href="#配置环境，运行Laravel" class="headerlink" title="配置环境，运行Laravel"></a>配置环境，运行Laravel</h1><h2 id="编辑PHP的配置文件"><a href="#编辑PHP的配置文件" class="headerlink" title="编辑PHP的配置文件"></a>编辑PHP的配置文件</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim <span class="regexp">/etc/</span>php<span class="regexp">/7.1/</span>fpm<span class="regexp">/php.ini</span></span><br></pre></td></tr></table></figure>
+<p>vim命令输入/fix_pathinfo搜索，将cgi.fix_pathinfo=1改为cgi.fix_pathinfo=0:</p>
+<blockquote>
+<p>注：Why ? 假设有如下的 URL：<a href="http://phpvim.net/foo.jpg，当访问" target="_blank" rel="noopener">http://phpvim.net/foo.jpg，当访问</a> <a href="http://phpvim.net/foo.jpg/a.php" target="_blank" rel="noopener">http://phpvim.net/foo.jpg/a.php</a> 时，foo.jpg 将会被执行，如果 foo.jpg 是一个普通文件，那么 foo.jpg 的内容会被直接显示出来，但是如果把一段 php 代码保存为 foo.jpg，那么问题就来了，这段代码就会被直接执行。这对一个 Web 应用来说，所造成的后果无疑是毁灭性的。具体参看：<a href="http://www.cnblogs.com/buffer/archive/2011/07/24/2115552.html" target="_blank" rel="noopener">http://www.cnblogs.com/buffer/archive/2011/07/24/2115552.html</a></p>
+</blockquote>
+<h2 id="编辑Fpm的配置文件"><a href="#编辑Fpm的配置文件" class="headerlink" title="编辑Fpm的配置文件"></a>编辑Fpm的配置文件</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim <span class="regexp">/etc/</span>php<span class="regexp">/7.1/</span>fpm<span class="regexp">/pool.d/</span>www.conf</span><br></pre></td></tr></table></figure>
+<p>找到listen = /run/php/php7.1-fpm.sock修改为listen = /var/run/php/php7.1-fpm.sock。当然，你也可以不修改，但必须前后一致，后面会用到这个配置。紧接着运行以下代码重启：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo<span class="built_in"> service </span>php7.1-fpm restart</span><br></pre></td></tr></table></figure>
+<h2 id="编辑Nginx的配置文件"><a href="#编辑Nginx的配置文件" class="headerlink" title="编辑Nginx的配置文件"></a>编辑Nginx的配置文件</h2><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim <span class="regexp">/etc/</span>nginx<span class="regexp">/sites-available/</span><span class="keyword">default</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">listen</span> <span class="number">80</span> default_server;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">80</span> default_server ipv6only=<span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">root</span> /var/www/laravel-ubuntu/public;</span><br><span class="line">        <span class="attribute">index</span> index.php index.html index.htm;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Make site accessible from http://localhost/</span></span><br><span class="line">        <span class="attribute">server_name</span> localhost;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">                <span class="comment"># First attempt to serve request as file, then</span></span><br><span class="line">                <span class="comment"># as directory, then fall back to displaying a 404.</span></span><br><span class="line">                <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ /index.php?<span class="variable">$query_string</span>;</span><br><span class="line">                <span class="comment"># Uncomment to enable naxsi on this location</span></span><br><span class="line">                <span class="comment"># include /etc/nginx/naxsi.rules</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="attribute">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">                <span class="attribute">try_files</span> <span class="variable">$uri</span> /index.php =<span class="number">404</span>;</span><br><span class="line">                <span class="attribute">fastcgi_split_path_info</span><span class="regexp"> ^(.+\.php)(/.+)$</span>;</span><br><span class="line">                <span class="attribute">fastcgi_pass</span> unix:/var/run/php7.1-fpm.sock;</span><br><span class="line">                <span class="attribute">fastcgi_index</span> index.php;</span><br><span class="line">                <span class="attribute">fastcgi_param</span> SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">                <span class="attribute">include</span> fastcgi_params;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注：root：是你的项目的public目录，也就是网站的入口<br>    index：添加了index.php，告诉Nginx先解析index.php文件<br>    server_name：你的域名，没有的话填写localhost<br>    location / :  try_files修改为了try_files $uri $uri/ /index.php?$query_string;<br>    location ~ .php$:告诉Nginx怎么解析Php，原封不动复制即可，但注意：fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;的目录要和之前fpm的配置文件中的listen一致。</p>
+</blockquote>
+<h2 id="创建网站目录"><a href="#创建网站目录" class="headerlink" title="创建网站目录"></a>创建网站目录</h2><p>如果你还没有/var/www目录，运行mkdir /var/www，然后将Nginx的用户名和用户组www-data分配给它：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R www-<span class="string">data:</span>www-data   <span class="regexp">/var/</span>www<span class="regexp">/laravel-ubuntu/</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建Laravel项目"><a href="#创建Laravel项目" class="headerlink" title="创建Laravel项目"></a>创建Laravel项目</h2><h3 id="Git方式创建"><a href="#Git方式创建" class="headerlink" title="Git方式创建"></a>Git方式创建</h3><p>进入项目存放位置:<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> <span class="string">/var/www/</span></span><br></pre></td></tr></table></figure></p>
+<p>git 克隆：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">clone</span>  <span class="title">你的代码仓库路径</span></span><br></pre></td></tr></table></figure>
+<p>再次给予目录权限，运行（在/var/www/laravel-ubuntu下面）：<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">sudo</span> chmod -<span class="type">R</span> <span class="number">775</span> storage/</span><br><span class="line"><span class="title">sudo</span> chown -<span class="type">R</span> www-<span class="class"><span class="keyword">data</span>:www-<span class="keyword">data</span> /var/www/laravel-ubuntu</span></span><br></pre></td></tr></table></figure></p>
+<p>重点事项：<br>检查nginx配置的root位置是否正确：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root <span class="regexp">/var/</span>www<span class="regexp">/var/</span>www<span class="regexp">/laravel-ubuntu/</span><span class="keyword">public</span>;</span><br></pre></td></tr></table></figure></p>
+<p>storage 文件夹权限是否正确，否则在项目文件夹laravel-ubuntu下运行以下命令：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod -R <span class="number">775</span> storage/</span><br></pre></td></tr></table></figure></p>
+<p>注意 laravel-ubuntu 这个目录的所有者为: www-data:www-data，否则执行以下命令：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R www-<span class="string">data:</span>www-data   <span class="regexp">/var/</span>www<span class="regexp">/laravel-ubuntu/</span></span><br></pre></td></tr></table></figure></p>
+<p>重启fpm:<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo<span class="built_in"> service </span>php7.1-fpm restart</span><br></pre></td></tr></table></figure></p>
+<p>重启nginx：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo<span class="built_in"> service </span>nginx restart</span><br></pre></td></tr></table></figure></p>
+<h3 id="Composer方式创建"><a href="#Composer方式创建" class="headerlink" title="Composer方式创建"></a>Composer方式创建</h3><p>composer的安装：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -sS <span class="string">https:</span><span class="comment">//getcomposer.org/installer | php</span></span><br></pre></td></tr></table></figure></p>
+<p>全局使用composer:<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv composer.phar <span class="regexp">/usr/</span>local<span class="regexp">/bin/</span>composer</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意：由于被墙的原因，第一条指令通常会失败,可以直接在composer官网下载composer.phar压缩包,然后再移动到 /usr/local/bin/composer</p>
+</blockquote>
+<p>composer来安装larvavel项目：<br><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cd </span>/<span class="string">var/</span><span class="string">www</span></span><br><span class="line"><span class="string">composer </span><span class="built_in">create-project</span> <span class="string">laravel/</span><span class="string">laravel </span><span class="string">larave-ubuntu </span><span class="built_in">--prefer-dist</span> <span class="string">"5.1.*"</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="配置和域名解析"><a href="#配置和域名解析" class="headerlink" title="配置和域名解析"></a>配置和域名解析</h1><h1 id="配置SSL证书"><a href="#配置SSL证书" class="headerlink" title="配置SSL证书"></a>配置SSL证书</h1><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://laravel-china.org/topics/2914/step-by-step-to-teach-you-to-deploy-your-laravel-applications-and-programs-to-the-server" target="_blank" rel="noopener">一步一步教你部署自己的 Laravel 应用&amp;程序到服务器</a></p>
+<p><a href="https://www.laravist.com/discuss/laravel/laravel-project-from-scratch-deployment-752" target="_blank" rel="noopener">从零开始部署 Laravel 项目</a></p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/LNMP/" rel="tag"># LNMP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/04/21/2017-04-21-phpunit-1/" rel="next" title="PHP 单元测试">
+                <i class="fa fa-chevron-left"></i> PHP 单元测试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2017/05/20/2017-05-24-three-cost/" rel="prev" title="机会、沉没与边际成本">
+                机会、沉没与边际成本 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#购买VPS服务器"><span class="nav-number">1.</span> <span class="nav-text">购买VPS服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装LNMP环境（PHP7-1）"><span class="nav-number">2.</span> <span class="nav-text">安装LNMP环境（PHP7.1）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装基础工具"><span class="nav-number">2.1.</span> <span class="nav-text">安装基础工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装PHP相关"><span class="nav-number">2.2.</span> <span class="nav-text">安装PHP相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Nginx服务器"><span class="nav-number">2.3.</span> <span class="nav-text">安装Nginx服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Mysql数据库"><span class="nav-number">2.4.</span> <span class="nav-text">安装Mysql数据库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置环境，运行Laravel"><span class="nav-number">3.</span> <span class="nav-text">配置环境，运行Laravel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑PHP的配置文件"><span class="nav-number">3.1.</span> <span class="nav-text">编辑PHP的配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑Fpm的配置文件"><span class="nav-number">3.2.</span> <span class="nav-text">编辑Fpm的配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑Nginx的配置文件"><span class="nav-number">3.3.</span> <span class="nav-text">编辑Nginx的配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建网站目录"><span class="nav-number">3.4.</span> <span class="nav-text">创建网站目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Laravel项目"><span class="nav-number">3.5.</span> <span class="nav-text">创建Laravel项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Git方式创建"><span class="nav-number">3.5.1.</span> <span class="nav-text">Git方式创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Composer方式创建"><span class="nav-number">3.5.2.</span> <span class="nav-text">Composer方式创建</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置和域名解析"><span class="nav-number">4.</span> <span class="nav-text">配置和域名解析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置SSL证书"><span class="nav-number">5.</span> <span class="nav-text">配置SSL证书</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

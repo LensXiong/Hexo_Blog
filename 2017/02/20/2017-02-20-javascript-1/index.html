@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JavaScript," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript基础-1">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/02/20/2017-02-20-javascript-1/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-05-03T12:52:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Javascript基础-1">
+<meta name="twitter:description" content="摘要：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/02/20/2017-02-20-javascript-1/"/>
+
+
+
+
+
+  <title>Javascript基础-1 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/02/20/2017-02-20-javascript-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Javascript基础-1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-20T01:32:24+08:00">
+                2017-02-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="js简介"><a href="#js简介" class="headerlink" title="js简介"></a>js简介</h1><p>定义：基于对象和事件驱动并具有安全性能的脚本语言。</p>
+<h1 id="语法规则"><a href="#语法规则" class="headerlink" title="语法规则"></a>语法规则</h1><h2 id="引入js语言"><a href="#引入js语言" class="headerlink" title="引入js语言"></a>引入js语言</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">”text/javascript”</span>&gt;</span><span class="undefined">具体js代码</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">”text/javascript”</span> <span class="attr">src</span>=<span class="string">”js文件”</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="大小写"><a href="#大小写" class="headerlink" title="大小写"></a>大小写</h2><p>大小写敏感<br>true/false   布尔值<br>TRUE/FALSE  不是</p>
+<h2 id="结束标志"><a href="#结束标志" class="headerlink" title="结束标志"></a>结束标志</h2><pre><code>在js里边每条简单语言可以使用”;”分号结束,此分号也可以不使用(推荐使用)。
+</code></pre><h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注释单行</span></span><br><span class="line"><span class="comment">/* 注释多行 */</span></span><br></pre></td></tr></table></figure>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>命名规则<br>组成：字母、数字、下划线、$、汉字,开始的第一个字母不能是数字<br>$符号：在php里边是变量名字的第一个字母，在jquery里边是一个关键字，因此在一般的javascript代码里边不推荐使用该信息作为名字组成部分。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span>  $ = “hello”; <span class="comment">// 正确</span></span><br><span class="line"><span class="keyword">var</span> get_info =”abc”;</span><br></pre></td></tr></table></figure></p>
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><h2 id="php数据类型"><a href="#php数据类型" class="headerlink" title="php数据类型"></a>php数据类型</h2><p>int、float、string、boolean、array、object、resource、null</p>
+<h2 id="js数据类型："><a href="#js数据类型：" class="headerlink" title="js数据类型："></a>js数据类型：</h2><p>number:数值类型，包括int和float<br>string：字符串类型<br>boolean：布尔类型true/false<br>undefined：未定义型，变量使用之前并没有任何声明<br>null：空类型，空指针、空对象类型 var obj = null; 是对象的声明，后期要使用一个具体对象对其进行赋值.<br>object：对象类型<br>在ECMAscript里边把数组归结为对象类型，是对象内部的一个组成部分。</p>
+<p>#数值类型</p>
+<h2 id="进制表示"><a href="#进制表示" class="headerlink" title="进制表示"></a>进制表示</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//八进制数,在数字的前边设置"0"的信息</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">05</span>); <span class="comment">//5</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">045</span>); <span class="comment">//4*8+5=37</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">037</span>); <span class="comment">//3*8+7=31</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">0735</span>); <span class="comment">//7*8*8+3*8+5=477</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">091</span>);  <span class="comment">//91,恢复为十进制</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">029</span>);  <span class="comment">//29. 恢复为十进制</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//十六进制,在数字的前边设置"0x"的信息</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//A--10  B--11  C--12  D--13  E--14  F--15</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">0xA</span>);<span class="comment">//10</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">0xD</span>);<span class="comment">//13</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">0x24</span>); <span class="comment">//2*16+4=36</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">0xC4</span>); <span class="comment">//12*16+4 = 196</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="最大和最小数"><a href="#最大和最小数" class="headerlink" title="最大和最小数"></a>最大和最小数</h2><p>最大数：Number.MAX_VALUE;<br>最小数：Number.MIN_VALUE;</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//最大数</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="built_in">Number</span>.MAX_VALUE);<span class="comment">//1.7976931348623157e+308  1.79*10的308次方</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//最小数</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="built_in">Number</span>.MIN_VALUE);<span class="comment">//5e-324   0.0000 324个零0000 5</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//科学计数法</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">3.1415e+7</span>);<span class="comment">//31415000</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//Infinity console.log(Number.MAX_VALUE+Number.MAX_VALUE);//Infinity</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="typeof关键字"><a href="#typeof关键字" class="headerlink" title="typeof关键字"></a>typeof关键字</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="number">103</span>);  <span class="comment">//number</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="string">'tom'</span>);  <span class="comment">//string</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="literal">true</span>);  <span class="comment">//boolean</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="literal">false</span>);  <span class="comment">//boolean</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> TRUE);  <span class="comment">//undefined</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="literal">null</span>);  <span class="comment">//空对象object</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="built_in">document</span>);  <span class="comment">//对象object</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="浮点类型"><a href="#浮点类型" class="headerlink" title="浮点类型"></a>浮点类型</h1><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line"><span class="comment">//浮点数</span></span><br><span class="line">console.log(<span class="number">12.34</span>);  <span class="comment">//12.34</span></span><br><span class="line">console.log(<span class="number">0.34</span>);  <span class="comment">//0.34</span></span><br><span class="line">console.log(<span class="number">.34</span>);   <span class="comment">//0.34</span></span><br><span class="line">console.log(<span class="number">12.0</span>);   <span class="comment">//12</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//浮点数计算不准确</span></span><br><span class="line">console.log(<span class="number">0.1</span>+<span class="number">0.2</span>);<span class="comment">//0.30000000000000004</span></span><br><span class="line">console.log((<span class="number">0.1e+4</span>+<span class="number">0.2e+4</span>)/(<span class="number">10</span>*<span class="number">10</span>*<span class="number">10</span>*<span class="number">10</span>));<span class="comment">//0.3</span></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h1><h2 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h2><figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">+</span>  <span class="literal">-</span>   <span class="comment">*</span>   <span class="comment">/</span>   <span class="comment">%</span>  <span class="literal">+</span><span class="literal">+</span>   <span class="literal">-</span><span class="literal">-</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;script <span class="keyword">type</span>=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    num++ : 先赋值(先把值返回)，再++累加操作</span></span><br><span class="line"><span class="comment">    ++num : 先++累加操作，再赋值(把值返回)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> <span class="keyword">score</span> = 90;</span><br><span class="line"><span class="keyword">var</span> newscore = <span class="keyword">score</span>++;</span><br><span class="line">console.<span class="built_in">log</span>(newscore+<span class="string">"---"</span>+<span class="keyword">score</span>);  <span class="comment">//90-----91</span></span><br><span class="line"><span class="keyword">var</span> newscore = ++<span class="keyword">score</span>;</span><br><span class="line">console.<span class="built_in">log</span>(newscore+<span class="string">"==="</span>+<span class="keyword">score</span>); <span class="comment">//91===91</span></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="比较运算符"><a href="#比较运算符" class="headerlink" title="比较运算符"></a>比较运算符</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;  &lt;  ==   &gt;=  &lt;=  !=</span><br><span class="line">===三等号： 全等于，比较值大小和类型</span><br><span class="line"><span class="attribute">10</span>==’10’  <span class="literal">true</span></span><br><span class="line"><span class="attribute">10</span>===’10’  <span class="literal">false</span></span><br><span class="line">!==: 不全等于</span><br><span class="line">102!== ’102’  <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h2 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&amp;&amp;: 两边结果都为真结果为真</span><br><span class="line"><span class="params">||</span> ：两边结果只要有一个为真，最终结果为真</span><br><span class="line">!： 真即假、假即真</span><br><span class="line">①在php里边逻辑运算符结果为<span class="literal">true</span>/<span class="literal">false</span></span><br><span class="line">在javascript里边逻辑运算符的结果有的时候是操作数之一。</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> name = <span class="string">"linken"</span>;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> addr = <span class="string">"beijing"</span>;</span></span><br><span class="line"><span class="actionscript"><span class="comment">//把操作数当作逻辑运算符的返回结果</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(name &amp;&amp; addr); <span class="comment">//beijing</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="string">'tom'</span> &amp;&amp; <span class="number">0</span>);  <span class="comment">//0</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> a = <span class="number">10</span>;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> b = <span class="number">20</span>;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> c = <span class="number">30</span>;</span></span><br><span class="line"><span class="actionscript"><span class="comment">//把true/false当作具体返回结果</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(a&lt;b &amp;&amp; c&gt;b); <span class="comment">//true</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> age = <span class="number">20</span>;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> height = <span class="number">170</span>;</span></span><br><span class="line"><span class="actionscript"><span class="comment">//以下表达式age已经可以决定整体的结果，height的变量没有被执行</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//height被age给短路了</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(age || height); <span class="comment">//20  age短路height</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="string">""</span> ||  height); <span class="comment">//170  都有执行</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="number">0</span> &amp;&amp; age); <span class="comment">//0  0短路age</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(age || alert(<span class="string">'123'</span>));  <span class="comment">//20  alert被短路（不执行）</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(age &amp;&amp; alert(<span class="string">'hello'</span>));<span class="comment">//undefined  都执行</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">// !取反</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(!age);  <span class="comment">//false</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(!<span class="number">0</span>);   <span class="comment">//true</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h1><h2 id="switch分支选择"><a href="#switch分支选择" class="headerlink" title="switch分支选择"></a>switch分支选择</h2><p>变量值：常量(字符串信息、数字信息)、变量<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>(条件变量)&#123;</span><br><span class="line">    <span class="keyword">case</span> 变量值:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> 变量值:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> age = <span class="number">100</span>;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">switch</span>(<span class="literal">true</span>)&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">case</span> age&gt;<span class="number">0</span> &amp;&amp; age&lt;<span class="number">10</span>:</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'儿童'</span>);</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">break</span>;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">case</span> age&gt;=<span class="number">10</span> &amp;&amp; age&lt;<span class="number">20</span>:</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'青少年'</span>);</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">break</span>;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">case</span> age&gt;=<span class="number">20</span> &amp;&amp; age&lt;<span class="number">30</span>:</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'青年'</span>);</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">break</span>;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">case</span> age&gt;=<span class="number">30</span> &amp;&amp; age&lt;<span class="number">40</span>:</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'成年'</span>);</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">break</span>;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">default</span>:</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'壮年'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="continue和break关键字"><a href="#continue和break关键字" class="headerlink" title="continue和break关键字"></a>continue和break关键字</h2><p>continue: 跳出本次循环，进入下次循环。<br>break：跳出本层循环<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//break和continue可以跳转到外部标志代表的循环处</span></span></span><br><span class="line"><span class="undefined">second:</span></span><br><span class="line"><span class="actionscript"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;<span class="number">5</span>; i++)&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(i+<span class="string">"&lt;br /&gt;"</span>);</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">for</span>(<span class="keyword">var</span> m=<span class="number">100</span>; m&gt;<span class="number">90</span>; m--)&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">if</span>(m==<span class="number">95</span>)&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="comment">//break second;</span></span></span><br><span class="line"><span class="actionscript">            <span class="keyword">continue</span> second;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.write(m+<span class="string">"--"</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(<span class="string">"&lt;br /&gt;"</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="函数封装"><a href="#函数封装" class="headerlink" title="函数封装"></a>函数封装</h2><p>① 普通方式声明：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> 函数名称(<span class="params"></span>)</span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在javascript里边把函数可以当成是一个变量，数据类型为”对象”。<br>传统方式函数声明，函数有预加载过程，函数要先于普通代码被加载到内存里边，因此可以先调用、后声明。<br>条件：在同一个script标签里边(每个script标签单独被加载、解释、运行，并且有顺序要求)<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">getInfo();</span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">getInfo</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'hello world'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>② 变量赋值方式声明：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span>  函数名称 =  <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>条件：该方式必须先声明、后调用。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> getInfo = <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'海淀'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined">getInfo();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h2><p>①在javascript里边函数的形式参数与实际参数没有严格的对应关系。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//参数使用，形参与实参没有严格对应关系</span></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">getInfo</span><span class="params">(name,addr,age)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(name+<span class="string">"--"</span>+addr+<span class="string">"--"</span>+age);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined">getInfo();</span></span><br><span class="line"><span class="actionscript">getInfo(<span class="string">'tom'</span>);</span></span><br><span class="line"><span class="actionscript">getInfo(<span class="string">'mary'</span>,<span class="string">'tianjin'</span>,<span class="number">24</span>);</span></span><br><span class="line"><span class="actionscript">getInfo(<span class="string">'mary'</span>,<span class="string">'tianjin'</span>,<span class="number">25</span>,<span class="string">'100'</span>);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>②在javascript里边函数的形式参数可以有默认值。（有默认值的形参给排在参数的后边）<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">f1</span><span class="params">(name,addr=<span class="string">'beijing'</span>,age=22)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(name+<span class="string">"--"</span>+addr+<span class="string">"--"</span>+age);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="actionscript">f1(<span class="string">'linken'</span>);</span></span><br><span class="line"><span class="actionscript">f1(<span class="string">'xiaoming'</span>,<span class="string">'shanghai'</span>);</span></span><br><span class="line"><span class="actionscript">f1(<span class="string">'yuehan'</span>,<span class="string">'jiazhou'</span>,<span class="number">23</span>);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>③通过关键字arguments获得参数的具体信息<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">f1</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="built_in">arguments</span>.length+<span class="string">":::"</span>+<span class="built_in">arguments</span>[<span class="number">0</span>]+<span class="string">"--"</span>+<span class="built_in">arguments</span>[<span class="number">1</span>]);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="actionscript">f1(<span class="string">'mary'</span>,<span class="string">'newyork'</span>);</span></span><br><span class="line"><span class="actionscript">f1(<span class="string">'linken'</span>,<span class="string">'guangzhou'</span>,<span class="number">26</span>);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h2><p>return可以结束当前函数的执行。<br>在javascript里边可以return返回一个函数给接收者使用。(函数本身就是一个对象，可以用于返回return使用)<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> 具体返回值<span class="built_in">string</span> <span class="built_in">number</span> <span class="built_in">boolean</span> object <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">f1</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> name = <span class="string">"linken"</span>;</span></span><br><span class="line"><span class="actionscript"><span class="comment">//在函数内部声明一个函数，函数的数据量类型为“对象”</span></span></span><br><span class="line"><span class="actionscript">    <span class="function"><span class="keyword">function</span> <span class="title">f2</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'hello world'</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">return</span> f2;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> ff = f1();</span></span><br><span class="line"><span class="actionscript">ff();  <span class="comment">//hello world</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><p>① 传统方式调用：函数名();<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">f1</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'hello'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="actionscript">f1(); <span class="comment">//hello</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>② 匿名函数自调用：(function(){})();<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'beijing'</span>);</span></span><br><span class="line"><span class="undefined">&#125;)();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="callee关键字"><a href="#callee关键字" class="headerlink" title="callee关键字"></a>callee关键字</h2><p>callee：代表当前函数的引用，该关键字可以减低代码的耦合度<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//求n的阶乘</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//!5 = 5*4*3*2*1</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//!4 = 4*3*2*1</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//!3 = 3*2*1</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//!2 = 2*1</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//!1 = 1</span></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">jiecheng</span><span class="params">(n)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(n==<span class="number">1</span>)&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">return</span> <span class="number">1</span>;</span></span><br><span class="line"><span class="actionscript">    &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> n*<span class="built_in">arguments</span>.callee(n<span class="number">-1</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="caller关键字"><a href="#caller关键字" class="headerlink" title="caller关键字"></a>caller关键字</h2><p>caller： 代表调用该函数的函数<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">cat</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="undefined">    dog();</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'cat'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined">cat();</span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">pig</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="undefined">    dog();</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'pig'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined">pig();</span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">dog</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="comment">//查看都有谁调用我</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(dog.caller.name);</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'dog'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="局部变量和全局变量"><a href="#局部变量和全局变量" class="headerlink" title="局部变量和全局变量"></a>局部变量和全局变量</h2><p>全局变量：<br>在php里边，在函数外边声明的就是全局变量。<br>在javascript里边，变量的直接调用对象是window，这个变量就是全局变量。<br>在函数外部声明的变量就是全局变量，在函数内部如果不使用var关键字声明变量，其也是全局变量。</p>
+<p>局部变量：<br>在php里边，函数内部声明的就是局部变量。<br>在javascript里边，在函数内部声明的变量，并且其使用var关键字，就是局部变量。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//全局变量</span></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> addr = <span class="string">"beijing"</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">f1</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="comment">//全局变量</span></span></span><br><span class="line"><span class="undefined">    weight = 102;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    <span class="comment">//局部变量</span></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> animal = <span class="string">"dog"</span>;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> color = <span class="string">"blue"</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    <span class="comment">//函数内部可以直接使用全局变量，无需声明</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(addr);  <span class="comment">//beijing</span></span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined">f1();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><p>定义：把许多名称和数据类型都一样的变量集合起来就是数组。<br>作用：使用单独的变量名来存储一系列的值。</p>
+<h2 id="数组声明"><a href="#数组声明" class="headerlink" title="数组声明"></a>数组声明</h2><p>方式一：<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">var fruit</span> = [<span class="string">'apple'</span>,<span class="string">'pear'</span>,<span class="string">'orange'</span>,<span class="string">'grape'</span>];</span><br></pre></td></tr></table></figure></p>
+<p>方式二：<br>使用关键词new来创建数组对象。<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> animal = <span class="keyword">new</span> <span class="type">Array</span>(<span class="string">'dog'</span>,<span class="string">'pig'</span>,<span class="string">'tiger'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>方式三：<br>使用一个整数自变量来控制数组的容量,该数组只是声明，没有限制作用。<br>其中丰富元素的时候[]内部需要手动设置下标,与php不同。<br><figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="built_in">color</span> = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>);</span><br><span class="line"><span class="built_in">color</span>[<span class="number">0</span>] = <span class="string">"red"</span>;</span><br><span class="line"><span class="built_in">color</span>[<span class="number">1</span>] = <span class="string">"yellow"</span>;</span><br><span class="line"><span class="built_in">color</span>[<span class="number">2</span>] = <span class="string">"blue"</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="built_in">color</span>);<span class="comment">//object</span></span><br></pre></td></tr></table></figure></p>
+<p>注意：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> color = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="string">'3'</span>); <span class="comment">//① 一个元素的数组</span></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> animal = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>);  <span class="comment">//② 一个有三个元素的数组</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(color[<span class="number">0</span>]);      <span class="comment">//undefined</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意：在js里边数组都是“索引”数组。</p>
+<h2 id="数组长度"><a href="#数组长度" class="headerlink" title="数组长度"></a>数组长度</h2><p>数组.length：获得数组最大下标加1的信息值。<br>注：如果要想获得正确数组长度，则数组下标必须为为0,1,2..规则的。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> fruit = [<span class="string">'apple'</span>,<span class="string">'pear'</span>,<span class="string">'orange'</span>,<span class="string">'grape'</span>];</span></span><br><span class="line"><span class="actionscript">fruit[<span class="number">4</span>] = <span class="string">"banana"</span>;</span></span><br><span class="line"><span class="actionscript">fruit[<span class="string">'shanxi'</span>] = <span class="string">"mihoutao"</span>;</span></span><br><span class="line"><span class="actionscript">fruit[<span class="number">5</span>] = <span class="string">"watermelon"</span>;</span></span><br><span class="line"><span class="actionscript">fruit[<span class="number">10</span>] = <span class="string">"fireguo"</span>;</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(fruit.length); <span class="comment">//11</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="数组遍历"><a href="#数组遍历" class="headerlink" title="数组遍历"></a>数组遍历</h2><p>方式一：for遍历数组，条件是数组下标是0,1,2,3…规则的。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> fruit = [<span class="string">'apple'</span>,<span class="string">'pear'</span>,<span class="string">'orange'</span>,<span class="string">'grape'</span>];</span></span><br><span class="line"><span class="actionscript"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;fruit.length; i++)&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(i+<span class="string">"--"</span>+fruit[i]);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>方式二：for-in遍历，数组和 对象(属性和其值)都可以遍历。<br>使用方法：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> 下标变量 <span class="keyword">in</span> fruit)&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> fruit = [<span class="string">'apple'</span>,<span class="string">'pear'</span>,<span class="string">'orange'</span>,<span class="string">'grape'</span>];</span></span><br><span class="line"><span class="actionscript">fruit[<span class="string">'hainan'</span>] = <span class="string">"tao"</span>;</span></span><br><span class="line"><span class="actionscript">fruit[<span class="number">10</span>] = <span class="string">"bananan"</span>;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">for</span>(<span class="keyword">var</span> k <span class="keyword">in</span> fruit)&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(k+<span class="string">"---"</span>+fruit[k]);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>遍历二维数组：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> group1 = [<span class="string">'1'</span>,<span class="string">'2'</span>,<span class="string">'3'</span>];</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> group2 = [<span class="string">'4'</span>,<span class="string">'5'</span>,<span class="string">'6'</span>];</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> student = [group1,group2];</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">for</span>(<span class="keyword">var</span> k <span class="keyword">in</span> student)&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">for</span>(<span class="keyword">var</span> kk <span class="keyword">in</span> student[k])&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(kk+<span class="string">"---"</span>+student[k][kk]);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="数组方法"><a href="#数组方法" class="headerlink" title="数组方法"></a>数组方法</h2><p>instanceof方法：判断一个对象是否是指定类给实例化出来的<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> fruit = [<span class="string">'apple'</span>,<span class="string">'pear'</span>,<span class="string">'orange'</span>,<span class="string">'grape'</span>];</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> fruit); <span class="comment">//object</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">if</span>(fruit <span class="keyword">instanceof</span> <span class="built_in">Array</span>)&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'数组'</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>push()在数组最后压入元素。<br>pop()删除数组最后一个元素。<br><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;script <span class="built_in">type</span>=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">var fruit = [<span class="string">'apple'</span>,<span class="string">'pear'</span>,<span class="string">'orange'</span>,<span class="string">'grape'</span>];</span><br><span class="line">fruit.push(<span class="string">'banana'</span>);</span><br><span class="line">console.<span class="built_in">log</span>(fruit); // fruit = [<span class="string">'apple'</span>,<span class="string">'pear'</span>,<span class="string">'orange'</span>,<span class="string">'grape'</span>,<span class="string">'banana'</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fruit.pop();</span><br><span class="line">fruit.pop();</span><br><span class="line">fruit.pop();</span><br><span class="line">console.<span class="built_in">log</span>(fruit); // fruit = [<span class="string">'apple'</span>,<span class="string">'pear'</span>];</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h1><p>字符串声明：字符串声明和对象声明的区别，对象可以给自己声明属性,而字符串不可以声明属性。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> name = <span class="string">"tom"</span>;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> addr = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'北京'</span>);</span></span><br><span class="line"><span class="actionscript">name.color = <span class="string">"red"</span>;</span></span><br><span class="line"><span class="actionscript">addr.color = <span class="string">"blue"</span>;</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(name.color);<span class="comment">//undefined</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(addr.color);<span class="comment">//blue</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>字符串方法：字符串本身是不应该调用属性/方法，其实质是浏览器js解释引擎首先把字符串转变为“临时对象”，通过临时对象访问属性并返回，接着把“临时对象”给销毁。<br>javascript里边一切都是对象。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> addr = <span class="string">"beijing"</span>;</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(addr.length); <span class="comment">//7</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="eval-方法"><a href="#eval-方法" class="headerlink" title="eval()方法"></a>eval()方法</h1><p>eval()：把参数字符串信息当作表达式在上下文环境中运行。<br>注意：该eval内部参数字符串必须符合js语法规则。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="string">"10+20"</span>);  <span class="comment">//10+20</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="built_in">eval</span>(<span class="string">"10+20"</span>)); <span class="comment">//30</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> a = <span class="number">100</span>;</span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> b = <span class="number">200</span>;</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="string">"a+b"</span>); <span class="comment">//a+b</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="built_in">eval</span>(<span class="string">"a+b"</span>)); <span class="comment">//300</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="built_in">eval</span>(<span class="string">"c+d"</span>)); <span class="comment">//错误 不存在的变量</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(<span class="string">"alert('123')"</span>);<span class="comment">//alert('123')</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">eval</span>(<span class="string">"alert('456')"</span>);<span class="comment">//弹出框</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">eval</span>(<span class="string">"alrt('abc')"</span>);<span class="comment">//错误,alrt不符合js语法规则</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/02/07/2017-02-08-http-1/" rel="next" title="HTTP协议-1">
+                <i class="fa fa-chevron-left"></i> HTTP协议-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2017/03/15/2017-03-15-javascript-2/" rel="prev" title="Javascript基础-2">
+                Javascript基础-2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#js简介"><span class="nav-number">1.</span> <span class="nav-text">js简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法规则"><span class="nav-number">2.</span> <span class="nav-text">语法规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入js语言"><span class="nav-number">2.1.</span> <span class="nav-text">引入js语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大小写"><span class="nav-number">2.2.</span> <span class="nav-text">大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束标志"><span class="nav-number">2.3.</span> <span class="nav-text">结束标志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注释"><span class="nav-number">2.4.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">2.5.</span> <span class="nav-text">变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据类型"><span class="nav-number">3.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#php数据类型"><span class="nav-number">3.1.</span> <span class="nav-text">php数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#js数据类型："><span class="nav-number">3.2.</span> <span class="nav-text">js数据类型：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进制表示"><span class="nav-number">3.3.</span> <span class="nav-text">进制表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最大和最小数"><span class="nav-number">3.4.</span> <span class="nav-text">最大和最小数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typeof关键字"><span class="nav-number">3.5.</span> <span class="nav-text">typeof关键字</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#浮点类型"><span class="nav-number">4.</span> <span class="nav-text">浮点类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运算符"><span class="nav-number">5.</span> <span class="nav-text">运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#算术运算符"><span class="nav-number">5.1.</span> <span class="nav-text">算术运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#比较运算符"><span class="nav-number">5.2.</span> <span class="nav-text">比较运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑运算符"><span class="nav-number">5.3.</span> <span class="nav-text">逻辑运算符</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#流程控制"><span class="nav-number">6.</span> <span class="nav-text">流程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#switch分支选择"><span class="nav-number">6.1.</span> <span class="nav-text">switch分支选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#continue和break关键字"><span class="nav-number">6.2.</span> <span class="nav-text">continue和break关键字</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数"><span class="nav-number">7.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#函数封装"><span class="nav-number">7.1.</span> <span class="nav-text">函数封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数参数"><span class="nav-number">7.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数返回值"><span class="nav-number">7.3.</span> <span class="nav-text">函数返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数调用"><span class="nav-number">7.4.</span> <span class="nav-text">函数调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#callee关键字"><span class="nav-number">7.5.</span> <span class="nav-text">callee关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caller关键字"><span class="nav-number">7.6.</span> <span class="nav-text">caller关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局部变量和全局变量"><span class="nav-number">7.7.</span> <span class="nav-text">局部变量和全局变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数组"><span class="nav-number">8.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数组声明"><span class="nav-number">8.1.</span> <span class="nav-text">数组声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组长度"><span class="nav-number">8.2.</span> <span class="nav-text">数组长度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组遍历"><span class="nav-number">8.3.</span> <span class="nav-text">数组遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组方法"><span class="nav-number">8.4.</span> <span class="nav-text">数组方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串"><span class="nav-number">9.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#eval-方法"><span class="nav-number">10.</span> <span class="nav-text">eval()方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

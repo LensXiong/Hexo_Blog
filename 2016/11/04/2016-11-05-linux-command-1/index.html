@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JavaScript," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：Linux命令">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux命令-1">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2016/11/04/2016-11-05-linux-command-1/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：Linux命令">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-05-03T12:40:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux命令-1">
+<meta name="twitter:description" content="摘要：Linux命令">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2016/11/04/2016-11-05-linux-command-1/"/>
+
+
+
+
+
+  <title>Linux命令-1 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2016/11/04/2016-11-05-linux-command-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux命令-1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-04T23:32:24+08:00">
+                2016-11-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：Linux命令
+</strong><br><a id="more"></a></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><the rest="" of="" contents="" |="" 余下全文=""></the></h2><h3 id="1-查看目录下的文件信息"><a href="#1-查看目录下的文件信息" class="headerlink" title="1. 查看目录下的文件信息"></a>1. 查看目录下的文件信息</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">ls</span>            <span class="string">//</span>查看当前目录下的文件信息<span class="params">(list)</span></span><br><span class="line">&gt; <span class="keyword">ls</span>  -l 或 -ll <span class="string">//</span>把文件信息以详细列表形式展示出来</span><br><span class="line">&gt; <span class="keyword">ls</span>  -a        <span class="string">//</span>查看全部文件<span class="params">(包括隐藏文件)</span></span><br><span class="line">&gt; <span class="keyword">ls</span>  -al       <span class="string">//</span>以详细列表形式查看全部文件</span><br><span class="line">&gt; <span class="keyword">ls</span> –F         <span class="string">//</span>在列出的文件 目录名称后加一符号例如可执行文件加<span class="string">"*"</span>, 目录则加 <span class="string">"/"</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-查看当前所处位置"><a href="#2-查看当前所处位置" class="headerlink" title="2. 查看当前所处位置"></a>2. 查看当前所处位置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">pwd</span>      //打印工作目录(<span class="built_in">print</span> working directory)</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-目录切换"><a href="#3-目录切换" class="headerlink" title="3. 目录切换"></a>3. 目录切换</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">cd</span> ..     //切换到上级目录</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">cd</span>  目录  //切换到当前目录下的某个<span class="string">"目录"</span>里边</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">cd</span>        //切换到当前用户的“家目录”里边</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">cd</span> ~      //切换到当前用户的“家目录”里边</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-查看自己是谁"><a href="#4-查看自己是谁" class="headerlink" title="4. 查看自己是谁"></a>4. 查看自己是谁</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> whoami       //查看正在操作的用户</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> who am i     //查看到当前登录系统的用户信息</span></span><br></pre></td></tr></table></figure>
+<h3 id="5-账号切换"><a href="#5-账号切换" class="headerlink" title="5. 账号切换"></a>5. 账号切换</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">su  账号名称</span><br><span class="line">&gt; su - root  <span class="regexp">//</span>切换到root管理员账号(权限也是root)</span><br><span class="line">&gt; su -       <span class="regexp">//</span>切换到root管理员账号(权限也是root)</span><br><span class="line"></span><br><span class="line">&gt; su  root   <span class="regexp">//</span>切换到root管理员账号(普通用户权限)</span><br><span class="line">&gt; su  普通账号名称</span><br><span class="line">&gt; <span class="keyword">exit</span>       <span class="regexp">//</span>退出为原先的账号</span><br><span class="line">注意：多次连续使用su指令会使得账号出现累加效果</span><br><span class="line">      如果需要退出当前账号，回到原先账号就使用<span class="keyword">exit</span>指令</span><br><span class="line">wangxiong----&gt;root----&gt;wangxiong----&gt;root</span><br></pre></td></tr></table></figure>
+<h3 id="6-su-需要是切换到root管理员账号（权限为root）su-root-或者-su"><a href="#6-su-需要是切换到root管理员账号（权限为root）su-root-或者-su" class="headerlink" title="6. su (需要是切换到root管理员账号（权限为root）su - root 或者 su -)"></a>6. su (需要是切换到root管理员账号（权限为root）su - root 或者 su -)</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"><span class="comment"># init 3         //切换到命令窗口</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"><span class="comment"># init 5        //切换为桌面窗口</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">$               //普通用户（没有管理员权限）</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"><span class="comment">#               //超级用户</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">Ctrl+Alt+F1至F7 //文本和图形界面的切换</span></span><br></pre></td></tr></table></figure>
+<h3 id="7-目录操作"><a href="#7-目录操作" class="headerlink" title="7. 目录操作"></a>7. 目录操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">① 创建目录 make directory</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> mkdir  dirname                    //创建一个目录</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> mkdir -p dirname/dirname/dirname [-p] //递归方式创建多级目录</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> mkdir  dir/dir/newdir</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> mkdir  dir/newdir/newdir  -p</span></span><br><span class="line">创建目录，新目录的个数多于2个，就需要加-p参数，进行递归创建</span><br><span class="line"></span><br><span class="line">② 改名字</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> mv diroldname  dirnewname     //同目录下改名字</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> mv dir/oldname  dir/newname  // 子目录下改名字</span></span><br><span class="line"></span><br><span class="line">③ 移动操作move</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> mv  dir1   dir2   // dir1移动到dir2目录下边</span></span><br><span class="line">mv既可以改名字、也可以移动操作</span><br><span class="line">改名字：第二个参数是“不存在”的目录名字，就是改名字</span><br><span class="line">移动操作：第二个参数是“存在”的目录名字，就是移动</span><br><span class="line">该mv内部有两个实现：移动、改名字</span><br><span class="line"></span><br><span class="line">④ 复制操作copy</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cp  filename  dirname   //filename文件被复制到dirname目录里边</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cp  filename  dirname/newname   //复制文件到目标地址后起一个新名字</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cp -r dir  dirname      //recursive复制目录需要设置-r参数</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cp -r dir1/dir2/  dir3   //dir2被复制到dir3目录下边</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cp -r  dir1/dir2  newdir  //dir2被复制到当前目录并给改一个新名字</span></span><br><span class="line"></span><br><span class="line">⑤ 删除操作</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> rm  filename    //删除单个文件,需要确认</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> rm -f filename  //删除单个文件，不需要确认</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> rmdir  dirname  //删除单个空目录</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> rm -r  dirname  //recursive递归删除非空目录</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> rm -rf filename //recursive and force 递归强制删除任何文件</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> rm -rf /        //root执行  <span class="built_in">kill</span> you  by yourself</span></span><br></pre></td></tr></table></figure>
+<h3 id="8-文件操作"><a href="#8-文件操作" class="headerlink" title="8. 文件操作"></a>8. 文件操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">① 文件查看</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cat filename      //文件内容一次性输出到页面上</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> head -n filename  //查看文件的前n行内容</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> tail -n filename  //查看文件的后n行内容</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> wc filename       //查看文件内容行数</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> more  filename   //敲回车方式“逐行”查看文件内容</span></span><br><span class="line">                     不支持回看，q键退出</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> less  filename   //通过“上下左右”键查看文档的各个部分内容</span></span><br><span class="line">                    q键退出查看</span><br><span class="line">② 文件创建</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> touch  filename  //创建文件</span></span><br><span class="line"></span><br><span class="line">③ 给文件追加内容</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">echo</span> 内容  &gt;  filename  //把内容以<span class="string">"覆盖"</span>方式存入filename文件</span></span><br><span class="line">                           如果对应的文件不存在会自动创建</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">echo</span> 内容 &gt;&gt;  filename  //把内容以<span class="string">"追加"</span>方式存入filename文件</span></span><br><span class="line">                           如果对应的文件不存在会自动创建</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cat file1 &gt; / &gt;&gt;  file2 //把file1内容给存入file2里边</span></span><br></pre></td></tr></table></figure>
+<h3 id="9-用户操作user，"><a href="#9-用户操作user，" class="headerlink" title="9. 用户操作user，"></a>9. 用户操作user，</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">用户信息存放在配置文件/etc/passwd</span><br><span class="line">① 创建用户useradd</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> useradd  用户名           //给系统增加一个普通用户</span></span><br><span class="line">                            同时要创建一个同名的组</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> useradd -g gid组编号  -d 家目录  -u 用户id  username</span></span><br><span class="line">(自定义的家目录会被系统自动创建出来)</span><br><span class="line"></span><br><span class="line">② 修改用户usermod</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> usermod -g gid组编号  -d  家目录  -u 用户id编号  -l 新名字  username</span></span><br><span class="line">(修改的家目录不会自动创建，需要手动创建)</span><br><span class="line"></span><br><span class="line">③ 删除用户userdel</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> userdel username      //在/etc/passwd里边删除用户信息（家目录给保留）</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> userdel username -r   //在/etc/passwd里边删除用户信息同时也会删除该用户家目录</span></span><br></pre></td></tr></table></figure>
+<h3 id="10-组别操作group"><a href="#10-组别操作group" class="headerlink" title="10. 组别操作group"></a>10. 组别操作group</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">用户信息存放在配置文件/etc/group</span><br><span class="line">① 创建组groupadd</span><br><span class="line">&gt; groupadd groupname</span><br><span class="line"></span><br><span class="line">② 修改组groupmod</span><br><span class="line">&gt; groupmod -g gid组编号  -n 新名字  groupname</span><br><span class="line"></span><br><span class="line">③ 删除组groupdel</span><br><span class="line">&gt; groupdel  groupname</span><br><span class="line">注意:组别里边有关联的用户则禁止删除</span><br></pre></td></tr></table></figure>
+<h3 id="11-查看指令可以设置何种参数"><a href="#11-查看指令可以设置何种参数" class="headerlink" title="11. 查看指令可以设置何种参数"></a>11. 查看指令可以设置何种参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> man 指令</span></span><br></pre></td></tr></table></figure>
+<h3 id="12-给文件设置权限"><a href="#12-给文件设置权限" class="headerlink" title="12. 给文件设置权限"></a>12. 给文件设置权限</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">① 字母相对方式设置权限</span><br><span class="line">chmod  u+/-rwx[,g+/-rwx][,o+/-rwx]  filename</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> chmod  u+rw   filename    //给文件主人增加读、写的权限</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> chmod  u+wx,g-rx,o+rwx  filename  //主人增加写、执行权限，</span></span><br><span class="line">                                      同组用户取消读、执行权限，</span><br><span class="line">                                      其他组用户增加读、写、执行权限</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> chmod  u+r,u-x filename       //给主人增加“读”权限、取消“执行”权限</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> chmod u=rwx,g=rw,o=r filename //赋予给定权限,并取消其他所有权限</span></span><br><span class="line"></span><br><span class="line">② 数字绝对方式设置权限</span><br><span class="line">读：  4</span><br><span class="line">写:   2</span><br><span class="line">执行: 1</span><br><span class="line"></span><br><span class="line"><span class="meta">6-------&gt;</span><span class="bash"> 读、写</span></span><br><span class="line"><span class="meta">1-------&gt;</span><span class="bash"> 执行权限</span></span><br><span class="line"><span class="meta">3-------&gt;</span><span class="bash"> 写、执行</span></span><br><span class="line"><span class="meta">2-------&gt;</span><span class="bash"> 写</span></span><br><span class="line"><span class="meta">4-------&gt;</span><span class="bash"> 读</span></span><br><span class="line"><span class="meta">5-------&gt;</span><span class="bash"> 读、执行</span></span><br><span class="line"><span class="meta">7-------&gt;</span><span class="bash"> 读、写、执行</span></span><br><span class="line"><span class="meta">0-------&gt;</span><span class="bash"> 空权限</span></span><br><span class="line"></span><br><span class="line">chmod  ABC  filename     //ABC三个数字分别代表主人、同组、其他组用户权限信息</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> chmod 751  filename    //主人：读、写、执行</span></span><br><span class="line">                           同组用户：读、执行</span><br><span class="line">                           其他组用户：执行</span><br><span class="line">问：字母和数字如何选取使用？</span><br><span class="line">答：权限改动“较少”使用字母方式</span><br><span class="line">    权限改动“较多”使用数字方式</span><br></pre></td></tr></table></figure>
+<h3 id="13-在指定文件里边搜索指定的内容"><a href="#13-在指定文件里边搜索指定的内容" class="headerlink" title="13. 在指定文件里边搜索指定的内容"></a>13. 在指定文件里边搜索指定的内容</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grep</span>  被搜寻内容   文件</span><br><span class="line">&gt; <span class="keyword">grep</span>  login   passwd    <span class="comment">//在passwd文件里边搜寻login字样</span></span><br><span class="line">                            会把有login字样的行的内容都打印出来</span><br></pre></td></tr></table></figure>
+<h3 id="14-查看文件占据磁盘空间大小"><a href="#14-查看文件占据磁盘空间大小" class="headerlink" title="14. 查看文件占据磁盘空间大小"></a>14. 查看文件占据磁盘空间大小</h3><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">磁盘有block块(小格子)，磁盘内部最小的空间是一个block块，大小是<span class="number">4</span>k(可以修改)</span><br><span class="line"></span><br><span class="line">&gt; du -h  目标文件</span><br><span class="line">问：<span class="number">1000</span>k的磁盘可以存放<span class="number">1</span>k的图片，存放多少张。</span><br><span class="line">答：block为<span class="number">4</span>k情况，可以存放<span class="number">250</span>张，利用率为<span class="number">25</span>%.</span><br></pre></td></tr></table></figure>
+<h3 id="15-管道的使用"><a href="#15-管道的使用" class="headerlink" title="15. 管道的使用"></a>15. 管道的使用</h3><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">ls</span> -<span class="keyword">l</span> | <span class="keyword">grep</span> passwd           //在列出的文件信息里边获得passwd内容</span><br><span class="line">&gt; <span class="keyword">grep</span> sbin passwd | <span class="keyword">grep</span> <span class="keyword">abc</span>   //在passwd文件里边找到符合既有<span class="keyword">abc</span>，还有sbin字样的行内容</span><br><span class="line">&gt; <span class="keyword">grep</span> sbin passwd | <span class="keyword">grep</span> <span class="keyword">abc</span> | wc  //多个管道同时使用</span><br><span class="line">                                //在passwd文件里边找到符合既有<span class="keyword">abc</span>，还有sbin字样的行数目</span><br><span class="line"></span><br><span class="line">&gt; <span class="keyword">ls</span> -<span class="keyword">l</span> | head -<span class="number">15</span> | tail -<span class="number">5</span>    //查看当前目录下第<span class="number">11</span>-<span class="number">15</span>个文件的内容</span><br></pre></td></tr></table></figure>
+<h3 id="16-文件查找指令"><a href="#16-文件查找指令" class="headerlink" title="16. 文件查找指令"></a>16. 文件查找指令</h3><figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">find</span>  目录   选项  选项值</span><br><span class="line">&gt; <span class="built_in">find</span>  ./  -<span class="built_in">name</span>  passwd      <span class="comment">//在当前目录下边查找一个文件的名字为passwd</span></span><br><span class="line">&gt; <span class="built_in">find</span>  /  -<span class="built_in">name</span>  passwd       <span class="comment">//遍历系统的全部目录，搜寻名字为passwd的文件(效率低)</span></span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">find</span>  /  -mindepth <span class="number">3</span>  -maxdepth <span class="number">4</span>  -<span class="built_in">name</span> passwd   <span class="comment">//查找文件处于目录的层次在3-4之间</span></span><br><span class="line"></span><br><span class="line">选项：</span><br><span class="line">    -<span class="built_in">name</span>           通过文件名字查找文件</span><br><span class="line">    -<span class="built_in">name</span>  <span class="string">"pass*"</span>  通过模糊查找方式搜寻以pass开始的文件</span><br><span class="line"></span><br><span class="line">    -maxdepth  n    限制查找目录的最深层次</span><br><span class="line">    -mindepth  n    限制查找目录的最浅层次</span><br><span class="line"></span><br><span class="line">    -<span class="built_in">size</span>           通过文件大小进行查找</span><br><span class="line">                    默认单位：<span class="number">512</span>字节</span><br><span class="line">                    <span class="number">100</span>c  单位：字节</span><br><span class="line">                    <span class="number">2</span>k    单位：千字节</span><br><span class="line"></span><br><span class="line">                    -<span class="number">100</span>c  条件是文件大小小于<span class="number">100</span>字节</span><br><span class="line">                    +<span class="number">100</span>c  条件是文件大小大于<span class="number">100</span>字节</span><br><span class="line">&gt; <span class="built_in">find</span> ./  -<span class="built_in">size</span> <span class="number">52</span>c     <span class="comment">//在当前目录查找文件大小为52字节的文件</span></span><br><span class="line">&gt; <span class="built_in">find</span> ./  -<span class="built_in">size</span>  +<span class="number">3</span>k    <span class="comment">//在当前目录查找文件大小大于3k</span></span><br><span class="line">&gt; <span class="built_in">find</span> ./  -<span class="built_in">size</span>  -<span class="number">150</span>c  <span class="comment">//在当前目录查找文件大小小于150字节</span></span><br><span class="line">&gt; <span class="built_in">find</span> ./  -<span class="built_in">size</span> <span class="number">3</span>       <span class="comment">//在当前目录查找文件大小为1536字节</span></span><br></pre></td></tr></table></figure>
+<h3 id="17-关闭系统"><a href="#17-关闭系统" class="headerlink" title="17.关闭系统"></a>17.关闭系统</h3><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">shutdown [选项] [时间] [警告信息] //需要特别说明的是该命令只能由超级用户使用</span><br><span class="line">-<span class="ruby"> k 并不真正关机而只是发出警告信息给所有用户</span></span><br><span class="line"><span class="ruby">- r 关机后立即重新启动 /<span class="regexp">/reboot</span></span></span><br><span class="line"><span class="ruby">- h 关机后不重新启动 /<span class="regexp">/halt</span></span></span><br><span class="line"><span class="ruby">- f 快速关机重启动时跳过fsck</span></span><br><span class="line"><span class="ruby">- n 快速关机不经过init 程序</span></span><br><span class="line"><span class="ruby">- c 取消一个已经运行的shutdown</span></span><br><span class="line"><span class="ruby">&gt; <span class="comment"># shutdown -r +10 //系统在十分钟后关机并且马上重新启动</span></span></span><br><span class="line"><span class="ruby">&gt; <span class="comment"># shutdown –h now //系统马上关机并且不重新启动</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="18-更改属主和属组"><a href="#18-更改属主和属组" class="headerlink" title="18. 更改属主和属组"></a>18. 更改属主和属组</h3><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">chown</span> <span class="selector-attr">[用户:组]</span> 文件</span><br><span class="line">&gt; <span class="selector-tag">chown</span> <span class="selector-tag">wangxiong</span><span class="selector-pseudo">:linux</span> <span class="selector-tag">filename</span> <span class="comment">//更改文件的属主和属组</span></span><br></pre></td></tr></table></figure>
+<h3 id="19-进程查看命令"><a href="#19-进程查看命令" class="headerlink" title="19.进程查看命令"></a>19.进程查看命令</h3><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ps [选项]</span><br><span class="line">-<span class="ruby">e 显示所有进程</span></span><br><span class="line"><span class="ruby">-f 全格式</span></span><br><span class="line"><span class="ruby">-l 长格式</span></span><br><span class="line"><span class="ruby">&gt; ps -ef <span class="params">|grep wangxiong   //查询该用户的所有进程</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="20-磁盘及文件系统管理命令"><a href="#20-磁盘及文件系统管理命令" class="headerlink" title="20.磁盘及文件系统管理命令"></a>20.磁盘及文件系统管理命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df 目前磁盘剩余的磁盘空间</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> df -k  //显示各分区的磁盘空间使用情况</span></span><br></pre></td></tr></table></figure>
+<h3 id="21-软件安装命令"><a href="#21-软件安装命令" class="headerlink" title="21.软件安装命令"></a>21.软件安装命令</h3><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tar [选项] 文件名</span><br><span class="line">-<span class="ruby">c 创建一个新的档案文件 create</span></span><br><span class="line"><span class="ruby">-t 查看档案文件的内容  tarfile</span></span><br><span class="line"><span class="ruby">-x 分解档案文件的内容</span></span><br><span class="line"><span class="ruby">-f 指定档案文件的名称</span></span><br><span class="line"><span class="ruby">-v 显示过程信息</span></span><br><span class="line"><span class="ruby">-z 采用压缩方式</span></span><br><span class="line"><span class="ruby">linux压缩：</span></span><br><span class="line"><span class="ruby">tar czf a.tar.gz a</span></span><br><span class="line"><span class="ruby">linux解压：</span></span><br><span class="line"><span class="ruby">tar xzf a.tar.gz</span></span><br></pre></td></tr></table></figure>
+<h3 id="22-查看cpu型号"><a href="#22-查看cpu型号" class="headerlink" title="22.查看cpu型号"></a>22.查看cpu型号</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uname -a</span><br><span class="line">uname -m <span class="comment">//i686</span></span><br></pre></td></tr></table></figure>
+<h3 id="23-优化选项编译程序"><a href="#23-优化选项编译程序" class="headerlink" title="23.优化选项编译程序"></a>23.优化选项编译程序</h3><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">make</span> CFLAGS=<span class="string">"-march-i686"</span><span class="comment">//编译成优化的二进制编码</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2016/10/28/2016-10-29-regular-expression-1/" rel="next" title="正则表达式-1">
+                <i class="fa fa-chevron-left"></i> 正则表达式-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2016/11/20/2016-11-21-laravel-1/" rel="prev" title="Laravel框架基础-1">
+                Laravel框架基础-1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-查看目录下的文件信息"><span class="nav-number">1.1.</span> <span class="nav-text">1. 查看目录下的文件信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-查看当前所处位置"><span class="nav-number">1.2.</span> <span class="nav-text">2. 查看当前所处位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-目录切换"><span class="nav-number">1.3.</span> <span class="nav-text">3. 目录切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-查看自己是谁"><span class="nav-number">1.4.</span> <span class="nav-text">4. 查看自己是谁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-账号切换"><span class="nav-number">1.5.</span> <span class="nav-text">5. 账号切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-su-需要是切换到root管理员账号（权限为root）su-root-或者-su"><span class="nav-number">1.6.</span> <span class="nav-text">6. su (需要是切换到root管理员账号（权限为root）su - root 或者 su -)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-目录操作"><span class="nav-number">1.7.</span> <span class="nav-text">7. 目录操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-文件操作"><span class="nav-number">1.8.</span> <span class="nav-text">8. 文件操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-用户操作user，"><span class="nav-number">1.9.</span> <span class="nav-text">9. 用户操作user，</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-组别操作group"><span class="nav-number">1.10.</span> <span class="nav-text">10. 组别操作group</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-查看指令可以设置何种参数"><span class="nav-number">1.11.</span> <span class="nav-text">11. 查看指令可以设置何种参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-给文件设置权限"><span class="nav-number">1.12.</span> <span class="nav-text">12. 给文件设置权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-在指定文件里边搜索指定的内容"><span class="nav-number">1.13.</span> <span class="nav-text">13. 在指定文件里边搜索指定的内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-查看文件占据磁盘空间大小"><span class="nav-number">1.14.</span> <span class="nav-text">14. 查看文件占据磁盘空间大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-管道的使用"><span class="nav-number">1.15.</span> <span class="nav-text">15. 管道的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-文件查找指令"><span class="nav-number">1.16.</span> <span class="nav-text">16. 文件查找指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-关闭系统"><span class="nav-number">1.17.</span> <span class="nav-text">17.关闭系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18-更改属主和属组"><span class="nav-number">1.18.</span> <span class="nav-text">18. 更改属主和属组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-进程查看命令"><span class="nav-number">1.19.</span> <span class="nav-text">19.进程查看命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-磁盘及文件系统管理命令"><span class="nav-number">1.20.</span> <span class="nav-text">20.磁盘及文件系统管理命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-软件安装命令"><span class="nav-number">1.21.</span> <span class="nav-text">21.软件安装命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-查看cpu型号"><span class="nav-number">1.22.</span> <span class="nav-text">22.查看cpu型号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-优化选项编译程序"><span class="nav-number">1.23.</span> <span class="nav-text">23.优化选项编译程序</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

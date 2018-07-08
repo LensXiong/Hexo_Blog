@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JavaScript," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript基础-2">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/03/15/2017-03-15-javascript-2/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-05-03T12:52:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Javascript基础-2">
+<meta name="twitter:description" content="摘要：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/03/15/2017-03-15-javascript-2/"/>
+
+
+
+
+
+  <title>Javascript基础-2 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/03/15/2017-03-15-javascript-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Javascript基础-2</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-15T06:32:24+08:00">
+                2017-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h2 id="DOM简介"><a href="#DOM简介" class="headerlink" title="[DOM简介"></a>[<span id="1">DOM简介</span></h2><p>DOM：document  object  model  文档对象模型<br>BOM：browser   object  model  浏览器对象模型<br>在php和javascript里边都有dom，他们的标准都是一样的。<br>在php中，dom是php与xml/html之间沟通的桥梁。<br>在javascript中，dom是javascript与html/xml之间沟通的桥梁。</p>
+<p>html文档的各个节点：<br>元素节点:每个HTML元素是一个元素节点。如html、head、body、input、div。<br>属性节点:每个HTML属性是一个属性节点。如type、name。<br>文本节点:每个HTML元素内的文本是一个文本节点。如this is  javascript。<br>注释节点:每个HTML注释是一个注释节点。<br>文档节点:整个document文档是一个文档节点。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">!注释节点--</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span>  <span class="attr">type</span>=<span class="string">”text”</span> <span class="attr">name</span>=<span class="string">”username”</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span>&gt;</span>this is  javascript<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>nodeType:元素节点1   属性节点2  文本节点3  文档节点9  注释节点8</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>nodeType<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"username"</span> <span class="attr">value</span>=<span class="string">"tom"</span>  <span class="attr">class</span>=<span class="string">"orange"</span> <span class="attr">id</span>=<span class="string">"userone"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> it = <span class="built_in">document</span>.getElementById(<span class="string">'userone'</span>);<span class="comment">//获得元素节点</span></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> atts = it.attributes;                   <span class="comment">//获得“数组列表”属性节点</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(atts.name.nodeType);            <span class="comment">//2</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="DOM操作"><a href="#DOM操作" class="headerlink" title="[DOM操作"></a>[<span id="2">DOM操作</span></h2><p>DOM操作：对HTML页面内部的各个节点进行“增、删、改、查”的操作。</p>
+<h3 id="获得元素节点"><a href="#获得元素节点" class="headerlink" title="[获得元素节点"></a>[<span id="2.1">获得元素节点</span></h3><p>① document.getElementById(id属性值)<br>通过getElementById()获得元素节点,该方法每次获得一个节点。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>通过属性id获得元素节点<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"apple"</span>&gt;</span>this is apple div<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"orange"</span>&gt;</span>this is orange div<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> dv = <span class="built_in">document</span>.getElementById(<span class="string">'apple'</span>);</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(dv);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>② document.getElementsByTagName(tag标签名称)<br>通过tag标签获得元素节点,该方式以“数组”形式返还具体结果(即使只有一个元素)。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>通过tag标签获得元素节点<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"apple"</span>&gt;</span>this is apple div<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"orange"</span>&gt;</span>this is orange div<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> dv = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'div'</span>);</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(dv);<span class="comment">//HTMLCOLLECTION</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(dv[<span class="number">1</span>]);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>③ document.getElementsByName(name属性值)<br>通过name属性值元素节点,该方式以“数组”形式返还具体结果(即使只有一个元素)。<br>该方式一般在form表单里边使用，如果放到表单外部使用，有浏览器兼容问题，因此不推荐使用。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>通过name属性获得元素节点<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"hobby"</span> <span class="attr">value</span>=<span class="string">"篮球"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"hobby"</span> <span class="attr">value</span>=<span class="string">"足球"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> it = <span class="built_in">document</span>.getElementsByName(<span class="string">'hobby'</span>);</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(it);<span class="comment">//NodeList[input 属性(attribute)值 = "篮球"]</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(it[<span class="number">0</span>]);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="获取属性节点"><a href="#获取属性节点" class="headerlink" title="获取属性节点"></a>获取属性节点</h1><p>先获得元素节点，再通过attributes获得“数组列表”的属性节点。<br>元素节点.attributes：  以数组列表形式返还属性节点<br>属性列表.属性名称：    获得具体属性节点</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>获得属性节点<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"username"</span> <span class="attr">value</span>=<span class="string">"tom"</span>  <span class="attr">class</span>=<span class="string">"orange"</span> <span class="attr">id</span>=<span class="string">"userone"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> it = <span class="built_in">document</span>.getElementById(<span class="string">'userone'</span>);<span class="comment">//获得元素节点</span></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> atts = it.attributes; <span class="comment">//获得“数组列表”属性节点</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(atts);        <span class="comment">//[type="text", id="userone", class="orange", value="tom", name="username"]</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(atts.name);   <span class="comment">//获得具体name属性节点</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(atts.id);     <span class="comment">//获得具体id属性节点</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(atts.class);  <span class="comment">//获得具体class属性节点</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>属性相关操作：<br>①操作方式只能操作w3c规定的属性。<br>元素节点.属性名称;<br>元素节点.属性名称= 值;<br>②操作方式对“w3c规定属性”或“自定义属性”都可以操作。<br>node.getAttribute(属性名称)<br>node.setAttribute(属性名称，值)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h2&gt;属性值操作&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">    &lt;input type="text" name="username" value="tom"  class="orange" id="userone" animal="dog"&gt;&lt;br /</span>&gt;</span><br><span class="line">    &lt;input type=<span class="string">"text"</span> name=<span class="string">"hobby"</span> value=<span class="string">"足球"</span>&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="keyword">var</span> it = <span class="built_in">document</span>.getElementById(<span class="string">'userone'</span>);<span class="comment">//获得元素节点</span></span><br><span class="line">    <span class="comment">//(一)方式操作</span></span><br><span class="line">    <span class="built_in">console</span>.log(it.name);       <span class="comment">//获得对应属性信息</span></span><br><span class="line">    <span class="built_in">console</span>.log(it.className);  <span class="comment">//获得对应属性信息</span></span><br><span class="line">    <span class="comment">//① 获得属性节点使用class</span></span><br><span class="line">    <span class="comment">//② 获得属性的值使用className</span></span><br><span class="line">    <span class="built_in">console</span>.log(it.type);   <span class="comment">//获得对应属性信息</span></span><br><span class="line">    <span class="built_in">console</span>.log(it.value);  <span class="comment">//获得对应属性信息</span></span><br><span class="line">    <span class="built_in">console</span>.log(it.id);     <span class="comment">//获得对应属性信息</span></span><br><span class="line">    <span class="built_in">console</span>.log(it.animal); <span class="comment">//不允许获得undefined</span></span><br><span class="line"></span><br><span class="line">    it.id=<span class="string">"usertwo"</span>;</span><br><span class="line">    it.name=<span class="string">"useremail"</span>;</span><br><span class="line">    it.type=<span class="string">"radio"</span>;   <span class="comment">//不推荐修改</span></span><br><span class="line">    it.animal=<span class="string">"cat"</span>;   <span class="comment">//不允许修改</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//(二)方式操作</span></span><br><span class="line">    <span class="built_in">console</span>.log(it.getAttribute(<span class="string">'animal'</span>)); <span class="comment">//dog</span></span><br><span class="line">    it.setAttribute(<span class="string">'animal'</span>,<span class="string">'wolf'</span>);       <span class="comment">//可以修改</span></span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="获取文本节点"><a href="#获取文本节点" class="headerlink" title="[获取文本节点"></a>[<span id="2.3">获取文本节点</span></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>获得文本节点<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> h2 = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'h2'</span>)[<span class="number">0</span>];<span class="comment">//获得元素节点</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(h2.nodeType);                       <span class="comment">//1 元素节点</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(h2.firstChild);                     <span class="comment">//获得文本节点</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(h2.firstChild.nodeType);            <span class="comment">//3 文本节点</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="创建节点"><a href="#创建节点" class="headerlink" title="[创建节点"></a>[<span id="2.4">创建节点</span></h3><p>元素节点：createElement(tag标签名称div/p/input);<br>文本节点：createTextNode(文本信息);<br>属性信息：setAttribute(名称，值);<br>节点追加：父节点.appendChild(子节点);</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">/**</span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"wang"</span>&gt;</span>wangxiong<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span></span></span><br><span class="line"><span class="undefined">*/</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> ull = <span class="built_in">document</span>.createElement(<span class="string">'ul'</span>);</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> lii = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>);</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> litxt = <span class="built_in">document</span>.createTextNode(<span class="string">'wangxiong'</span>);</span></span><br><span class="line"><span class="actionscript">lii.setAttribute(<span class="string">'id'</span>,<span class="string">'wang'</span>); <span class="comment">//属性设置</span></span></span><br><span class="line"><span class="actionscript">lii.appendChild(litxt); <span class="comment">//追加</span></span></span><br><span class="line"><span class="undefined">ull.appendChild(lii);</span></span><br><span class="line"><span class="actionscript"><span class="comment">//document.getElementsByTagName('body')[0].appendChild(ull);</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">document</span>.body.appendChild(ull);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="修改节点"><a href="#修改节点" class="headerlink" title="[修改节点"></a>[<span id="2.5">修改节点</span></h3><p>父节点.replaceChild(newnode,oldnode)<br>节点替换操作，通过父节点进行替换,替换节点要发生物理位置移动。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>刘备<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"zhang"</span>&gt;</span>张飞<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>关羽<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>曹操<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"si"</span>&gt;</span>司马懿<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>典韦<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="handlebars"><span class="xml">    //"已有节点" <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"si"</span>&gt;</span>司马懿<span class="tag">&lt;/<span class="name">li</span>&gt;</span>进行替换<span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"zhang"</span>&gt;</span>张飞<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> zhang = <span class="built_in">document</span>.getElementById(<span class="string">'zhang'</span>);</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> si = <span class="built_in">document</span>.getElementById(<span class="string">'si'</span>);</span></span><br><span class="line"><span class="undefined">    zhang.parentNode.replaceChild(si,zhang);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="删除节点"><a href="#删除节点" class="headerlink" title="[删除节点"></a>[<span id="2.6">删除节点</span></h3><p>父节点.removeChild(node)<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>刘备<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"zhang"</span>&gt;</span>张飞<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>关羽<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> zhang = <span class="built_in">document</span>.getElementById(<span class="string">'zhang'</span>);</span></span><br><span class="line"><span class="undefined">    zhang.parentNode.removeChild(zhang);</span></span><br><span class="line"><span class="actionscript">    <span class="comment">//document.body.parentNode.removeChild(document.body);</span></span></span><br><span class="line"><span class="actionscript">    <span class="comment">//document.removeChild(document.firstChild);</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="复制节点"><a href="#复制节点" class="headerlink" title="[复制节点"></a>[<span id="2.7">复制节点</span></h3><p>父节点.appendChild(node)</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>刘备<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">"zhang"</span>&gt;</span>张飞<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>关羽<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> zhang = <span class="built_in">document</span>.getElementById(<span class="string">'zhang'</span>);</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> kzhang = zhang.cloneNode(<span class="literal">true</span>);   <span class="comment">// 深层复制</span></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> kzhang = zhang.cloneNode(<span class="literal">false</span>);  <span class="comment">// 浅层复制</span></span></span><br><span class="line"><span class="undefined">    zhang.parentNode.appendChild(kzhang);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="操作样式"><a href="#操作样式" class="headerlink" title="[操作样式"></a>[<span id="2.8">操作样式</span></h3><p>获取样式信息：node.style.样式名称<br>设置样式信息：node.style.样式名称 = 值<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"width:300px; height:200px; background-color:pink;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> dv = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'div'</span>)[<span class="number">0</span>];</span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(dv.style.width);           <span class="comment">// 获取宽度 300px</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(dv.style.height);          <span class="comment">// 获取高度 200px</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">console</span>.log(dv.style.backgroundColor); <span class="comment">// 获取背景 pink</span></span></span><br><span class="line"><span class="actionscript">dv.style.backgroundColor=<span class="string">'lightblue'</span>;  <span class="comment">// 设置背景</span></span></span><br><span class="line"><span class="actionscript">dv.style.width=<span class="string">'500px'</span>;                <span class="comment">// 设置宽度</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="事件驱动"><a href="#事件驱动" class="headerlink" title="[事件驱动"></a>[<span id="3">事件驱动</span></h2><p>定义：对鼠标或键盘所做的动作就事件，对事件的处理称为事件驱动，事件驱动一般都由函数担任。<br>例如：onclick  onmouseover  onmouseout  onfocus  onblur  onsubmit等。</p>
+<h3 id="事件设置"><a href="#事件设置" class="headerlink" title="[事件设置"></a>[<span id="3.1">事件设置</span></h3><h3 id="事件流"><a href="#事件流" class="headerlink" title="[事件流"></a>[<span id="3.2">事件流</span></h3><h3 id="事件对象"><a href="#事件对象" class="headerlink" title="[事件对象"></a>[<span id="3.3">事件对象</span></h3><h3 id="事件加载"><a href="#事件加载" class="headerlink" title="[事件加载"></a>[<span id="3.4">事件加载</span></h3></the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/02/20/2017-02-20-javascript-1/" rel="next" title="Javascript基础-1">
+                <i class="fa fa-chevron-left"></i> Javascript基础-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2017/03/20/2017-03-20-javascript-3/" rel="prev" title="JavaScript基础-3">
+                JavaScript基础-3 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DOM简介"><span class="nav-number">1.</span> <span class="nav-text">[DOM简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DOM操作"><span class="nav-number">2.</span> <span class="nav-text">[DOM操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获得元素节点"><span class="nav-number">2.1.</span> <span class="nav-text">[获得元素节点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取属性节点"><span class="nav-number"></span> <span class="nav-text">获取属性节点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取文本节点"><span class="nav-number">0.1.</span> <span class="nav-text">[获取文本节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建节点"><span class="nav-number">0.2.</span> <span class="nav-text">[创建节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改节点"><span class="nav-number">0.3.</span> <span class="nav-text">[修改节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除节点"><span class="nav-number">0.4.</span> <span class="nav-text">[删除节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制节点"><span class="nav-number">0.5.</span> <span class="nav-text">[复制节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作样式"><span class="nav-number">0.6.</span> <span class="nav-text">[操作样式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件驱动"><span class="nav-number">1.</span> <span class="nav-text">[事件驱动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事件设置"><span class="nav-number">1.1.</span> <span class="nav-text">[事件设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件流"><span class="nav-number">1.2.</span> <span class="nav-text">[事件流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件对象"><span class="nav-number">1.3.</span> <span class="nav-text">[事件对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件加载"><span class="nav-number">1.4.</span> <span class="nav-text">[事件加载</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
