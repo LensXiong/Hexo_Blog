@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="PHP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：在 web 应用开发中保持 HTTP 链接状态的技术有两个：一个是 Cookie 技术，另一个则是 Session 技术。Cookie 技术是客户端的解决方案。具体详情可参考一文。Session 技术则是服务端的解决方案，它是通过服务器来保持状态的。Session 是解决 HTTP 协议无状态问题的服务端解决方案，它能让客户端和服务端一系列交互动作变成一个完整的事务，能使网站变成一个真正意义">
+<meta name="keywords" content="PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入解析 Session 技术">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/04/15/2017/2017-04-15-session-1/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：在 web 应用开发中保持 HTTP 链接状态的技术有两个：一个是 Cookie 技术，另一个则是 Session 技术。Cookie 技术是客户端的解决方案。具体详情可参考一文。Session 技术则是服务端的解决方案，它是通过服务器来保持状态的。Session 是解决 HTTP 协议无状态问题的服务端解决方案，它能让客户端和服务端一系列交互动作变成一个完整的事务，能使网站变成一个真正意义">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-05-03T12:45:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入解析 Session 技术">
+<meta name="twitter:description" content="摘要：在 web 应用开发中保持 HTTP 链接状态的技术有两个：一个是 Cookie 技术，另一个则是 Session 技术。Cookie 技术是客户端的解决方案。具体详情可参考一文。Session 技术则是服务端的解决方案，它是通过服务器来保持状态的。Session 是解决 HTTP 协议无状态问题的服务端解决方案，它能让客户端和服务端一系列交互动作变成一个完整的事务，能使网站变成一个真正意义">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/04/15/2017/2017-04-15-session-1/"/>
+
+
+
+
+
+  <title>深入解析 Session 技术 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/04/15/2017/2017-04-15-session-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入解析 Session 技术</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-15T01:32:24+08:00">
+                2017-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：在 web 应用开发中保持 HTTP 链接状态的技术有两个：一个是 Cookie 技术，另一个则是 Session 技术。Cookie 技术是客户端的解决方案。具体详情可参考一文。Session 技术则是服务端的解决方案，它是通过服务器来保持状态的。Session 是解决 HTTP 协议无状态问题的服务端解决方案，它能让客户端和服务端一系列交互动作变成一个完整的事务，能使网站变成一个真正意义上的软件。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在 web 应用开发中保持 HTTP 链接状态的技术有两个：一个是 Cookie 技术，另一个则是 Session 技术。<br>Cookie 技术是客户端的解决方案。具体详情可参考<a href="http://wangxiong.me/2017/04/cookie-1/" target="_blank" rel="noopener"> 深入解析 Cookie 技术 </a>一文。<br>Session 技术则是服务端的解决方案，它是通过服务器来保持状态的。Session 是解决 HTTP 协议无状态问题的服务端解决方案，<br>它能让客户端和服务端一系列交互动作变成一个完整的事务，能使网站变成一个真正意义上的软件。</p>
+<h1 id="Session-基础知识"><a href="#Session-基础知识" class="headerlink" title="Session 基础知识"></a>Session 基础知识</h1><h2 id="Session-机制"><a href="#Session-机制" class="headerlink" title="Session 机制"></a>Session 机制</h2><p>Session 是另一种记录客户状态的机制，不同的是 Cookie 保存在客户端浏览器中，而 Session 保存在服务器上。<br>客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上，这就是 Session 。<br>客户端浏览器再次访问时只需要从该 Session 中查找该客户的状态就可以了。</p>
+<p>如果说 Cookie 机制是通过检查客户身上的“通行证”来确定客户身份的话，那么 Session 机制就是通过检查服务器上的“客户明细表”来确认客户身份。<br>Session 相当于程序在服务器上建立的一份客户档案，客户来访的时候只需要查询客户档案表就可以了。</p>
+<h2 id="Session-技术"><a href="#Session-技术" class="headerlink" title="Session 技术"></a>Session 技术</h2><p>在服务器端为每台浏览器，建立一个独立的数据区域，然后将服务器端的每个数据区与具体的浏览器联系起来，<br>最后为每个数据区分配一个位置标识，浏览器去保存该标识。只要浏览器请求服务器时携带了正确的标识，就可获得响应的数据。</p>
+<blockquote>
+<p>标识：称之为 SessionID ，存储在浏览器中的 Cookie 中，每次请求都必须携带。<br>数据区：服务器端存储会话数据，也就是 Session 数据。</p>
+</blockquote>
+<h2 id="Session-ID-传递"><a href="#Session-ID-传递" class="headerlink" title="Session ID 传递"></a>Session ID 传递</h2><p>Session 终究是因为管理用户状态信息才存在的。每个来访问用户都会被分配一个唯一的 <code>session_id</code>，用于区分其它用户的 Session 数据。<br>用户一旦从被分配了 <code>session_id</code> 之后的每次访问(HTTP请求)都会携带这个 <code>session_id</code> 给服务端，用于加载该用户的 Session 数据。</p>
+<h3 id="传递方法"><a href="#传递方法" class="headerlink" title="传递方法"></a>传递方法</h3><p>客户端与服务端的 Web 通信协议是 HTTP。而 PHP 通过 HTTP 取得用户数据惯用的三种方法分别是:POST 方法、GET 方法还有 Cookie 。<br>而 PHP 默认传递方法正是 Cookie ,也是最佳方法。只有在客户端不支持 Cookie 的时候(浏览器禁用了 Cookie 功能)<br>才会通过 GET 方法来传递 <code>session_id</code>，即通过在 URL 的<code>query_string</code>部分传递 <code>session_id</code>。</p>
+<h3 id="传递过程"><a href="#传递过程" class="headerlink" title="传递过程"></a>传递过程</h3><p>用户通过浏览器访问网页，将 URL 输入地址栏回车，浏览器发出请求，在调用 Sockect Send 之前浏览器引擎会搜索有效的 Cookies 记录并<br>封装在 HTTP 请求头的 Cookie 字段一同发送出去。服务端器接收到请求后，交给 PHP 处理。 这时，Session 初始化函数如果在<code>$_COOKIE</code>中<br>没有找到以<code>session_name()</code>作为键值存储的元素(值为<code>session id</code>)，则会以为用户是第一次访问 Web 。<br>作为第一次访问的用户，Session 初始化函数总会随机生成一个<code>session_id</code>并且通过<code>setcookie()</code>函数调用将新生成的<br><code>session_id</code>以<code>session_name = session_id</code>的格式填入HTTP响应头<code>Set-Cookie</code>字段，发送给客户端<br>（这样接下来的请求， HTTP 请求头 Cookie 字段都会携带该 Cookie 记录给 Web 服务器）。<br>如果初始化函数发现用户端 Cookies 中已定义了存在 <code>$_COOKIE[&#39;session_name&#39;]</code>，<br>则会加载与 <code>$_COOKIE[&#39;session_name&#39;]</code> 相对应的 Session 文件(<code>$_COOKIE[&#39;session_name&#39;]</code>就是 <code>session_id</code>)。<br>如果用户 Cookie 记录过期，则会被浏览器删除。之后的下一次请求，服务器会以为用户又是第一次访问，如此循环。</p>
+<h1 id="Cookie-与-Session-的区别"><a href="#Cookie-与-Session-的区别" class="headerlink" title="Cookie 与 Session 的区别"></a>Cookie 与 Session 的区别</h1><p>如果一位顾客经常去一家咖啡店有喝5杯咖啡免费赠一杯咖啡的优惠，然而一次性消费5杯咖啡的机会微乎其微，这时就需要某种方式来纪录顾客的消费数量。<br>想象一下其实也无外乎下面的几种方案：</p>
+<ul>
+<li>该店的店员很厉害，能记住每位顾客的消费数量，只要顾客一走进咖啡店，店员就知道该怎么对待了。这种做法就是<code>协议本身支持</code>状态。</li>
+<li>发给顾客一张卡片，上面记录着消费的数量，一般还有个有效期限。每次消费时，如果顾客出示这张卡片，则此次消费就会与以前或以后的消费相联系起来。这种做法就是在<code>客户端保持</code>状态。</li>
+<li>发给顾客一张会员卡，除了卡号之外什么信息也不纪录，每次消费时，如果顾客出示该卡片，则店员在店里的纪录本上找到这个卡号对应的纪录添加一些消费信息。这种做法就是在<code>服务器端保持</code>状态。<br>由于HTTP协议是无状态的，而出于种种考虑也不希望使之成为有状态的，因此，后面两种方案就成为现实的选择。具体来说 Cookie 机制<br>采用的是在客户端保持状态的方案，而 Session 机制采用的是在服务器端保持状态的方案。同时我们也看到，由于采用服务器端保持状态的方案在客户端也需要保存一个标识，<br>所以 Session 机制可能需要借助于 Cookie 机制来达到保存标识的目的，但实际上它还有其他选择。</li>
+</ul>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="http://baike.sogou.com/v62020984.htm?fromTitle=Session%E6%9C%BA%E5%88%B6" target="_blank" rel="noopener">百科-Session机制</a></p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/04/05/2017/2017-04-05-cookie-1/" rel="next" title="深入解析 Cookie 技术">
+                <i class="fa fa-chevron-left"></i> 深入解析 Cookie 技术
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2017/04/21/2017/2017-04-21-phpunit-1/" rel="prev" title="PHP 单元测试">
+                PHP 单元测试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Session-基础知识"><span class="nav-number">2.</span> <span class="nav-text">Session 基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Session-机制"><span class="nav-number">2.1.</span> <span class="nav-text">Session 机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session-技术"><span class="nav-number">2.2.</span> <span class="nav-text">Session 技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session-ID-传递"><span class="nav-number">2.3.</span> <span class="nav-text">Session ID 传递</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#传递方法"><span class="nav-number">2.3.1.</span> <span class="nav-text">传递方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传递过程"><span class="nav-number">2.3.2.</span> <span class="nav-text">传递过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookie-与-Session-的区别"><span class="nav-number">3.</span> <span class="nav-text">Cookie 与 Session 的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="PHP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="keywords" content="PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【PHP安装】PHP7.1源码编译安装">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/11/24/2017/2017-11-24-php-source-code-install/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/php-source-code-install/php7.1.jpeg">
+<meta property="og:updated_time" content="2018-07-28T06:06:12.936Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【PHP安装】PHP7.1源码编译安装">
+<meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/php-source-code-install/php7.1.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/11/24/2017/2017-11-24-php-source-code-install/"/>
+
+
+
+
+
+  <title>【PHP安装】PHP7.1源码编译安装 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/11/24/2017/2017-11-24-php-source-code-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【PHP安装】PHP7.1源码编译安装</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-24T14:12:04+08:00">
+                2017-11-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br><img src="/hexo_blog/img/article/php-source-code-install/php7.1.jpeg" alt="">
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="编译环境及参数"><a href="#编译环境及参数" class="headerlink" title="编译环境及参数"></a>编译环境及参数</h1><p>先检查Linu环境：<br><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@wangxiong</span> ~]# cat /etc/redhat-<span class="keyword">release</span> </span><br><span class="line">CentOS Linux <span class="keyword">release</span> <span class="number">7.4</span>.<span class="number">1708</span> (Core)</span><br></pre></td></tr></table></figure></p>
+<p>运行PHP版本信息：</p>
+<blockquote>
+<p>未安装PHP前可先不查看</p>
+</blockquote>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong ~]# php -v</span><br><span class="line">PHP 7.0.17 (cli) (built: Mar 17 2017 16:15:28) ( ZTS )</span><br><span class="line">Copyright (c) 1997-2017 The PHP Group</span><br><span class="line">Zend Engine v3.0.0, Copyright (c) 1998-2017 Zend Technologies</span><br></pre></td></tr></table></figure>
+<p>运行PHP编译参数查看命名：</p>
+<blockquote>
+<p>未安装PHP前可先不查看</p>
+</blockquote>
+<figure class="highlight flix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong ~]# php -i |grep configure  </span><br><span class="line">Configure Command =&gt;  './configure'  '--prefix=/usr/local/php7<span class="string">' '</span>--<span class="keyword">with</span>-config-file-path=/usr/local/php/etc<span class="string">' '</span>--<span class="keyword">with</span>-pdo-mysql=mysqlnd<span class="string">' '</span>--<span class="keyword">with</span>-mysqli=mysqlnd<span class="string">' '</span>--enable-fpm<span class="string">' '</span>--enable-static<span class="string">' '</span>--enable-maintainer-zts<span class="string">' '</span>--enable-inline-optimization<span class="string">' '</span>--enable-sockets<span class="string">' '</span>--enable-wddx<span class="string">' '</span>--enable-zip<span class="string">' '</span>--enable-calendar<span class="string">' '</span>--enable-bcmath<span class="string">' '</span>--enable-soap<span class="string">' '</span>--<span class="keyword">with</span>-zlib<span class="string">' '</span>--<span class="keyword">with</span>-iconv<span class="string">' '</span>--<span class="keyword">with</span>-gd<span class="string">' '</span>--<span class="keyword">with</span>-xmlrpc<span class="string">' '</span>--enable-mbstring<span class="string">' '</span>--<span class="keyword">with</span>-curl<span class="string">' '</span>--<span class="keyword">with</span>-freetype-dir=/usr/local/freetype<span class="string">' '</span>--<span class="keyword">with</span>-openssl<span class="string">' '</span>--disable-fileinfo<span class="string">' '</span>--<span class="keyword">with</span>-iconv=/usr/local/libiconv<span class="string">' '</span>--enable-ftp<span class="string">' '</span>--enable-session<span class="string">' '</span>--<span class="keyword">with</span>-mysql-sock=/tmp/mysql.sock'</span><br></pre></td></tr></table></figure>
+<h1 id="PHP-源码下载"><a href="#PHP-源码下载" class="headerlink" title="PHP 源码下载"></a>PHP 源码下载</h1><blockquote>
+<p><a href="http://www.php.net/downloads.php" target="_blank" rel="noopener">PHP官网下载地址</a></p>
+</blockquote>
+<p>选择相应的PHP版本后获取下载链接，例如运行以下命令下载7.1.15这个版本的源码包：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong <span class="symbol">~]# wget http</span>:<span class="comment">//cn2.php.net/get/php-7.1.15.tar.gz/from/this/mirror</span></span><br></pre></td></tr></table></figure>
+<p>解压下载包并重新命名为php7：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong ~]# tar xzf mirror</span><br><span class="line">[root@wangxiong ~]# mv php-7.1.15 php7</span><br></pre></td></tr></table></figure>
+<h1 id="编译安装准备"><a href="#编译安装准备" class="headerlink" title="编译安装准备"></a>编译安装准备</h1><p>下载PHP编译安装所需的依赖包：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># yum install libxml2-devel curl-devel libpng-devel freetype-devel -y</span></span><br></pre></td></tr></table></figure>
+<p>下载PHP编译安装所依赖的libiconv库</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.15.tar.gz</span></span><br><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># tar xf libiconv-1.15.tar.gz</span></span><br><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># cd libiconv-1.15</span></span><br><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># ./configure </span></span><br><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># make &amp;&amp; make install</span></span><br></pre></td></tr></table></figure>
+<h1 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h1><p>① 进入php源码目录指定编码参数：<br><figure class="highlight flix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong ~]# './configure'  '--prefix=/usr/local/php7<span class="string">' '</span>--<span class="keyword">with</span>-config-file-path=/usr/local/php/etc<span class="string">' '</span>--<span class="keyword">with</span>-pdo-mysql=mysqlnd<span class="string">' '</span>--<span class="keyword">with</span>-mysqli=mysqlnd<span class="string">' '</span>--enable-fpm<span class="string">' '</span>--enable-static<span class="string">' '</span>--enable-maintainer-zts<span class="string">' '</span>--enable-inline-optimization<span class="string">' '</span>--enable-sockets<span class="string">' '</span>--enable-wddx<span class="string">' '</span>--enable-zip<span class="string">' '</span>--enable-calendar<span class="string">' '</span>--enable-bcmath<span class="string">' '</span>--enable-soap<span class="string">' '</span>--<span class="keyword">with</span>-zlib<span class="string">' '</span>--<span class="keyword">with</span>-iconv<span class="string">' '</span>--<span class="keyword">with</span>-gd<span class="string">' '</span>--<span class="keyword">with</span>-xmlrpc<span class="string">' '</span>--enable-mbstring<span class="string">' '</span>--<span class="keyword">with</span>-curl<span class="string">' '</span>--<span class="keyword">with</span>-freetype-dir=/usr/local/freetype<span class="string">' '</span>--<span class="keyword">with</span>-openssl<span class="string">' '</span>--disable-fileinfo<span class="string">' '</span>--<span class="keyword">with</span>-iconv=/usr/local/libiconv<span class="string">' '</span>--enable-ftp<span class="string">' '</span>--enable-session<span class="string">' '</span>--<span class="keyword">with</span>-mysql-sock=/tmp/mysql.sock'</span><br></pre></td></tr></table></figure></p>
+<p>② 执行命令<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># make &amp;&amp; make install</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="配置PHP全局变量"><a href="#配置PHP全局变量" class="headerlink" title="配置PHP全局变量"></a>配置PHP全局变量</h1><p>运行 php -v 时需要此命令：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># echo <span class="string">'PATH=/usr/local/php7/bin/:$PATH'</span> &gt;&gt;/etc/profile</span></span><br></pre></td></tr></table></figure>
+<p>运行php-fpm时需要执行此命令：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># echo <span class="string">'PATH=/usr/local/php7/sbin/:$PATH'</span> &gt;&gt;/etc/profile</span></span><br></pre></td></tr></table></figure>
+<p>执行环境变量文件：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># source /etc/profile</span></span><br></pre></td></tr></table></figure>
+<p>查看PHP版本：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong]# php -v</span><br><span class="line">PHP 7.1.15 (cli) (built: Mar 19 2018 19:05:16) ( ZTS )</span><br><span class="line">Copyright (c) 1997-2018 The PHP Group</span><br><span class="line">Zend Engine v3.1.0, Copyright (c) 1998-2018 Zend Technologies</span><br></pre></td></tr></table></figure></p>
+<p>查看PHP安装的模块：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># php -m</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="配置并启动PHP服务"><a href="#配置并启动PHP服务" class="headerlink" title="配置并启动PHP服务"></a>配置并启动PHP服务</h1><p>① 复制并重新命名php-fpm配置文件：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong ~]# cp <span class="regexp">/usr/</span>local<span class="regexp">/php7/</span>etc<span class="regexp">/php-fpm.conf.default /u</span>sr<span class="regexp">/local/</span>php7<span class="regexp">/etc/</span>php-fpm.conf</span><br></pre></td></tr></table></figure></p>
+<p>② 复制并重新命名<a href="http://www.conf配置文件：" target="_blank" rel="noopener">www.conf配置文件：</a><br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong ~]# cp <span class="regexp">/usr/</span>local<span class="regexp">/php7/</span>etc<span class="regexp">/php-fpm.d/</span>www.conf.<span class="keyword">default</span> <span class="regexp">/usr/</span>local<span class="regexp">/php7/</span>etc<span class="regexp">/php-fpm.d/</span>www.conf</span><br></pre></td></tr></table></figure></p>
+<p>启动php-fpm服务：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong</span> ~]<span class="meta"># php-fpm</span></span><br></pre></td></tr></table></figure></p>
+<p>查看网络端口情况：<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong php-fpm.d]# netstat -lntup | grep php</span><br><span class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>:<span class="number">9000</span>          <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*              LISTEN      <span class="number">14792</span>/php-fpm: mast</span><br></pre></td></tr></table></figure></p>
+<h1 id="php-fpm启动失败"><a href="#php-fpm启动失败" class="headerlink" title="php-fpm启动失败"></a>php-fpm启动失败</h1><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong etc]<span class="comment"># php-fpm</span></span><br><span class="line">[<span class="number">06</span>-Apr-<span class="number">2018</span> <span class="number">13</span>:<span class="number">05</span>:<span class="number">22</span>] ERROR: unable to <span class="keyword">bind</span> listening <span class="keyword">socket</span> <span class="keyword">for</span> address <span class="string">'127.0.0.1:9000'</span>: Address already in <span class="keyword">use</span> (<span class="number">98</span>)</span><br><span class="line">[<span class="number">06</span>-Apr-<span class="number">2018</span> <span class="number">13</span>:<span class="number">05</span>:<span class="number">22</span>] ERROR: FPM initialization failed</span><br><span class="line">[root@iZ2zehy7gff0ksoydtymuvZ etc]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>解决办法：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong]# killall php-fpm</span><br><span class="line">[root@wangxiong]#<span class="built_in"> service </span>php-fpm start</span><br></pre></td></tr></table></figure></p>
+<h1 id="nginx-502-错误"><a href="#nginx-502-错误" class="headerlink" title="nginx 502 错误"></a>nginx 502 错误</h1><p>错误1：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2018</span>/<span class="number">04</span>/<span class="number">06</span> <span class="number">13</span>:<span class="number">33</span>:<span class="number">38</span> [crit] <span class="number">12828</span>#<span class="number">0</span>: *<span class="number">148</span> connect() <span class="keyword">to</span> unix:/dev/shm/php-cgi.sock failed (<span class="number">2</span>: No such <span class="keyword">file</span> <span class="built_in">or</span> directory) <span class="keyword">while</span> connecting <span class="keyword">to</span> upstream, clien<span class="variable">t:</span> <span class="number">71.192</span>.<span class="number">130.32</span>, server: <span class="number">47.95</span>.<span class="number">216.27</span>, reques<span class="variable">t:</span> <span class="comment">"POST / HT</span></span><br></pre></td></tr></table></figure></p>
+<p>解决办法：<br><a href="https://www.jianshu.com/p/f4048b2922d0" target="_blank" rel="noopener">解决办法</a></p>
+<p>错误2：<br>查看php的端口和服务：<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangxiong]# netstat -lntup |grep php</span><br><span class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>:<span class="number">9000</span>              <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                  LISTEN      <span class="number">25971</span>/php-fpm</span><br></pre></td></tr></table></figure></p>
+<p>如果无法看到php相关的端口和服务，运行php-fpm进行重新启动。<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wangxiong]</span><span class="meta"># php-fpm</span></span><br></pre></td></tr></table></figure></p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/11/12/2017/2017-11-12-nginx-fastcgi-php/" rel="next" title="深入理解Nginx与PHP的交互机制">
+                <i class="fa fa-chevron-left"></i> 深入理解Nginx与PHP的交互机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2018/07/04/2018/2018-07-04-php-operation-mode/" rel="prev" title="PHP的运行模式">
+                PHP的运行模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#编译环境及参数"><span class="nav-number">1.</span> <span class="nav-text">编译环境及参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP-源码下载"><span class="nav-number">2.</span> <span class="nav-text">PHP 源码下载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译安装准备"><span class="nav-number">3.</span> <span class="nav-text">编译安装准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码安装"><span class="nav-number">4.</span> <span class="nav-text">源码安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置PHP全局变量"><span class="nav-number">5.</span> <span class="nav-text">配置PHP全局变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置并启动PHP服务"><span class="nav-number">6.</span> <span class="nav-text">配置并启动PHP服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#php-fpm启动失败"><span class="nav-number">7.</span> <span class="nav-text">php-fpm启动失败</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx-502-错误"><span class="nav-number">8.</span> <span class="nav-text">nginx 502 错误</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
