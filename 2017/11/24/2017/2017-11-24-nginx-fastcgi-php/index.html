@@ -83,12 +83,12 @@
 <meta name="keywords" content="PHP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入理解Nginx与PHP的交互机制">
-<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/11/12/2017/2017-11-12-nginx-fastcgi-php/index.html">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/11/24/2017/2017-11-24-nginx-fastcgi-php/index.html">
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：关于如何配置 Nginx 与FPM ，我想你一定看过很多文章。这些文章更多的从操作的角度出发，告诉我们怎么做，但却没有告诉我们为什么要这么做。本篇文章从 Nginx 与 FPM 的工作机制出发，探讨配置背后的原理，让我们真正理解 Nginx 与 PHP 是如何协同工作的。这篇文章会告诉你什么是CGI？ 什么是FastCGI？什么是PHP-FPM？Nginx与PHP到底是如何通信？">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/nginx-fastcgi-php/nginx-fastcgi-php.png">
-<meta property="og:updated_time" content="2018-06-18T15:10:55.531Z">
+<meta property="og:updated_time" content="2018-07-31T06:12:12.913Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Nginx与PHP的交互机制">
 <meta name="twitter:description" content="摘要：关于如何配置 Nginx 与FPM ，我想你一定看过很多文章。这些文章更多的从操作的角度出发，告诉我们怎么做，但却没有告诉我们为什么要这么做。本篇文章从 Nginx 与 FPM 的工作机制出发，探讨配置背后的原理，让我们真正理解 Nginx 与 PHP 是如何协同工作的。这篇文章会告诉你什么是CGI？ 什么是FastCGI？什么是PHP-FPM？Nginx与PHP到底是如何通信？">
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/11/12/2017/2017-11-12-nginx-fastcgi-php/"/>
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/11/24/2017/2017-11-24-nginx-fastcgi-php/"/>
 
 
 
@@ -245,7 +245,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/11/12/2017/2017-11-12-nginx-fastcgi-php/">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/11/24/2017/2017-11-24-nginx-fastcgi-php/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wang Xiong">
@@ -274,8 +274,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-12T01:32:24+08:00">
-                2017-11-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-24T01:32:24+08:00">
+                2017-11-24
               </time>
             
 
@@ -397,8 +397,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2017/09/25/2017/2017-10-25-cheat-sheet/" rel="next" title="cheat sheet">
-                <i class="fa fa-chevron-left"></i> cheat sheet
+              <a href="/hexo_blog/2017/11/12/2017/2017-11-12-php-source-code-install/" rel="next" title="【PHP安装】PHP7.1源码编译安装">
+                <i class="fa fa-chevron-left"></i> 【PHP安装】PHP7.1源码编译安装
               </a>
             
           </div>
@@ -407,8 +407,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/hexo_blog/2017/11/24/2017/2017-11-24-php-source-code-install/" rel="prev" title="【PHP安装】PHP7.1源码编译安装">
-                【PHP安装】PHP7.1源码编译安装 <i class="fa fa-chevron-right"></i>
+              <a href="/hexo_blog/2017/12/04/2017/2017-12-04-nginx-source -code-installation/" rel="prev" title="【Nginx安装】Nginx 1.12 源码编译安装（CentOS7）">
+                【Nginx安装】Nginx 1.12 源码编译安装（CentOS7） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -490,7 +490,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
