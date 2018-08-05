@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Git," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：如果我们不想使用第三方托管平台托管自己的项目，可以自己搭建一台Git服务器作为私有仓库使用。搭建Git服务器需要准备一台运行Linux的机器，本文使用Centos 7.4。安装Git服务器有两种方式，因yum方式比较简单，本文重点介绍了另一种源码安装的方式，并在此基础上阐述了禁用shell登录的设置及Git钩子的使用。">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Git服务器】搭建Git服务器（源码安装）">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2018/01/03/2018/2018-01-03-git-server-install/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：如果我们不想使用第三方托管平台托管自己的项目，可以自己搭建一台Git服务器作为私有仓库使用。搭建Git服务器需要准备一台运行Linux的机器，本文使用Centos 7.4。安装Git服务器有两种方式，因yum方式比较简单，本文重点介绍了另一种源码安装的方式，并在此基础上阐述了禁用shell登录的设置及Git钩子的使用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-05T07:47:06.034Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Git服务器】搭建Git服务器（源码安装）">
+<meta name="twitter:description" content="摘要：如果我们不想使用第三方托管平台托管自己的项目，可以自己搭建一台Git服务器作为私有仓库使用。搭建Git服务器需要准备一台运行Linux的机器，本文使用Centos 7.4。安装Git服务器有两种方式，因yum方式比较简单，本文重点介绍了另一种源码安装的方式，并在此基础上阐述了禁用shell登录的设置及Git钩子的使用。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2018/01/03/2018/2018-01-03-git-server-install/"/>
+
+
+
+
+
+  <title>【Git服务器】搭建Git服务器（源码安装） | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2018/01/03/2018/2018-01-03-git-server-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Git服务器】搭建Git服务器（源码安装）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-03T04:02:24+08:00">
+                2018-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：如果我们不想使用第三方托管平台托管自己的项目，可以自己搭建一台Git服务器作为私有仓库使用。搭建Git服务器需要准备一台运行Linux的机器，本文使用Centos 7.4。安装Git服务器有两种方式，因yum方式比较简单，本文重点介绍了另一种源码安装的方式，并在此基础上阐述了禁用shell登录的设置及Git钩子的使用。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><blockquote>
+<p><a href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git" target="_blank" rel="noopener">官方文档</a><br><a href="https://github.com/git/git/releases" target="_blank" rel="noopener">GitHub源码</a><br><a href="https://mirrors.edge.kernel.org/pub/software/scm/git/" target="_blank" rel="noopener">Kernel.org网站</a></p>
+</blockquote>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h2><p>查看系统版本信息：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-attr">[root@wx ~]</span># <span class="selector-tag">lsb_release</span> <span class="selector-tag">-a</span></span><br><span class="line"><span class="selector-tag">LSB</span> <span class="selector-tag">Version</span>:    <span class="selector-pseudo">:core-4.1-amd64</span><span class="selector-pseudo">:core-4.1-noarch</span></span><br><span class="line"><span class="selector-tag">Distributor</span> <span class="selector-tag">ID</span>:    <span class="selector-tag">CentOS</span></span><br><span class="line"><span class="selector-tag">Description</span>:    <span class="selector-tag">CentOS</span> <span class="selector-tag">Linux</span> <span class="selector-tag">release</span> 7<span class="selector-class">.4</span><span class="selector-class">.1708</span> (<span class="selector-tag">Core</span>)</span><br><span class="line"><span class="selector-tag">Release</span>:    7<span class="selector-class">.4</span><span class="selector-class">.1708</span></span><br><span class="line"><span class="selector-tag">Codename</span>:    <span class="selector-tag">Core</span></span><br></pre></td></tr></table></figure></p>
+<p>查看系统内核版本号：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-attr">[root@wx ~]</span># <span class="selector-tag">cat</span> /<span class="selector-tag">proc</span>/<span class="selector-tag">version</span> </span><br><span class="line"><span class="selector-tag">Linux</span> <span class="selector-tag">version</span> <span class="selector-tag">3</span><span class="selector-class">.10</span><span class="selector-class">.0-693</span><span class="selector-class">.2</span><span class="selector-class">.2</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span> (builder<span class="variable">@kbuilder</span>.dev.centos.org) (gcc version <span class="number">4.8</span>.<span class="number">5</span> <span class="number">20150623</span> (Red Hat <span class="number">4.8</span>.<span class="number">5</span>-<span class="number">16</span>) (GCC) ) <span class="selector-id">#1</span> <span class="selector-tag">SMP</span> <span class="selector-tag">Tue</span> <span class="selector-tag">Sep</span> <span class="selector-tag">12</span> <span class="selector-tag">22</span><span class="selector-pseudo">:26</span><span class="selector-pseudo">:13</span> <span class="selector-tag">UTC</span> <span class="selector-tag">2017</span></span><br><span class="line"><span class="selector-attr">[root@wx ~]</span># <span class="selector-tag">uname</span> –<span class="selector-tag">a</span></span><br><span class="line"><span class="selector-tag">Linux</span> <span class="selector-tag">iZrj9hb9k9jtcpp85t8ryeZ</span> <span class="selector-tag">3</span><span class="selector-class">.10</span><span class="selector-class">.0-693</span><span class="selector-class">.2</span><span class="selector-class">.2</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span> <span class="selector-id">#1</span> <span class="selector-tag">SMP</span> <span class="selector-tag">Tue</span> <span class="selector-tag">Sep</span> <span class="selector-tag">12</span> <span class="selector-tag">22</span><span class="selector-pseudo">:26</span><span class="selector-pseudo">:13</span> <span class="selector-tag">UTC</span> <span class="selector-tag">2017</span> <span class="selector-tag">x86_64</span> <span class="selector-tag">x86_64</span> <span class="selector-tag">x86_64</span> <span class="selector-tag">GNU</span>/<span class="selector-tag">Linux</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="检查并移除旧Git"><a href="#检查并移除旧Git" class="headerlink" title="检查并移除旧Git"></a>检查并移除旧Git</h2><p>安装之前需要使用<figure class="highlight plain"><figcaption><span>remove git```卸载（安装后卸载也可以）。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">[root@wx ~]# git --version  ## 查看自带的版本</span><br><span class="line">git version 1.8.3</span><br><span class="line">[root@wx ~]# yum remove git ## 移除原来的版本</span><br></pre></td></tr></table></figure></p>
+<h1 id="安装方式"><a href="#安装方式" class="headerlink" title="安装方式"></a>安装方式</h1><h2 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h2><p>1、安装依赖包<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># yum install  autoconf automake libtool</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-devel </span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># yum install gcc-c++ perl-ExtUtils-MakeMaker</span></span><br></pre></td></tr></table></figure></p>
+<p>2、下载&amp;解压</p>
+<blockquote>
+<p><a href="https://github.com/git/git/releases" target="_blank" rel="noopener">GitHub源码下载地址</a></p>
+</blockquote>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># cd /wdata/server/</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># wget https://github.com/git/git/archive/v2.16.0.tar.gz</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># tar -zxf v2.16.0.tar.gz</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># rm -f v2.16.0.tar.gz</span></span><br></pre></td></tr></table></figure>
+<p>3、编译&amp;安装<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># cd /wdata/server/git-2.16.0/</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># make configure</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># ./configure --prefix=/usr/local/git</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># make profix=/usr/local/git</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># make install</span></span><br></pre></td></tr></table></figure></p>
+<p>4、设置全局变量<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# echo <span class="string">"export PATH=<span class="variable">$PATH</span>:/usr/local/git/bin"</span> &gt;&gt; /etc/profile</span><br><span class="line">[root@wx ~]# source /etc/profile</span><br></pre></td></tr></table></figure></p>
+<p>5、检查版本<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-attr">[root@wx ~]</span># <span class="selector-tag">git</span> <span class="selector-tag">--version</span></span><br><span class="line"><span class="selector-tag">git</span> <span class="selector-tag">version</span> 2<span class="selector-class">.16</span><span class="selector-class">.0</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="yum安装"><a href="#yum安装" class="headerlink" title="yum安装"></a>yum安装</h2><p>运行以下两条命令，通过yum方式安装：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-devel</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># yum install git</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注：因yum方式本文不做重点介绍，禁用shell登录及钩子的使用参照的是源码安装，相关路径与yum安装有所差别。</p>
+</blockquote>
+<h1 id="搭建私有仓库"><a href="#搭建私有仓库" class="headerlink" title="搭建私有仓库"></a>搭建私有仓库</h1><h2 id="创建git用户组和用户"><a href="#创建git用户组和用户" class="headerlink" title="创建git用户组和用户"></a>创建git用户组和用户</h2><p> 创建一个git用户组和用户，用来运行git服务：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># groupadd git</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># useradd git -g git</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># passwd git </span></span><br><span class="line">*******</span><br></pre></td></tr></table></figure></p>
+<h2 id="创建证书目录"><a href="#创建证书目录" class="headerlink" title="创建证书目录"></a>创建证书目录</h2><p>收集客户端所有需要登录的用户的公钥，<br>公钥位于id_rsa.pub文件中，将公钥导入服务器端 /home/git/.ssh/authorized_keys文件里，一行一个。<br>如果没有该文件创建它：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># cd /home/git/</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># mkdir .ssh</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># chmod 755 .ssh</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># chown -R git:git .ssh</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># touch .ssh/authorized_keys</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># chmod 644 .ssh/authorized_keys</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># vim authorized_keys</span></span><br><span class="line">ssh-rsa ****** wangxiong<span class="symbol">@wangxiongdeMacBook</span>-Pro.<span class="keyword">local</span></span><br></pre></td></tr></table></figure></p>
+<p>MacBook客户端的公钥两种方式复制 :</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">① vim /Users/wangxiong/.ssh/id_rsa<span class="selector-class">.pub</span> 进行复制</span><br><span class="line">② ssh-copy-id -<span class="selector-tag">i</span> /Users/wangxiong/.ssh/id_rsa<span class="selector-class">.pub</span> git@<span class="number">47.254</span>.<span class="number">30.91</span></span><br><span class="line">输入服务器密码</span><br></pre></td></tr></table></figure>
+<p>MacBook本地生成SSH公钥：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[macbook<span class="symbol">@wx</span> ~]<span class="meta"># cd /Users/wangxiong/.ssh/</span></span><br><span class="line">[macbook<span class="symbol">@wx</span> ~]<span class="meta"># ssh-keygen</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>ssh-keygen 会确认密钥的存储位置（默认是 .ssh/id_rsa），然后它会要求你输入两次密钥口令。如果你不想在使用密钥时输入口令，将其留空即可。</p>
+</blockquote>
+<h2 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h2><p>因创建完git用户下,在git目录下输入命令：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># cd /home/git/</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># mkdir  lensxiong.git &amp;&amp; chown -R git:git lensxiong.git</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># git init --bare lensxiong.git</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="克隆仓库"><a href="#克隆仓库" class="headerlink" title="克隆仓库"></a>克隆仓库</h2><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[macbook<span class="symbol">@wx</span> ~]<span class="meta"># git clone git@47.254.30.91:/home/git/lensxiong.git</span></span><br><span class="line">Cloning into <span class="string">'lensxiong'</span>...</span><br><span class="line">warning: You appear <span class="keyword">to</span> have cloned an empty repository.</span><br></pre></td></tr></table></figure>
+<h2 id="禁用shell登录"><a href="#禁用shell登录" class="headerlink" title="禁用shell登录"></a>禁用shell登录</h2><p>出于安全考虑，创建的git用户不允许登录shell。</p>
+<p>1、查看一下git-shell的位置：<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# <span class="keyword">which</span> git-<span class="keyword">shell</span></span><br><span class="line">/usr/<span class="keyword">local</span>/git/bin/git-<span class="keyword">shell</span></span><br></pre></td></tr></table></figure></p>
+<p>2、将git-shell的路径添加到/etc/shells文件中：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># vim /etc/shells</span></span><br><span class="line">/usr/<span class="keyword">local</span>/git/bin/git-shell</span><br></pre></td></tr></table></figure></p>
+<p>3、修改git用户的shell：<br>编辑/etc/passwd文件，到类似下面的一行：<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@wx</span> ~]<span class="comment"># vim /etc/passwd</span></span><br><span class="line"> <span class="symbol">git:</span><span class="symbol">x:</span><span class="number">1002</span><span class="symbol">:</span><span class="number">1002</span><span class="symbol">:</span><span class="symbol">:/home/git</span><span class="symbol">:/bin/bash</span></span><br></pre></td></tr></table></figure></p>
+<p>改为：<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git:</span><span class="symbol">x:</span><span class="number">1001</span><span class="symbol">:</span><span class="number">1001</span><span class="symbol">:</span>,,,<span class="symbol">:/home/git</span><span class="symbol">:/usr/local/git/bin/git-shell</span></span><br></pre></td></tr></table></figure></p>
+<p>把/bin/bash改为/usr/local/git/bin/git-shell，这样git这个账户就只能用来克隆或者推送数据到git仓库中了，而不能用它来登录到主机。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[macbook@wx ~]# ssh git@47.254.30.91</span><br><span class="line">fatal: Interactive git shell is <span class="keyword">not</span> enabled.</span><br><span class="line">hint: ~/git-shell-commands should exist <span class="keyword">and</span> have read <span class="keyword">and</span> execute access.</span><br><span class="line">Connection <span class="keyword">to</span> 47.254.30.91 closed.</span><br></pre></td></tr></table></figure></p>
+<h1 id="使用Git钩子"><a href="#使用Git钩子" class="headerlink" title="使用Git钩子"></a>使用Git钩子</h1><p>当我们在本地把开发好的项目文件push到服务器时，只是提交到了创建的Git服务器创建的裸仓库中。还需要进入服务器的web运行目录，通过git pull命令拉取到web目录。从本地仓库git push项目到远程仓库，让push到远程仓库中的项目能在web目录运行起来，还需要web目录进行pull拉取下。push一次就需要pull一下，操作起来很繁琐，相当不方便。为了解决这个问题就可以使用Git中的钩子来解决该问题。</p>
+<p>以之前搭建的Git服务器为例，仓库文件地址为：<br><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">[root@wx ~]</span># git clone git@<span class="number">47.254.30.91</span>:/home/git/lensxiong.git</span><br></pre></td></tr></table></figure></p>
+<p>1、进入其仓库目录下的hooks文件夹，新建post-receive文件:：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># cd /home/git/lensxiong.git/hooks/</span></span><br></pre></td></tr></table></figure></p>
+<p>2、在post-receive写入以下内容：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># vim post-receive</span></span><br><span class="line"><span class="meta">#!/bin/bash </span></span><br><span class="line">git --work-tree=/wdata/www/website/ checkout -f</span><br></pre></td></tr></table></figure></p>
+<p>3、设置post-receive为可执行文件并给与git权限：<br><figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># ll | grep post-receive</span></span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root<span class="number"> 61 </span>1月<span class="number"> 5 </span>10:16 post-receive</span><br><span class="line">[root@wx ~]<span class="comment"># chmod +x post-receive</span></span><br><span class="line">[root@wx ~]<span class="comment"># chown -R git:git /home/git/lensxiong.git/</span></span><br><span class="line">[root@wx ~]<span class="comment"># ll | grep post-receive</span></span><br><span class="line">-rwxr-xr-x<span class="number"> 1 </span>git git<span class="number"> 61 </span>1月<span class="number"> 5 </span>10:16 post-receive</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>说明：/wdata/www/website/需要同步的站点目录</p>
+</blockquote>
+<p>4、修改web站点目录的权限：<br>文件post-receive的主要目的是当远程仓库发现有用户执行了push操作，就会执行一个脚本post-receive（钩子）。需要修改你的web站点目录的权限，修改所属用户与用户组为git，否则钩子的权限可能会不足而导致执行失败。设置好钩子后，当你本地再次执行push的时候，会发现web目录的文件也同步的更新了。</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># chown -R git:git /wdata/www/website/</span></span><br></pre></td></tr></table></figure>
+<h1 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h1><h2 id="make-configure问题"><a href="#make-configure问题" class="headerlink" title="make configure问题"></a>make configure问题</h2><p>make configure出现如下错误：<br><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># make configure</span></span><br><span class="line">GIT_VERSION = 2.16.0</span><br><span class="line">    GEN configure</span><br><span class="line"><span class="section">/bin/sh: autoconf: 未找到命令</span></span><br><span class="line"><span class="section">make: *** [configure] 错误 127</span></span><br></pre></td></tr></table></figure></p>
+<p>解决办法，需要安装autoconf：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># yum install  autoconf automake libtool</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="libiconv-so-2问题"><a href="#libiconv-so-2问题" class="headerlink" title="libiconv.so.2问题"></a>libiconv.so.2问题</h2><p>git安装完后，执行命令的时候出现：<br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git: <span class="literal">error</span> <span class="keyword">while</span> loading <span class="keyword">shared</span> libraries: libiconv.so.<span class="number">2</span>: cannot <span class="keyword">open</span> <span class="keyword">shared</span> object <span class="keyword">file</span>: No such <span class="keyword">file</span> <span class="keyword">or</span> directory</span><br></pre></td></tr></table></figure></p>
+<p>解决办法如下：<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>.在/etc/ld.so.conf中加一行/usr/local/<span class="class"><span class="keyword">lib</span>，</span></span><br><span class="line"><span class="number">2</span>.然后运行/sbin/ldconfig</span><br></pre></td></tr></table></figure></p>
+<h2 id="git-upload-pack问题"><a href="#git-upload-pack问题" class="headerlink" title="git-upload-pack问题"></a>git-upload-pack问题</h2><blockquote>
+<p><a href="https://www.cnblogs.com/love-snow/articles/7542267.html" target="_blank" rel="noopener">Linux git clone 报错：git-upload-pack: command not found</a></p>
+</blockquote>
+<p>执行 git clone 出现如下问题：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">bash:</span> git-upload-<span class="string">pack:</span> command not found</span><br><span class="line"><span class="string">fatal:</span> The remote end hung up unexpectedly</span><br></pre></td></tr></table></figure></p>
+<p>原因:原来代码服务器上的git安装路径是/usr/local/git，不是默认路径，根据提示，在git服务器上， 建立链接文件：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]#  ln -s <span class="regexp">/usr/</span>local<span class="regexp">/git/</span>bin<span class="regexp">/git-upload-pack /u</span>sr<span class="regexp">/bin/gi</span>t-upload-pack</span><br></pre></td></tr></table></figure></p>
+<p>执行 git clone 出现如下问题：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bash: git-receive-pack: <span class="keyword">command</span> <span class="title">not</span> <span class="title">found</span></span><br><span class="line">fatal: Could <span class="keyword">not</span> <span class="built_in">read</span> <span class="built_in">from</span> remote repository</span><br></pre></td></tr></table></figure></p>
+<p>原因:原来代码服务器上的git安装路径是/usr/local/git，不是默认路径，根据提示，在git服务器上， 建立链接文件：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# ln -s <span class="regexp">/usr/</span>local<span class="regexp">/git/</span>bin<span class="regexp">/git-receive-pack /u</span>sr<span class="regexp">/bin/gi</span>t-receive-pack</span><br></pre></td></tr></table></figure></p>
+<h2 id="权限问题"><a href="#权限问题" class="headerlink" title="权限问题"></a>权限问题</h2><p>本地向远程推送时，出现如下问题：<br><figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[macbook@wx ~]# git push</span><br><span class="line">Counting objects: 8732, done.</span><br><span class="line">Delta compression using up to 4 threads.</span><br><span class="line">Compressing objects: 100% (8310/8310), done.</span><br><span class="line"><span class="keyword">error: </span>remote unpack failed: unable to create temporary object directory</span><br><span class="line"><span class="keyword">error: </span>failed to push some refs to 'git@47.254.30.91:/home/git/lensxiong.git'</span><br></pre></td></tr></table></figure></p>
+<p>检查仓库目录下的权限，已经变为可执行权限：<br><figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># ll  /home/git/lensxiong.git</span></span><br><span class="line">drwxr-xr-x<span class="number"> 2 </span>root root<span class="number"> 4096 </span>1月<span class="number"> 5 </span>10:16 hooks</span><br></pre></td></tr></table></figure></p>
+<p>解决办法：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># chown -R git:git /home/git/lensxiong.git/</span></span><br></pre></td></tr></table></figure></p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/12/25/2017/2017-12-25-folding-beijing/" rel="next" title="读《北京折叠》">
+                <i class="fa fa-chevron-left"></i> 读《北京折叠》
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2018/07/04/2018/2018-07-04-php-operation-mode/" rel="prev" title="PHP的运行模式">
+                PHP的运行模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档"><span class="nav-number">1.</span> <span class="nav-text">参考文档</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统环境"><span class="nav-number">2.1.</span> <span class="nav-text">系统环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查并移除旧Git"><span class="nav-number">2.2.</span> <span class="nav-text">检查并移除旧Git</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装方式"><span class="nav-number">3.</span> <span class="nav-text">安装方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#源码安装"><span class="nav-number">3.1.</span> <span class="nav-text">源码安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yum安装"><span class="nav-number">3.2.</span> <span class="nav-text">yum安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搭建私有仓库"><span class="nav-number">4.</span> <span class="nav-text">搭建私有仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建git用户组和用户"><span class="nav-number">4.1.</span> <span class="nav-text">创建git用户组和用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建证书目录"><span class="nav-number">4.2.</span> <span class="nav-text">创建证书目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化仓库"><span class="nav-number">4.3.</span> <span class="nav-text">初始化仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#克隆仓库"><span class="nav-number">4.4.</span> <span class="nav-text">克隆仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#禁用shell登录"><span class="nav-number">4.5.</span> <span class="nav-text">禁用shell登录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用Git钩子"><span class="nav-number">5.</span> <span class="nav-text">使用Git钩子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题解决"><span class="nav-number">6.</span> <span class="nav-text">问题解决</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#make-configure问题"><span class="nav-number">6.1.</span> <span class="nav-text">make configure问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#libiconv-so-2问题"><span class="nav-number">6.2.</span> <span class="nav-text">libiconv.so.2问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-upload-pack问题"><span class="nav-number">6.3.</span> <span class="nav-text">git-upload-pack问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限问题"><span class="nav-number">6.4.</span> <span class="nav-text">权限问题</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
