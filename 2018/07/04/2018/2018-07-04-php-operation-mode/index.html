@@ -79,23 +79,23 @@
 
 
 
-<meta name="description" content="摘要：关于PHP的运行模式，我想你一定经常听到CGI、FastCGI、PHP-CGI、PHP-FPM。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了PHP常见的四种运行模式,﻿CGI通用网关接口(Common Gateway Interface)、﻿FastCGI常驻型CGI(Long-Live CGI) 、﻿CLI命令行模式(Command Line Interface)和﻿模块模式">
+<meta name="description" content="摘要：关于PHP的运行模式，我想你一定经常听到CGI、FastCGI、PHP-CGI、PHP-FPM。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了PHP常见的四种运行模式,﻿CGI通用网关接口(Common Gateway Interface)、﻿FastCGI常驻型CGI(Long-Live CGI)、﻿CLI命令行模式(Command Line Interface)和﻿模块模式(">
 <meta name="keywords" content="PHP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP的运行模式">
 <meta property="og:url" content="http://wwxiong.com/hexo_blog/2018/07/04/2018/2018-07-04-php-operation-mode/index.html">
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
-<meta property="og:description" content="摘要：关于PHP的运行模式，我想你一定经常听到CGI、FastCGI、PHP-CGI、PHP-FPM。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了PHP常见的四种运行模式,﻿CGI通用网关接口(Common Gateway Interface)、﻿FastCGI常驻型CGI(Long-Live CGI) 、﻿CLI命令行模式(Command Line Interface)和﻿模块模式">
+<meta property="og:description" content="摘要：关于PHP的运行模式，我想你一定经常听到CGI、FastCGI、PHP-CGI、PHP-FPM。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了PHP常见的四种运行模式,﻿CGI通用网关接口(Common Gateway Interface)、﻿FastCGI常驻型CGI(Long-Live CGI)、﻿CLI命令行模式(Command Line Interface)和﻿模块模式(">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/php-operation-mode/01.jpeg">
 <meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/php-operation-mode/02.png">
 <meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/php-operation-mode/03.png">
 <meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/php-operation-mode/04.png">
 <meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/php-operation-mode/05.png">
-<meta property="og:updated_time" content="2018-08-05T07:40:29.602Z">
+<meta property="og:updated_time" content="2018-08-08T03:50:06.106Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PHP的运行模式">
-<meta name="twitter:description" content="摘要：关于PHP的运行模式，我想你一定经常听到CGI、FastCGI、PHP-CGI、PHP-FPM。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了PHP常见的四种运行模式,﻿CGI通用网关接口(Common Gateway Interface)、﻿FastCGI常驻型CGI(Long-Live CGI) 、﻿CLI命令行模式(Command Line Interface)和﻿模块模式">
+<meta name="twitter:description" content="摘要：关于PHP的运行模式，我想你一定经常听到CGI、FastCGI、PHP-CGI、PHP-FPM。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了PHP常见的四种运行模式,﻿CGI通用网关接口(Common Gateway Interface)、﻿FastCGI常驻型CGI(Long-Live CGI)、﻿CLI命令行模式(Command Line Interface)和﻿模块模式(">
 <meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/php-operation-mode/01.jpeg">
 
 
@@ -338,14 +338,14 @@
       
 
       
-        <p><strong><br>摘要：关于PHP的运行模式，我想你一定经常听到CGI、FastCGI、PHP-CGI、PHP-FPM。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了PHP常见的四种运行模式,﻿CGI通用网关接口(Common Gateway Interface)、﻿FastCGI常驻型CGI(Long-Live CGI) 、﻿CLI命令行模式(Command Line Interface)和﻿模块模式(Apache等Web服务器运行的模式) 。
+        <p><strong><br>摘要：关于<code>PHP</code>的运行模式，我想你一定经常听到<code>CGI</code>、<code>FastCGI</code>、<code>PHP-CGI</code>、<code>PHP-FPM</code>。他们之间到底是什么样的关系？本文通过详细的介绍，主要分析了<code>PHP</code>常见的四种运行模式,﻿<code>CGI</code>通用网关接口<code>(Common Gateway Interface)</code>、﻿<code>FastCGI</code>常驻型<code>CGI(Long-Live CGI)</code>、﻿<code>CLI</code>命令行模式<code>(Command Line Interface)</code>和﻿模块模式(<code>Apache</code>等<code>Web</code>服务器运行的模式) 。
 </strong><br><a id="more"></a></p>
 <the rest="" of="" contents="" |="" 余下全文="">
 
 
 
 <h1 id="架构体系"><a href="#架构体系" class="headerlink" title="架构体系"></a>架构体系</h1><p>PHP的四层体系架构如下图所示：</p>
-<p><img src="/hexo_blog/img/article/php-operation-mode/01.jpeg" alt=""><br>从图上可以看出，PHP从上到下是一个四层体系：</p>
+<p><img src="/hexo_blog/img/article/php-operation-mode/01.jpeg" alt=""><br>从图上可以看出，<code>PHP</code>从上到下是一个四层体系：</p>
 <ul>
 <li><code>Application</code>：这就是我们平时编写的PHP程序，通过不同的SAPI方式得到各种各样的应用模式，如通过Web Server实现Web应用、在命令行下以脚本方式运行等等。</li>
 <li><code>SAPI</code>：SAPI全称是Server Application Programming Interface，也就是服务端应用编程接口，SAPI通过一系列钩子函数，使得PHP可以和外围交互数据，这是PHP非常优雅和成功的一个设计，通过SAPI成功的将PHP本身和上层应用解耦隔离，PHP可以不再考虑如何针对不同应用进行兼容，而应用本身也可以针对自己的特点实现不同的处理方式。</li>
