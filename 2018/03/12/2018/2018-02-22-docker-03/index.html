@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：关于Docker，必须理解其最主要的三个基本概念，镜像（Image）、容器（Container）、仓库（Repository）,只有正确理解这三个概念，才能理解Docker的整个生命周期。Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Docker 03】镜像、容器、仓库相关">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2018/03/12/2018/2018-02-22-docker-03/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：关于Docker，必须理解其最主要的三个基本概念，镜像（Image）、容器（Container）、仓库（Repository）,只有正确理解这三个概念，才能理解Docker的整个生命周期。Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-20T10:39:23.008Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Docker 03】镜像、容器、仓库相关">
+<meta name="twitter:description" content="摘要：关于Docker，必须理解其最主要的三个基本概念，镜像（Image）、容器（Container）、仓库（Repository）,只有正确理解这三个概念，才能理解Docker的整个生命周期。Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2018/03/12/2018/2018-02-22-docker-03/"/>
+
+
+
+
+
+  <title>【Docker 03】镜像、容器、仓库相关 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2018/03/12/2018/2018-02-22-docker-03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Docker 03】镜像、容器、仓库相关</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-12T07:02:24+08:00">
+                2018-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：关于<code>Docker</code>，必须理解其最主要的三个基本概念，镜像（<code>Image</code>）、容器（<code>Container</code>）、仓库（<code>Repository</code>）,只有正确理解这三个概念，才能理解<code>Docker</code>的整个生命周期。<code>Docker</code>镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。镜像（<code>Image</code>）和容器（<code>Container</code>）的关系，就像是面向对象程序设计中的 类 和 实例 一样，镜像是静态的定义，容器是镜像运行时的实体。<code>Docker</code>仓库实质是一个集中的存储、分发镜像的服务。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h1><h2 id="关于镜像文件"><a href="#关于镜像文件" class="headerlink" title="关于镜像文件"></a>关于镜像文件</h2><p><code>Docker</code>把应用程序及其依赖，打包在 <code>image</code>文件里面。只有通过这个<code>image</code>镜像文件，才能生成<code>Docker</code>容器。<br><code>image</code>文件可以看作是容器的模板。</p>
+<p><code>Docker</code> 根据 <code>image</code>文件生成容器的实例。<br>同一个 <code>image</code>文件，可以生成多个同时运行的容器实例。<br><code>image</code> 是二进制文件。实际开发中，一个<code>image</code>文件往往通过继承另一个 <code>image</code> 文件，加上一些个性化设置而生成。<br>举例来说，你可以在<code>Ubuntu</code> 的 <code>image</code> 基础上，往里面加入 <code>Apache</code>服务器，形成你的<code>image</code>。</p>
+<h2 id="获取新的镜像"><a href="#获取新的镜像" class="headerlink" title="获取新的镜像"></a>获取新的镜像</h2><p>当我们在本地主机上使用一个不存在的镜像时<code>Docker</code>就会自动下载这个镜像。</p>
+<p>如果我们想预先下载这个镜像，我们可以使用<code>docker pull</code>命令来下载它。</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker pull ubuntu:13.10</span></span><br></pre></td></tr></table></figure>
+<h2 id="列出镜像列表"><a href="#列出镜像列表" class="headerlink" title="列出镜像列表"></a>列出镜像列表</h2><p>方式一：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# docker images</span><br><span class="line">REPOSITORY TAG IMAGE ID CREATED SIZE</span><br><span class="line">docker.io/busybox latest f6e427c148a7 <span class="number">3</span> weeks ago <span class="number">1.15</span> MB</span><br><span class="line">docker.io/ubuntu <span class="number">13.10</span> <span class="number">7</span>f020f7bf345 <span class="number">3</span> years ago <span class="number">185</span> MB</span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">REPOSITORY</td>
+<td style="text-align:left">仓库名</td>
+</tr>
+<tr>
+<td style="text-align:left">TAG</td>
+<td style="text-align:left">标签</td>
+</tr>
+<tr>
+<td style="text-align:left">IMAGE ID</td>
+<td style="text-align:left">镜像 ID</td>
+</tr>
+<tr>
+<td style="text-align:left">CREATED</td>
+<td style="text-align:left">创建时间</td>
+</tr>
+<tr>
+<td style="text-align:left">SIZE</td>
+<td style="text-align:left">所占用的空间</td>
+</tr>
+</tbody>
+</table>
+<p>方式二：</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# docker <span class="keyword">image</span> <span class="keyword">ls</span></span><br></pre></td></tr></table></figure>
+<h2 id="删除镜像文件"><a href="#删除镜像文件" class="headerlink" title="删除镜像文件"></a>删除镜像文件</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="meta"># docker image rm [选项] <span class="meta-string">&lt;镜像短 ID&gt;</span> [<span class="meta-string">&lt;镜像长 ID&gt;</span> <span class="meta-string">&lt;镜像名&gt;</span> <span class="meta-string">&lt;镜像摘要&gt;</span>...]</span></span><br></pre></td></tr></table></figure>
+<p>列出当前的镜像：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# docker images</span><br><span class="line">REPOSITORY TAG IMAGE ID CREATED SIZE</span><br><span class="line">import/lnmp v1<span class="number">.0</span> fe2ffdf273e5 <span class="number">30</span> minutes ago <span class="number">637</span>MB</span><br><span class="line">lnmp v1 ffdafb6c807c <span class="number">17</span> hours ago <span class="number">795</span>MB</span><br><span class="line">&lt;none&gt; &lt;none&gt; <span class="number">05</span>d2fc98e5ad <span class="number">23</span> hours ago <span class="number">366</span>MB</span><br><span class="line">php v1 <span class="number">97</span>d9b5856eff <span class="number">24</span> hours ago <span class="number">869</span>MB</span><br><span class="line">&lt;none&gt; &lt;none&gt; <span class="number">0e7850</span>d816ad <span class="number">24</span> hours ago <span class="number">426</span>MB</span><br><span class="line">&lt;none&gt; &lt;none&gt; cd4589097c35 <span class="number">25</span> hours ago <span class="number">300</span>MB</span><br><span class="line">centos centos7 <span class="number">5182e96772</span>bf <span class="number">5</span> days ago <span class="number">200</span>MB</span><br><span class="line">ubuntu <span class="number">16.04</span> <span class="number">7</span>aa3602ab41e <span class="number">2</span> weeks ago <span class="number">115</span>MB</span><br><span class="line">hello-world latest <span class="number">2</span>cb0d9787c4d <span class="number">4</span> weeks ago <span class="number">1.85</span>kB</span><br></pre></td></tr></table></figure>
+<p>使用镜像短ID删除：</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@wx</span> ~]# docker image rm <span class="number">05</span>d</span><br><span class="line">Deleted: sha<span class="number">256</span>:<span class="number">05</span>d<span class="number">2</span>fc<span class="number">98e5</span>ad<span class="number">9137</span>aa<span class="number">11</span>d<span class="number">13</span><span class="keyword">c</span><span class="number">3</span><span class="keyword">c</span><span class="number">8</span>***d<span class="number">2</span>a<span class="number">4</span>f<span class="number">2</span>dd<span class="number">0</span>d<span class="number">1</span><span class="keyword">c</span><span class="number">873</span>eb<span class="number">5</span>ca<span class="number">0</span>bf<span class="number">13</span><span class="keyword">c</span><span class="number">757</span>efa<span class="number">4</span>af</span><br><span class="line">Deleted: sha<span class="number">256</span>:<span class="number">6118</span>d<span class="number">3</span>ba<span class="number">77</span>a<span class="number">3095</span>eed<span class="number">42</span>d<span class="number">89</span>df<span class="number">5</span>a***f<span class="number">506</span>f<span class="number">0</span>bb<span class="number">43</span>a<span class="number">165</span>bd<span class="number">4</span>b<span class="number">091</span>a<span class="number">32</span>ea<span class="number">44118</span>ebc<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>使用镜像长ID删除：</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@wx</span> ~]# docker image rm <span class="number">0e7850</span>d<span class="number">816</span>ad</span><br><span class="line">Deleted: sha<span class="number">256</span>:<span class="number">0e7850</span>d<span class="number">816</span>ad<span class="number">4</span><span class="keyword">c</span><span class="number">662705</span>a<span class="number">647</span>ec<span class="number">3e16</span>a***<span class="number">8</span>a<span class="number">9388</span>ea<span class="number">2</span>dba<span class="number">7997</span><span class="keyword">c</span><span class="number">068</span>a<span class="number">1</span>d<span class="number">505918</span>e</span><br><span class="line">Deleted: sha<span class="number">256</span>:<span class="number">438</span>d<span class="number">92</span>ff<span class="number">0</span>ddacdffbe<span class="number">6</span>b<span class="number">69609196</span>dad<span class="number">2</span>e***<span class="number">3</span>b<span class="number">0</span>fcabd<span class="number">70</span>b<span class="number">4</span><span class="keyword">cc</span><span class="number">33137537</span><span class="keyword">c</span><span class="number">0e6456</span></span><br></pre></td></tr></table></figure>
+<p>使用镜像名<code>&lt;仓库名&gt;:&lt;标签&gt;</code>删除：</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@wx</span> ~]# docker image rm hello-world:latest</span><br><span class="line">Untagged: hello-world:latest</span><br><span class="line">Untagged: hello-world<span class="title">@sha256</span>:<span class="number">4</span>b<span class="number">8</span>ff<span class="number">392</span>a<span class="number">12</span>ed<span class="number">9</span>ea<span class="number">17784</span>bd<span class="number">3</span><span class="keyword">c</span><span class="number">9</span>a<span class="number">8</span>*****<span class="number">9</span>cac<span class="number">44</span>aca<span class="number">35</span>a<span class="number">85</span><span class="keyword">c</span><span class="number">90</span><span class="keyword">c</span><span class="number">5e3</span><span class="keyword">c</span><span class="number">7</span>afacdc</span><br><span class="line">Deleted: sha<span class="number">256</span>:<span class="number">2</span>cb<span class="number">0</span>d<span class="number">9787</span><span class="keyword">c</span><span class="number">4</span>dd*******b<span class="number">03e512923</span>bc<span class="number">4</span>db<span class="number">10</span><span class="keyword">add</span><span class="number">190</span>d<span class="number">3</span>f<span class="number">84</span>af<span class="number">63</span>b<span class="number">744e353</span>a<span class="number">9</span>b<span class="number">34</span></span><br><span class="line">Deleted: sha<span class="number">256</span>:ee<span class="number">83</span>fc<span class="number">5847</span>cb<span class="number">87</span>*******<span class="number">8</span>a<span class="number">1</span>f<span class="number">5</span>dbfd<span class="number">754255367</span>f<span class="number">4280122</span>b<span class="number">4e2</span>d<span class="number">5</span>aee<span class="number">17818e31</span>f<span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>使用镜像摘要删除：</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="meta">@wx</span> ~]<span class="comment"># docker image ls --digests</span></span><br><span class="line">REPOSITORY TAG DIGEST IMAGE ID CREATED SIZE</span><br><span class="line">import/lnmp v1.0 <span class="variable">&lt;none&gt;</span> fe2ffdf273e5 35 minutes ago 637MB</span><br><span class="line">lnmp v1 <span class="variable">&lt;none&gt;</span> ffdafb6c807c 17 hours ago 795MB</span><br><span class="line">php v1 <span class="variable">&lt;none&gt;</span> 97d9b5856eff 24 hours ago 869MB</span><br><span class="line"><span class="variable">&lt;none&gt;</span> <span class="variable">&lt;none&gt;</span> <span class="variable">&lt;none&gt;</span> cd4589097c35 25 hours ago 300MB</span><br><span class="line">centos centos7 sha256:6f6d986d425aeabdc3a0<span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span>7357e92417d6d58332856024faf 5182e96772bf 5 days ago 200MB</span><br><span class="line">ubuntu 16.04 sha256:3097ac92b852f878f802c22<span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span>97b4084dbef82893ba453ba0297d76a6a 7aa3602ab41e 2 weeks ago 115MB</span><br><span class="line"></span><br><span class="line">[root<span class="meta">@iZrj9hb9k9jtcpp85t8ryeZ</span> ~]<span class="comment"># docker image rm ubuntu@sha256:3097ac92b852f878f802c22*******97b4084dbef82893ba453ba0297d76a6a</span></span><br><span class="line">Untagged: ubuntu@ sha256:3097ac92b852f878f802c22<span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span><span class="symbol">*</span>97b4084dbef82893ba453ba0297d76a6a</span><br></pre></td></tr></table></figure>
+<h2 id="镜像体积"><a href="#镜像体积" class="headerlink" title="镜像体积"></a>镜像体积</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# docker<span class="built_in"> system </span>df</span><br><span class="line">TYPE TOTAL ACTIVE SIZE RECLAIMABLE</span><br><span class="line">Images 9 1 2.708GB 2.113GB (78%)</span><br><span class="line">Containers 1 1 130B 0B (0%)</span><br><span class="line">Local Volumes 0 0 0B 0B</span><br><span class="line">Build Cache 0 0 0B 0B</span><br></pre></td></tr></table></figure>
+<h2 id="使用镜像运行容器"><a href="#使用镜像运行容器" class="headerlink" title="使用镜像运行容器"></a>使用镜像运行容器</h2><p>假设我们使用版本为13.10的ubuntu系统镜像来运行容器时，命令如下：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker run -t -i ubuntu:13.10 /bin/bash</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>对于像<code>Ubuntu</code>这些不会自动终止的容器，必须使用 <a href="https://docs.docker.com/engine/reference/commandline/container_kill/" target="_blank" rel="noopener"><code>docker container kill</code></a> 命令手动终止。<br><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@wx</span> ~]# docker container kill e<span class="number">776356</span>b<span class="number">5e5</span><span class="keyword">c</span></span><br><span class="line">e<span class="number">776356</span>b<span class="number">5e5</span><span class="keyword">c</span></span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h1 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h1><p>镜像（<code>Image</code>）和容器（<code>Container</code>）的关系，就像是面向对象程序设计中的 类 和 实例 一样，镜像是静态的定义，容器是镜像运行时的实体。</p>
+<p>容器可以被创建、启动、停止、删除、暂停等。</p>
+<p>容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。</p>
+<p>容器拥有自己的 root 文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。</p>
+<p>容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。</p>
+<h2 id="创建和运行"><a href="#创建和运行" class="headerlink" title="创建和运行"></a>创建和运行</h2><p>不使用<code>-d</code>选项参数，直接进入运行后的容器：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker run -it --rm \</span></span><br><span class="line">                      ubuntu:<span class="number">16.04</span> \ </span><br><span class="line">                      /bin/bash  </span><br><span class="line">[root<span class="symbol">@55579470ab71</span> ~]<span class="meta">#</span></span><br></pre></td></tr></table></figure>
+<p>使用<code>-d</code>选项参数，启动后会返回一个唯一的 id，在后台运行：<br><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># docker run -d -i -t --rm \</span></span><br><span class="line">                      ubuntu:<span class="number">16.04</span> <span class="string">\</span> </span><br><span class="line">                      /bin/bash  </span><br><span class="line"><span class="number">2104aab</span>0e69a72665d2823bd107***d1c52d389306b771385c1e4234d953f8bb</span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">docker run</td>
+<td style="text-align:left">运行容器的命令</td>
+</tr>
+<tr>
+<td style="text-align:left">-d</td>
+<td style="text-align:left">守护态运行，在后台运行</td>
+</tr>
+<tr>
+<td style="text-align:left">-i (interactive)</td>
+<td style="text-align:left">交互式操作</td>
+</tr>
+<tr>
+<td style="text-align:left">-t (terminal)</td>
+<td style="text-align:left">终端</td>
+</tr>
+<tr>
+<td style="text-align:left">–rm</td>
+<td style="text-align:left">容器退出后随之将其删除</td>
+</tr>
+<tr>
+<td style="text-align:left">ubuntu:16.04</td>
+<td style="text-align:left">以ubuntu:16.04 镜像为基础来启动容器</td>
+</tr>
+<tr>
+<td style="text-align:left">/bin/bash</td>
+<td style="text-align:left">交互式 Shell</td>
+</tr>
+</tbody>
+</table>
+<p>当利用<code>docker run</code>来创建容器时，<code>Docker</code>在后台运行的标准操作包括：<br>① 检查本地是否存在指定的镜像，不存在就从公有仓库下载<br>② 利用镜像创建并启动一个容器<br>③ 分配一个文件系统，并在只读的镜像层外面挂载一层可读写层<br>④ 从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中去<br>⑤ 从地址池配置一个 ip 地址给容器<br>⑥ 执行用户指定的应用程序<br>⑦ 执行完毕后容器被终止</p>
+<h1 id="查看容器"><a href="#查看容器" class="headerlink" title="查看容器"></a>查看容器</h1><p>查看运行中的容器：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker ps</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker container ls</span></span><br></pre></td></tr></table></figure></p>
+<p>查看所有容器（停止+运行中）：<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># docker ps -a</span></span><br><span class="line">[root@wx ~]<span class="comment"># docker container ls -a</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="终止、启动和重启容器"><a href="#终止、启动和重启容器" class="headerlink" title="终止、启动和重启容器"></a>终止、启动和重启容器</h1><p>通过指定某个容器的ID进行终止：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker container stop container_id</span></span><br></pre></td></tr></table></figure></p>
+<p>在运行的容器中直接进行终止：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># exit</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># Ctrl+d</span></span><br></pre></td></tr></table></figure></p>
+<p>终止后再次启动容器：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker container start container_id</span></span><br></pre></td></tr></table></figure></p>
+<p>重新启动容器：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker container restart container_id</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h1><p>① <code>exec</code> 命令（推荐）：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker exec -it container_id bash</span></span><br><span class="line">[root<span class="symbol">@2ce67b15dbbd</span> ~]<span class="meta">#</span></span><br></pre></td></tr></table></figure></p>
+<p>② <code>attach</code> 命令（不推荐）:<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker attach container_id</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="导出和导入"><a href="#导出和导入" class="headerlink" title="导出和导入"></a>导出和导入</h1><p>导出容器快照到本地文件：<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES</span><br><span class="line"><span class="number">2</span>ce67b15dbbd lnmp:v1 <span class="string">"/bin/bash"</span> <span class="number">17</span> minutes ago Up <span class="number">8</span> minutes hungry_beaver</span><br><span class="line">[root@wx ~]<span class="comment"># docker export 2ce67b15dbbd &gt; lnmp.tar</span></span><br></pre></td></tr></table></figure></p>
+<p>导入一个容器快照到本地镜像库:<br><figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# cat lnmp.tar | docker <span class="keyword">import</span> - <span class="keyword">import</span>/lnmp:v1<span class="number">.0</span></span><br><span class="line">sha256:fe2ffdf273e57a910db98555f36**********db2efa7d2bbbe9d2a8020f46</span><br><span class="line">[root@wx ~]# docker images</span><br><span class="line">REPOSITORY TAG IMAGE ID CREATED SIZE</span><br><span class="line"><span class="keyword">import</span>/lnmp v1<span class="number">.0</span> fe2ffdf273e5 <span class="number">2</span> minutes ago <span class="number">637</span>MB</span><br><span class="line">lnmp v1 ffdafb6c807c <span class="number">17</span> hours ago <span class="number">795</span>MB</span><br></pre></td></tr></table></figure></p>
+<p>通过指定 URL 或者某个目录来导入：<br><figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# docker <span class="keyword">import</span> http:<span class="comment">//example.com/exampleimage.tgz example/imagerepo</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h1><p>删除处于终止状态的某个容器：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker container rm container_id</span></span><br></pre></td></tr></table></figure></p>
+<p>删除处于运行中的某个容器：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker container rm -f container_id</span></span><br></pre></td></tr></table></figure>
+<p>删除所有处于终止状态的多个容器：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@wx ~</span>]<span class="meta"># docker container prune</span></span><br><span class="line">WARNING! This will <span class="keyword">remove</span> all stopped containers.</span><br><span class="line">Are you sure you want to <span class="keyword">continue</span>? [y/N] y</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>prune 意思为删除、减少</p>
+</blockquote>
+<h1 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h1><p>镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，<code>Docker Registry</code>就是这样的服务。</p>
+<blockquote>
+<p><a href="https://hub.docker.com/" target="_blank" rel="noopener">官方Docker Hub</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://hub.docker.com/r/wangxiong/" target="_blank" rel="noopener">我的Docker Hub</a></p>
+</blockquote>
+<h2 id="Docker-Hub"><a href="#Docker-Hub" class="headerlink" title="Docker Hub"></a>Docker Hub</h2><p><a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker Hub </a>是 Docker 官方维护的一个公共仓库。大部分需求都可以通过在 <code>Docker Hub</code>中直接下载镜像来实现。</p>
+<h3 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h3><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# docker login</span><br><span class="line">Login <span class="keyword">with</span> your Docker ID <span class="keyword">to</span> push <span class="keyword">and</span> pull images from Docker Hub. <span class="keyword">If</span> you don<span class="symbol">'t</span> have a Docker ID, head over <span class="keyword">to</span> https://hub.docker.com <span class="keyword">to</span> create one.</span><br><span class="line">Username: wangxiong</span><br><span class="line">Password:</span><br><span class="line"><span class="literal">WARNING</span>! Your password will be stored unencrypted <span class="keyword">in</span> /root/.docker/config.json.</span><br><span class="line">Configure a credential helper <span class="keyword">to</span> remove this <span class="literal">warning</span>. See</span><br><span class="line">https://docs.docker.com/engine/reference/commandline/login/#credentials-store</span><br><span class="line">Login Succeeded</span><br></pre></td></tr></table></figure>
+<h3 id="退出"><a href="#退出" class="headerlink" title="退出"></a>退出</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># docker logout</span></span><br><span class="line">Removing login credentials <span class="keyword">for</span> https:<span class="regexp">//i</span>ndex.docker.io<span class="regexp">/v1/</span></span><br></pre></td></tr></table></figure>
+<h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker search wangxiong</span></span><br><span class="line">NAME DESCRIPTION STARS OFFICIAL AUTOMATED</span><br><span class="line">wangxiong/lnmp 利用Dockfile 定制的LNMP镜像 <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h3><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker pull wangxiong/lnmp</span></span><br></pre></td></tr></table></figure>
+<h3 id="推送镜像"><a href="#推送镜像" class="headerlink" title="推送镜像"></a>推送镜像</h3><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker tag lnmp:v1 wangxiong/lnmp:v1.0</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker images</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker push wangxiong/lnmp:v1.0</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker search wangxiong/lnmp</span></span><br></pre></td></tr></table></figure>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2018/02/04/2018/2018-02-01-docker-02/" rel="next" title="【Docker 02】Docker 安装(CentOS)">
+                <i class="fa fa-chevron-left"></i> 【Docker 02】Docker 安装(CentOS)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2018/07/04/2018/2018-07-04-php-operation-mode/" rel="prev" title="PHP的运行模式">
+                PHP的运行模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#镜像"><span class="nav-number">1.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于镜像文件"><span class="nav-number">1.1.</span> <span class="nav-text">关于镜像文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取新的镜像"><span class="nav-number">1.2.</span> <span class="nav-text">获取新的镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列出镜像列表"><span class="nav-number">1.3.</span> <span class="nav-text">列出镜像列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除镜像文件"><span class="nav-number">1.4.</span> <span class="nav-text">删除镜像文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像体积"><span class="nav-number">1.5.</span> <span class="nav-text">镜像体积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用镜像运行容器"><span class="nav-number">1.6.</span> <span class="nav-text">使用镜像运行容器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器"><span class="nav-number">2.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建和运行"><span class="nav-number">2.1.</span> <span class="nav-text">创建和运行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看容器"><span class="nav-number">3.</span> <span class="nav-text">查看容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#终止、启动和重启容器"><span class="nav-number">4.</span> <span class="nav-text">终止、启动和重启容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#进入容器"><span class="nav-number">5.</span> <span class="nav-text">进入容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#导出和导入"><span class="nav-number">6.</span> <span class="nav-text">导出和导入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#删除容器"><span class="nav-number">7.</span> <span class="nav-text">删除容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#仓库"><span class="nav-number">8.</span> <span class="nav-text">仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Hub"><span class="nav-number">8.1.</span> <span class="nav-text">Docker Hub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#登录"><span class="nav-number">8.1.1.</span> <span class="nav-text">登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#退出"><span class="nav-number">8.1.2.</span> <span class="nav-text">退出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索"><span class="nav-number">8.1.3.</span> <span class="nav-text">搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉取镜像"><span class="nav-number">8.1.4.</span> <span class="nav-text">拉取镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推送镜像"><span class="nav-number">8.1.5.</span> <span class="nav-text">推送镜像</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
