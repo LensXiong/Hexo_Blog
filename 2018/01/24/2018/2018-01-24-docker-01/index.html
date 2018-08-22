@@ -87,10 +87,12 @@
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：Docker是基于Go语言实现的云开源项目，是全球领先的软件容器平台。Docker的理念是Build, Manage and Secure Your Apps Anywhere. Your Way，它可以做到一次封装，多处运行。Docker解决了运行环境和配置问题软件容器，方便做持续集成并有助于整体发布的容器虚拟化技术。本篇文章从基本相关概念延伸出发，介绍了传统虚拟机技术和容器虚拟化技术，通">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-22T13:05:03.882Z">
+<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/docker-01/docker-01.png">
+<meta property="og:updated_time" content="2018-08-22T13:16:09.469Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Docker 01】容器技术之星 Docker，为你而来">
 <meta name="twitter:description" content="摘要：Docker是基于Go语言实现的云开源项目，是全球领先的软件容器平台。Docker的理念是Build, Manage and Secure Your Apps Anywhere. Your Way，它可以做到一次封装，多处运行。Docker解决了运行环境和配置问题软件容器，方便做持续集成并有助于整体发布的容器虚拟化技术。本篇文章从基本相关概念延伸出发，介绍了传统虚拟机技术和容器虚拟化技术，通">
+<meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/docker-01/docker-01.png">
 
 
 
@@ -332,9 +334,11 @@
       
 
       
-        <p><strong><br>摘要：<code>Docker</code>是基于<code>Go</code>语言实现的云开源项目，是全球领先的软件容器平台。<code>Docker</code>的理念是<code>Build, Manage and Secure Your Apps Anywhere. Your Way</code>，它可以做到<code>一次封装，多处运行</code>。<code>Docker</code>解决了运行环境和配置问题软件容器，方便做持续集成并有助于整体发布的容器虚拟化技术。本篇文章从基本相关概念延伸出发，介绍了传统虚拟机技术和容器虚拟化技术，通过自身在实际工作的痛点出发，介绍了<code>Docker</code>是什么，面向开发、运维及企业在实际中<code>Docker</code>的用途，也详细描述了<code>Docker</code>的一些优势。后续的文章中也会陆续发布自己在学习<code>Docker</code>过程中的一些思考和感悟。
+        <p><strong><br>摘要：<code>Docker</code>是基于<code>Go</code>语言实现的云开源项目，是全球领先的软件容器平台。<code>Docker</code>的理念是<code>Build, Manage and Secure Your Apps Anywhere. Your Way</code>，它可以做到<code>一次封装，多处运行</code>。<code>Docker</code>解决了运行环境和配置问题软件容器，方便做持续集成并有助于整体发布的容器虚拟化技术。本篇文章从基本相关概念延伸出发，介绍了传统虚拟机技术和容器虚拟化技术，通过自身在实际工作的痛点出发，介绍了<code>Docker</code>是什么，面向开发、运维及企业在实际中<code>Docker</code>的用途，也详细描述了<code>Docker</code>的一些优势。后续的文章中也会陆续发布自己在学习<code>Docker</code>过程中的一些思考和感悟。<br><img src="/hexo_blog/img/article/docker-01/docker-01.png" alt="">
 </strong><br><a id="more"></a></p>
 <the rest="" of="" contents="" |="" 余下全文="">
+
+
 
 <h1 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h1><h2 id="传统虚拟机技术"><a href="#传统虚拟机技术" class="headerlink" title="传统虚拟机技术"></a>传统虚拟机技术</h2><p>虚拟机（<code>virtual machine</code>）是带环境安装的一种解决方案。</p>
 <p>它可以在一种操作系统里面运行另一种操作系统，比如在<code>Windows</code>系统里面运行<code>Linux</code>系统。应用程序对此毫无感知，因为虚拟机看上去跟真实系统一模一样，而对于底层系统来说，虚拟机就是一个普通文件，不需要了就删掉，对其他部分毫无影响。这类虚拟机完美的运行了另一套系统，能够使得应用程序，操作系统和硬件三者的逻辑不变。</p>
