@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：在前面学习Docker的过程中，你已经会使用Dockerfile定制镜像文件，但是如何实现宿主机与容器之间数据的共享和同步，容器与容器之间又如何进行数据的共享？为了解决这个问题，Docker官方提出了数据卷这个概念。本篇文章主要介绍了数据卷的定义、特点和作用，并介绍如何挂载数据卷到容器、挂载宿主目录到容器以及容器间如何传递共享数据。">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Docker 05】Docker 容器数据卷">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2018/07/18/2018/2018-07-18-docker-05/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：在前面学习Docker的过程中，你已经会使用Dockerfile定制镜像文件，但是如何实现宿主机与容器之间数据的共享和同步，容器与容器之间又如何进行数据的共享？为了解决这个问题，Docker官方提出了数据卷这个概念。本篇文章主要介绍了数据卷的定义、特点和作用，并介绍如何挂载数据卷到容器、挂载宿主目录到容器以及容器间如何传递共享数据。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-29T09:21:45.950Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Docker 05】Docker 容器数据卷">
+<meta name="twitter:description" content="摘要：在前面学习Docker的过程中，你已经会使用Dockerfile定制镜像文件，但是如何实现宿主机与容器之间数据的共享和同步，容器与容器之间又如何进行数据的共享？为了解决这个问题，Docker官方提出了数据卷这个概念。本篇文章主要介绍了数据卷的定义、特点和作用，并介绍如何挂载数据卷到容器、挂载宿主目录到容器以及容器间如何传递共享数据。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2018/07/18/2018/2018-07-18-docker-05/"/>
+
+
+
+
+
+  <title>【Docker 05】Docker 容器数据卷 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2018/07/18/2018/2018-07-18-docker-05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Docker 05】Docker 容器数据卷</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-18T06:02:24+08:00">
+                2018-07-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：在前面学习<code>Docker</code>的过程中，你已经会使用<code>Dockerfile</code>定制镜像文件，但是如何实现宿主机与容器之间数据的共享和同步，容器与容器之间又如何进行数据的共享？为了解决这个问题，<code>Docker</code>官方提出了数据卷这个概念。本篇文章主要介绍了数据卷的定义、特点和作用，并介绍如何挂载数据卷到容器、挂载宿主目录到容器以及容器间如何传递共享数据。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+
+<h1 id="数据卷的定义"><a href="#数据卷的定义" class="headerlink" title="数据卷的定义"></a>数据卷的定义</h1><p>先来看看<code>Docker</code>的理念：</p>
+<ul>
+<li>将应用与运行的环境打包形成容器运行，运行可以伴随着容器，但是我们对数据的要求希望是持久化的</li>
+<li>容器之间希望有可能共享数据</li>
+</ul>
+<p><code>Docker</code>容器产生的数据，如果不通过<code>docker commit</code>生成新的镜像，使得数据作为镜像的一部分保存下来，那么当容器删除后，数据也就消失了。</p>
+<blockquote>
+<p>如何保存<code>Docker</code>容器中的数据呢？</p>
+</blockquote>
+<p>为了保存<code>Docker</code>容器中的数据，这里需要引入卷这个概念。</p>
+<p>卷通俗来讲，就是我们所谓的目录或文件。卷存在于一个或多个容器中，由<code>Docker</code>挂载到容器，但不属于联合文件系统，因此能绕过<code>Union File System</code>提供一些用于持续存储或共享数据的特性。</p>
+<p>卷的设计目的就是数据持久化，完全独立于容器的生存周期，因此Docker不会在容器删除其挂载的数据卷。</p>
+<h1 id="数据卷的特点"><a href="#数据卷的特点" class="headerlink" title="数据卷的特点"></a>数据卷的特点</h1><ul>
+<li>数据卷可在容器之间共享或重用数据</li>
+<li>卷中的更改可以直接生效</li>
+<li>数据卷中的更改不会包含在镜像的更新中</li>
+<li>数据券的生命周期一直持续到没有容器使用它为止</li>
+</ul>
+<h1 id="数据卷的作用"><a href="#数据卷的作用" class="headerlink" title="数据卷的作用"></a>数据卷的作用</h1><p>主要解决的问题：</p>
+<ul>
+<li>容器的持久化</li>
+<li>容器间继承+共享数据</li>
+</ul>
+<h1 id="数据管理"><a href="#数据管理" class="headerlink" title="数据管理"></a>数据管理</h1><p>容器和宿主之间不仅实现数据共享，当容器停止退出后，宿主机修改数据后依然可以实现数据同步。</p>
+<h2 id="挂载数据卷到容器"><a href="#挂载数据卷到容器" class="headerlink" title="挂载数据卷到容器"></a>挂载数据卷到容器</h2><p>创建并查看第一个数据卷：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> website]<span class="meta"># docker volume create wangxiong-vol</span></span><br><span class="line">wangxiong-vol</span><br><span class="line">[root<span class="symbol">@wx</span> website]<span class="meta"># docker volume ls</span></span><br><span class="line">DRIVER VOLUME NAME</span><br><span class="line"><span class="keyword">local</span> wangxiong-vol</span><br></pre></td></tr></table></figure></p>
+<p>在宿主机里使用以下命令可以查看指定数据卷的信息：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@wx website</span>]<span class="meta"># docker volume inspect wangxiong-vol</span></span><br><span class="line">[<span class="meta"></span></span><br><span class="line"><span class="meta">    &#123;</span></span><br><span class="line"><span class="meta">        <span class="meta-string">"Driver"</span>: <span class="meta-string">"local"</span>,</span></span><br><span class="line"><span class="meta">        <span class="meta-string">"Labels"</span>: &#123;&#125;,</span></span><br><span class="line"><span class="meta">        <span class="meta-string">"Mountpoint"</span>: <span class="meta-string">"/var/lib/docker/volumes/wangxiong-vol/_data"</span>,</span></span><br><span class="line"><span class="meta">        <span class="meta-string">"Name"</span>: <span class="meta-string">"wangxiong-vol"</span>,</span></span><br><span class="line"><span class="meta">        <span class="meta-string">"Options"</span>: &#123;&#125;,</span></span><br><span class="line"><span class="meta">        <span class="meta-string">"Scope"</span>: <span class="meta-string">"local"</span></span></span><br><span class="line"><span class="meta">    &#125;</span></span><br><span class="line"><span class="meta"></span>]</span><br></pre></td></tr></table></figure></p>
+<p>启动一个新的容器<code>lnmp</code>，并挂载刚才创建的数据卷：<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -it -P \</span><br><span class="line">-<span class="ruby">-name lnmp \</span></span><br><span class="line"><span class="ruby">--mount source=wangxiong-vol,target=<span class="regexp">/usr/local</span><span class="regexp">/nginx/html</span> \</span></span><br><span class="line"><span class="ruby">wangxiong/centos7-lnmp-laravel5.<span class="number">5</span><span class="symbol">:v1</span>.<span class="number">0</span> \</span></span><br><span class="line"><span class="ruby">bash</span></span><br></pre></td></tr></table></figure></p>
+<p>查看此时<code>lnmp</code>容器的数据卷信息：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> website]<span class="meta"># docker inspect lnmp</span></span><br><span class="line"><span class="string">"Mounts"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"Type"</span>: <span class="string">"volume"</span>,</span><br><span class="line">                <span class="string">"Name"</span>: <span class="string">"wangxiong-vol"</span>,</span><br><span class="line">                <span class="string">"Source"</span>: <span class="string">"/var/lib/docker/volumes/wangxiong-vol/_data"</span>,</span><br><span class="line">                <span class="string">"Destination"</span>: <span class="string">"/usr/local/nginx/html"</span>,</span><br><span class="line">                <span class="string">"Driver"</span>: <span class="string">"local"</span>,</span><br><span class="line">                <span class="string">"Mode"</span>: <span class="string">"z"</span>,</span><br><span class="line">                <span class="string">"RW"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"Propagation"</span>: <span class="string">""</span></span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure></p>
+<p>数据卷是被设计用来持久化数据的，它的生命周期独立于容器，<code>Docker</code> 不会在容器被删除后自动删除 数据卷，并且也不存在垃圾回收这样的机制来处理没有任何容器引用的 数据卷。</p>
+<p>如果需要在删除容器的同时移除数据卷，可以在删除容器的时候使用 <code>docker rm -v</code>这个命令。<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> website]<span class="meta"># docker volume rm wangxiong-vol</span></span><br><span class="line">wangxiong-vol</span><br></pre></td></tr></table></figure></p>
+<p>使用以下命令清理无主的容器卷：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> website]<span class="meta"># docker volume prune</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="挂载宿主目录到容器"><a href="#挂载宿主目录到容器" class="headerlink" title="挂载宿主目录到容器"></a>挂载宿主目录到容器</h2><p>使用 <code>--mount</code>标记可以指定挂载一个本地主机的目录到容器中去。</p>
+<p>拉取镜像：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker pull wangxiong/centos7-lnmp-laravel5.5:v1.0</span></span><br></pre></td></tr></table></figure></p>
+<p>查看镜像名称：<br><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY <span class="keyword">TAG</span> <span class="title">IMAGE</span> ID CREATED SIZE</span><br><span class="line">wangxiong/centos7-lnmp-laravel5.<span class="number">5</span> v1.<span class="number">0</span> c6b04a388927 About an hour ago <span class="number">899M</span>B</span><br></pre></td></tr></table></figure></p>
+<p>使用命令运行容器并添加容器卷：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">run</span><span class="bash"> -d -it -P \</span></span><br><span class="line"><span class="bash"> --name lnmp \</span></span><br><span class="line"><span class="bash"> --mount <span class="built_in">type</span>=<span class="built_in">bind</span>,<span class="built_in">source</span>=/wdata/www/website,target=/usr/<span class="built_in">local</span>/nginx/html,<span class="built_in">readonly</span> \</span></span><br><span class="line"><span class="bash"> wangxiong/centos7-lnmp-laravel5.5:v1.0 \</span></span><br><span class="line"><span class="bash"> bash</span></span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docker run</td>
+<td>运行容器的命令</td>
+</tr>
+<tr>
+<td>-d(daemonized)</td>
+<td>守护态运行，在后台运行</td>
+</tr>
+<tr>
+<td>-i (interactive)</td>
+<td>交互式操作</td>
+</tr>
+<tr>
+<td>-t (terminal)</td>
+<td>终端</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>指定端口映射</td>
+</tr>
+<tr>
+<td>-P</td>
+<td>随机映射一个 49000~49900 的端口</td>
+</tr>
+<tr>
+<td>–name</td>
+<td>容器名称</td>
+</tr>
+<tr>
+<td>–mount</td>
+<td>挂载</td>
+</tr>
+<tr>
+<td>type</td>
+<td>类型</td>
+</tr>
+<tr>
+<td>source</td>
+<td>宿主机目录</td>
+</tr>
+<tr>
+<td>target</td>
+<td>目标目录，容器中目录</td>
+</tr>
+<tr>
+<td>readonly</td>
+<td>只读权限</td>
+</tr>
+<tr>
+<td>wangxiong/centos7-lnmp-laravel5.5:v1.0</td>
+<td>镜像名:标签</td>
+</tr>
+</tbody>
+</table>
+<p>查看数据卷是否挂载成功：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker inspect lnmp</span></span><br><span class="line"> <span class="string">"Mounts"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"Type"</span>: <span class="string">"bind"</span>,</span><br><span class="line">                <span class="string">"Source"</span>: <span class="string">"/wdata/www/website"</span>,</span><br><span class="line">                <span class="string">"Destination"</span>: <span class="string">"/usr/local/nginx/html"</span>,</span><br><span class="line">                <span class="string">"Mode"</span>: <span class="string">""</span>,</span><br><span class="line">                <span class="string">"RW"</span>: <span class="literal">false</span>,</span><br><span class="line">                <span class="string">"Propagation"</span>: <span class="string">"rprivate"</span></span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure>
+<p>带权限设置数据卷，宿主机单线读写权限，容器中只可读权限，以下为使用命令挂载的两种写法：</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-<span class="ruby">-mount type=bind,source=<span class="regexp">/wdata/www</span><span class="regexp">/website,target=/usr</span><span class="regexp">/local/nginx</span><span class="regexp">/html,readonly</span></span></span><br><span class="line"><span class="ruby">-v /wdata/www/<span class="symbol">website:</span>/usr/local/nginx/<span class="symbol">html:</span>ro</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注：<code>--mount</code>也可以换成<code>-v</code>,区别在于使用<code>-v</code> 参数时，如果本地目录不存在<code>Docker</code> 会自动为你创建一个文件夹，现在使用 <code>--mount</code>参数时如果本地目录不存在，<code>Docker</code> 会报错。</p>
+</blockquote>
+<h2 id="容器间传递共享"><a href="#容器间传递共享" class="headerlink" title="容器间传递共享"></a>容器间传递共享</h2><p>使用<code>--volumes-from</code>参数，重新运行一个新的容器<code>lnmp02</code>，将之前的容器<code>lnmp</code>的数据同步共享过来：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -<span class="literal">it</span> -P <span class="string">\</span></span><br><span class="line">--name lnmp02 <span class="string">\</span></span><br><span class="line">--volumes-<span class="keyword">from</span> lnmp <span class="string">\</span></span><br><span class="line">wangxiong/centos7-lnmp-laravel5.<span class="number">5</span>:v1.<span class="number">0</span> <span class="string">\</span></span><br><span class="line">bash</span><br></pre></td></tr></table></figure>
+<p>查看数据卷是否挂载成功：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># docker inspect lnmp02</span></span><br><span class="line"> <span class="string">"Mounts"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"Type"</span>: <span class="string">"volume"</span>,</span><br><span class="line">                <span class="string">"Name"</span>: <span class="string">"wangxiong-vol"</span>,</span><br><span class="line">                <span class="string">"Source"</span>: <span class="string">"/var/lib/docker/volumes/wangxiong-vol/_data"</span>,</span><br><span class="line">                <span class="string">"Destination"</span>: <span class="string">"/usr/local/nginx/html"</span>,</span><br><span class="line">                <span class="string">"Driver"</span>: <span class="string">"local"</span>,</span><br><span class="line">                <span class="string">"Mode"</span>: <span class="string">""</span>,</span><br><span class="line">                <span class="string">"RW"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"Propagation"</span>: <span class="string">""</span></span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure></p>
+<p>即使删除容器<code>lnmp</code>，容器<code>lnmp02</code>也不会影响其正常使用。</p>
+<p>容器之间配置信息的传递，数据卷的生命周期一直持续到没有容器使用它为止。</p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2018/07/04/2018/2018-07-04-php-operation-mode/" rel="next" title="PHP的运行模式">
+                <i class="fa fa-chevron-left"></i> PHP的运行模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据卷的定义"><span class="nav-number">1.</span> <span class="nav-text">数据卷的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据卷的特点"><span class="nav-number">2.</span> <span class="nav-text">数据卷的特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据卷的作用"><span class="nav-number">3.</span> <span class="nav-text">数据卷的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据管理"><span class="nav-number">4.</span> <span class="nav-text">数据管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载数据卷到容器"><span class="nav-number">4.1.</span> <span class="nav-text">挂载数据卷到容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载宿主目录到容器"><span class="nav-number">4.2.</span> <span class="nav-text">挂载宿主目录到容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器间传递共享"><span class="nav-number">4.3.</span> <span class="nav-text">容器间传递共享</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
