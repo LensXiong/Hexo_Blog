@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="队列," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：当系统中出现“生产”和“消费”的速度或稳定性等因素不一致的时候，就需要消息队列，作为抽象层，弥合双方的差异。消息队列（Message Queue，简称MQ）是在消息的传输过程中保存消息的容器。本篇文章从项目实际需求出发，介绍使用消息队列的原因？消息队列的应用场景有哪些？并引申出队列系统的概念，以Redis作为存储队列， PHP-Resque作为队列系统为例，介绍了相关组件PHP 的 Redi">
+<meta name="keywords" content="队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【PHP-Resque】基于Redis的消息队列">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2018/05/22/2018/2018-05-22-php-redis-queue/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：当系统中出现“生产”和“消费”的速度或稳定性等因素不一致的时候，就需要消息队列，作为抽象层，弥合双方的差异。消息队列（Message Queue，简称MQ）是在消息的传输过程中保存消息的容器。本篇文章从项目实际需求出发，介绍使用消息队列的原因？消息队列的应用场景有哪些？并引申出队列系统的概念，以Redis作为存储队列， PHP-Resque作为队列系统为例，介绍了相关组件PHP 的 Redi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/php-redis-queue/php-redis-queue.png">
+<meta property="og:updated_time" content="2018-09-05T05:02:56.984Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【PHP-Resque】基于Redis的消息队列">
+<meta name="twitter:description" content="摘要：当系统中出现“生产”和“消费”的速度或稳定性等因素不一致的时候，就需要消息队列，作为抽象层，弥合双方的差异。消息队列（Message Queue，简称MQ）是在消息的传输过程中保存消息的容器。本篇文章从项目实际需求出发，介绍使用消息队列的原因？消息队列的应用场景有哪些？并引申出队列系统的概念，以Redis作为存储队列， PHP-Resque作为队列系统为例，介绍了相关组件PHP 的 Redi">
+<meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/php-redis-queue/php-redis-queue.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2018/05/22/2018/2018-05-22-php-redis-queue/"/>
+
+
+
+
+
+  <title>【PHP-Resque】基于Redis的消息队列 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2018/05/22/2018/2018-05-22-php-redis-queue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【PHP-Resque】基于Redis的消息队列</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-22T09:02:24+08:00">
+                2018-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：当系统中出现“生产”和“消费”的速度或稳定性等因素不一致的时候，就需要消息队列，作为抽象层，弥合双方的差异。消息队列（<code>Message Queue</code>，简称MQ）是在消息的传输过程中保存消息的容器。本篇文章从项目实际需求出发，介绍使用消息队列的原因？消息队列的应用场景有哪些？并引申出队列系统的概念，以<code>Redis</code>作为存储队列， <code>PHP-Resque</code>作为队列系统为例，介绍了相关组件<code>PHP</code> 的 <code>Redis</code> 扩展(<code>PHP-Redis</code>)的安装、 <code>PCNTL</code> 扩展的安装和补救方法，最后对队列系统最重要的<code>Job</code>任务、<code>Queue</code>队列、<code>Worker</code>执行者做了简单讲解。<br><img src="/hexo_blog/img/article/php-redis-queue/php-redis-queue.png" alt="">
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="什么是消息队列"><a href="#什么是消息队列" class="headerlink" title="什么是消息队列?"></a>什么是消息队列?</h1><blockquote>
+<p>什么是消息？<br>消息是在两台计算机间传送的数据单位。消息可以非常简单，例如只包含文本字符串；也可以更复杂，可能包含嵌入对象。 消息被发送到队列中。</p>
+</blockquote>
+<blockquote>
+<p>什么是消息队列？</p>
+</blockquote>
+<p>消息队列（<code>Message Queue</code>，简称<code>MQ</code>），从字面意思上看，本质是个队列，<code>FIFO</code>先入先出，只不过队列中存放的内容是<code>Message</code>而已。实质上，<code>MQ</code>是在消息的传输过程中保存消息的容器。</p>
+<blockquote>
+<p>消息队列管理器扮演的什么角色？</p>
+</blockquote>
+<p>消息队列管理器在将消息从它的源中继到它的目标时充当中间人。</p>
+<h1 id="为什么要使用消息队列"><a href="#为什么要使用消息队列" class="headerlink" title="为什么要使用消息队列?"></a>为什么要使用消息队列?</h1><p>在实际的开发中，你一定会遇到下面的问题：</p>
+<blockquote>
+<p>后台系统中需要导出成百上千万条的用户数据如何处理。</p>
+</blockquote>
+<blockquote>
+<p>某个项目放款时需要给成百上千个用户生成合同文件。</p>
+</blockquote>
+<blockquote>
+<p>用户注册时，需要发送注册成功的邮件，注册短信通知，平台系统操作指南，发送红包和加息券，如果是好友邀请还会发送好友奖励，分析个人信息用来做推荐使用，等等。</p>
+</blockquote>
+<p>当系统中出现“生产“和“消费“的速度或稳定性等因素不一致的时候，就需要消息队列，作为抽象层，弥合双方的差异。</p>
+<p>一般服务器都有设置执行的超时时间，使用<code>PHP</code>去完成一些比较耗时的后台操作就会出现超时问题。</p>
+<p>任务处理类的系统，都可以把用户发起的任务请求接收过来存到消息队列中，然后后端开启多个应用程序从队列中取任务进行处理。</p>
+<p>对于用户注册而言，服务端添加用户的基本信息后，用户就可以登录进去做自己想做的事情，不需要一直等到所有业务都处理才可以进入系统。</p>
+<p>至于其他的事情，非要在这一次请求中全部完成么？值得用户浪费时间等你处理这些对他来说无关紧要的事情么？所以实际当第一步做完后，服务端就可以把其他的操作放入对应的消息队列中然后马上返回用户结果，由消息队列异步的进行这些操作。</p>
+<p>消息队列在生活中随处可见：</p>
+<blockquote>
+<p>假如你去商场中排队买奶茶，你只需要告诉店家你需要的奶茶并付款后，你便可以离开队伍，去旁边买热狗，逛花店，买电影票。之后根据等位号码回来取走你要的奶茶即可。这样，你不需要花费自己的时间排在队伍中一直等待，你可以做很多你想做的事情。</p>
+</blockquote>
+<h1 id="使用消息队列的应用场景"><a href="#使用消息队列的应用场景" class="headerlink" title="使用消息队列的应用场景"></a>使用消息队列的应用场景</h1><ul>
+<li>异步处理：非核心流程异步化，提高系统响应性能。</li>
+<li>应用解耦：消息发送者的成功不依赖消息接受者（比如有些银行接口不稳定，但调用方并不需要依赖这些接口）。</li>
+<li>广播：只需要关心消息是否送达了队列，至于谁希望订阅，是下游的事情。</li>
+<li>流量削峰：通过异步处理，将短时间高并发产生的事务消息存储在消息队列中，从而削平高峰期的并发事务。</li>
+<li>日志处理：将消息队列用在日志处理中，比如Kafka的应用，解决大量日志传输的问题。</li>
+<li>消息通讯：消息队列一般都内置了高效的通信机制，因此也可以用于单纯的消息通讯，比如实现点对点消息队列或者聊天室等。</li>
+</ul>
+<h1 id="什么是队列系统？"><a href="#什么是队列系统？" class="headerlink" title="什么是队列系统？"></a>什么是队列系统？</h1><p>一个队列系统包含以下三个部分：</p>
+<ul>
+<li><p>Job任务：负责处理对应事件的逻辑，比如合同文件的生成。在<code>Resque</code>中一个<code>Job</code>就是一个<code>Class</code>。</p>
+</li>
+<li><p>Queue队列：负责<code>Job</code>的存取，<code>Queue</code>队列基于<code>Redis</code>来实现。<code>Resque</code>提供了一个简单的队列管理器，可以实现将<code>Job</code>插入/取出队列等功能。</p>
+</li>
+<li><p>Worker执行者：<code>Worker</code>常驻内存，循环<code>POP</code>队列中的服务。从<code>Queue</code>中取<code>Job</code>来执行，实时监听队列中有无<code>Job</code>，在<code>CLI</code>模式下以后台守护方式运行。</p>
+</li>
+</ul>
+<p>具体的实现流程如下：</p>
+<ul>
+<li>将一个后台任务编写为一个独立的<code>Class</code>，这个<code>Class</code>就是一个<code>Job</code>。</li>
+<li>在需要使用后台程序的地方，系统将<code>Job Class</code>的名称以及所需参数放入队列。</li>
+<li>以命令行方式开启一个<code>Worker</code>，并通过参数指定<code>Worker</code>所需要处理的队列。</li>
+<li><code>Worker</code>作为守护进程运行，并且定时检查队列。</li>
+<li>当队列中有<code>Job</code>时，<code>Worker</code>取出<code>Job</code>并运行，即实例化<code>Job Class</code>并执行<code>Class</code>中的方法。</li>
+</ul>
+<p>满足任务队列系统的条件：</p>
+<ul>
+<li>必须有一个队列类型的数据结构，支持推送和拉取任务。</li>
+<li>速度非常快</li>
+<li>可以实现多个服务端的共享</li>
+<li>支持数据持久化</li>
+</ul>
+<p>你可以选择满足以上条件的队列系统，或使用第三方的程序，像<code>RabbitMQ</code>、<code>Gearman</code>、<code>Redis</code> 等。</p>
+<p>本篇文章将会使用 <code>Redis</code>存储队列，并且使用 <code>PHP-Resque</code>作为队列系统。</p>
+<p><code>Resque</code>是开源在 <code>Github</code> 上的一个使用 <code>Ruby</code> 编写的队列系统，<code>PHP-Resque</code> 是 <code>Resque</code> 的 <code>PHP</code> 版本。</p>
+<h1 id="安装-PHP-Resque"><a href="#安装-PHP-Resque" class="headerlink" title="安装 PHP-Resque"></a>安装 PHP-Resque</h1><p><code>PHP-Resque</code> 是依赖 <code>Redis</code> 的，所以需要先安装 <code>Redis</code> 及 <code>PHP</code> 的 <code>Redis</code> 扩展。<br>以下是所有需要安装的组件：</p>
+<ul>
+<li><a href="https://redis.io/" target="_blank" rel="noopener">Redis</a></li>
+<li><a href="https://github.com/phpredis/phpredis/releases" target="_blank" rel="noopener">PHP 的 Redis 扩展(PHP-Redis)</a></li>
+<li><a href="http://www.php.net/downloads.php" target="_blank" rel="noopener">PHP 的 PCNTL 扩展</a></li>
+<li><a href="https://github.com/chrisboulton/php-resque" target="_blank" rel="noopener">PHP-Resque</a></li>
+</ul>
+<h2 id="安装-Redis"><a href="#安装-Redis" class="headerlink" title="安装 Redis"></a>安装 Redis</h2><p><code>REmote DIctionary Server</code>(<code>Redis</code>) 是一个由<code>Salvatore Sanfilippo</code>写的<code>key-value</code>存储系统。</p>
+<p>它通常被称为数据结构服务器，因为值（<code>value</code>）可以是字符串(<code>String</code>), 哈希(<code>Map</code>), 列表(<code>list</code>), 集合(<code>sets</code>) 和有序集合(<code>sorted sets</code>)等类型。</p>
+<p>具体下载和安装文档可参考<a href="https://redis.io/download" target="_blank" rel="noopener">Redis官方网站</a>。</p>
+<p>安装命令：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># cd /usr/local/</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># tar xzf redis-4.0.11.tar.gz</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># cd redis-4.0.11</span></span><br><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># make</span></span><br></pre></td></tr></table></figure>
+<p>用以下命令启动<code>Redis</code>:</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># /usr/local/redis-4.0.7/src/redis-server</span></span><br></pre></td></tr></table></figure>
+<p>登录客户端查看<code>Redis</code>的守护进程配置:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]<span class="comment"># /usr/local/redis-4.0.7/src/redis-cli</span></span><br><span class="line"><span class="meta">127.0.0.1:6379&gt;</span>config get daemonize</span><br><span class="line"><span class="number">1</span>) <span class="string">"daemonize"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"no"</span></span><br></pre></td></tr></table></figure>
+<p>将<code>Redis</code>服务修改为守护进程在后台运行：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">[root@wx</span> <span class="string">~]#</span> <span class="string">vim</span> <span class="string">/usr/local/redis-4.0.11/redis.conf</span> <span class="number">136</span><span class="string">行</span> <span class="string">daemonize</span> <span class="literal">no</span> <span class="string">更改为</span> <span class="string">daemonize</span> <span class="literal">yes</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装-PHP-Redis-扩展"><a href="#安装-PHP-Redis-扩展" class="headerlink" title="安装 PHP-Redis 扩展"></a>安装 PHP-Redis 扩展</h2><p>具体安装过程可参考Github上<a href="https://github.com/phpredis/phpredis/blob/develop/INSTALL.markdown" target="_blank" rel="noopener">安装PHP-Redis说明</a>。</p>
+<h3 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h3><p>操作系统：<code>CentOS Linux release 7.5.1804 (Core)</code><br>phpize目录：<code>/usr/local/php7/bin/phpize</code><br>php安装目录：<code>/usr/local/php7</code><br>php.ini配置文件路径：<code>/usr/local/php7/etc/php.ini</code><br>php-config路径：<code>/usr/local/php7/bin/php-config</code><br>nginx安装目录：<code>/usr/local/nginx</code></p>
+<blockquote>
+<p><code>phpize</code>是用来扩展<code>php</code>扩展模块的，通过<code>phpize</code>可以建立<code>php</code>的外挂模块。比如你想在原来编译好的<code>php</code>中加入<code>memcached</code>或者<code>ImageMagick</code>等扩展模块，可以使用<code>phpize</code>。</p>
+</blockquote>
+<h3 id="安装编译工具"><a href="#安装编译工具" class="headerlink" title="安装编译工具"></a>安装编译工具</h3><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># yum install wget  make gcc gcc-c++ zlib-devel openssl openssl-devel pcre-devel kernel keyutils  patch perl</span></span><br></pre></td></tr></table></figure>
+<h3 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h3><p>相关版本可参见<a href="https://github.com/phpredis/phpredis/releases" target="_blank" rel="noopener">Github-PHP-Redis</a>:</p>
+<p>① 下载相关版本并解压进入到安装目录：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># wget https://github.com/phpredis/phpredis/archive/4.0.0.tar.gz</span></span><br><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># tar xzvf 4.0.0.tar.gz &amp;&amp; cd phpredis-4.0.0</span></span><br></pre></td></tr></table></figure>
+<p>② 用<code>phpize</code>生成<code>configure</code>配置文件并配置:</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wx phpredis-<span class="number">4</span><span class="variable">.0</span><span class="variable">.0</span>]# /usr/<span class="keyword">local</span>/php7/bin/phpize</span><br><span class="line">[root@wx phpredis-<span class="number">4</span><span class="variable">.0</span><span class="variable">.0</span>]# ./configure --<span class="keyword">with</span>-php-<span class="keyword">config</span>=/usr/<span class="keyword">local</span>/php7/bin/php-<span class="keyword">config</span></span><br></pre></td></tr></table></figure>
+<p>③  编译和安装：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> phpredis<span class="number">-4.0</span><span class="number">.0</span>]<span class="meta"># make &amp;&amp; make install</span></span><br></pre></td></tr></table></figure>
+<p>安装成功后会出现如下的安装路径：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Installing shared <span class="symbol">extensions:</span> /usr/local/php7/<span class="class"><span class="keyword">lib</span>/<span class="title">php</span>/<span class="title">extensions</span>/<span class="title">no</span>-<span class="title">debug</span>-<span class="title">zts</span>-20160303/</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置php支持"><a href="#配置php支持" class="headerlink" title="配置php支持"></a>配置php支持</h3><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> phpredis<span class="number">-4.0</span><span class="number">.0</span>]<span class="meta"># find / -name php.ini</span></span><br><span class="line">/usr/<span class="keyword">local</span>/php7/etc/php.ini</span><br><span class="line">[root<span class="symbol">@wx</span> phpredis<span class="number">-4.0</span><span class="number">.0</span>]<span class="meta"># echo <span class="string">'extension=redis.so'</span>  &gt;&gt;  /usr/local/php7/etc/php.ini</span></span><br></pre></td></tr></table></figure>
+<p>重启<code>php-fpm</code>:</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> phpredis<span class="number">-4.0</span><span class="number">.0</span>]<span class="meta"># killall php-fpm</span></span><br><span class="line">[root<span class="symbol">@wx</span> phpredis<span class="number">-4.0</span><span class="number">.0</span>]<span class="meta"># php-fpm</span></span><br><span class="line">[root<span class="symbol">@wx</span> phpredis<span class="number">-4.0</span><span class="number">.0</span>]<span class="meta"># php -m | grep redis</span></span><br><span class="line">redis</span><br></pre></td></tr></table></figure>
+<p>查看<code>phpinfo</code>信息，搜索<code>redis</code>即可看到到相应的扩展。</p>
+<h2 id="安装-PCNTL-扩展"><a href="#安装-PCNTL-扩展" class="headerlink" title="安装 PCNTL 扩展"></a>安装 PCNTL 扩展</h2><h3 id="编译时添加"><a href="#编译时添加" class="headerlink" title="编译时添加"></a>编译时添加</h3><p>在<code>PHP</code>中进程控制支持默认是关闭的。您需要使用 <code>--enable-pcntl</code> 配置选项重新编译<code>PHP</code>的<code>CGI</code>或<code>CLI</code>版本以打开进程控制支持。</p>
+<figure class="highlight flix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# './configure<span class="string">' '</span>--prefix=/usr/local/php7<span class="string">' '</span>--<span class="keyword">with</span>-config-file-path=/usr/local/php7/etc<span class="string">' '</span>--<span class="keyword">with</span>-pdo-mysql=mysqlnd<span class="string">' '</span>--<span class="keyword">with</span>-mysqli=mysqlnd<span class="string">' '</span>--enable-fpm<span class="string">' '</span>--enable-static<span class="string">' '</span>--enable-maintainer-zts<span class="string">' '</span>--enable-inline-optimization<span class="string">' '</span>--enable-sockets<span class="string">' '</span>--enable-wddx<span class="string">' '</span>--enable-zip<span class="string">' '</span>--enable-calendar<span class="string">' '</span>--enable-bcmath<span class="string">' '</span>--enable-soap<span class="string">' '</span>--<span class="keyword">with</span>-zlib<span class="string">' '</span>--<span class="keyword">with</span>-iconv<span class="string">' '</span>--<span class="keyword">with</span>-gd<span class="string">' '</span>--<span class="keyword">with</span>-xmlrpc<span class="string">' '</span>--enable-mbstring<span class="string">' '</span>--enable-phar<span class="string">' '</span>--enable-pcntl<span class="string">' '</span>--<span class="keyword">with</span>-curl<span class="string">' '</span>--<span class="keyword">with</span>-freetype-dir=/usr/local/freetype<span class="string">' '</span>--<span class="keyword">with</span>-openssl<span class="string">' '</span>--disable-fileinfo<span class="string">' '</span>--<span class="keyword">with</span>-iconv=/usr/local/libiconv<span class="string">' '</span>--enable-ftp<span class="string">' '</span>--enable-session<span class="string">' '</span>--<span class="keyword">with</span>-mysql-sock=/tmp/mysql.sock'</span><br></pre></td></tr></table></figure>
+<h3 id="编译后补救"><a href="#编译后补救" class="headerlink" title="编译后补救"></a>编译后补救</h3><p>编译的时候没有带<code>--enable-pcntl</code>参数的补救办法:</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># wget http://cn2.php.net/get/php-7.1.15.tar.gz/from/this/mirror</span></span><br><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># tar xzf mirror &amp;&amp; mv php-7.1.15 php7</span></span><br><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># cd /wdata/server/php7/ext/pcntl</span></span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># find / -name phpize</span></span><br><span class="line">/usr/<span class="keyword">local</span>/php7/bin/phpize</span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># find / -name php-config</span></span><br><span class="line">/usr/<span class="keyword">local</span>/php7/bin/php-config</span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># find / -name php.ini</span></span><br><span class="line">/usr/<span class="keyword">local</span>/php7/etc/php.ini</span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># /usr/local/php7/bin/phpize</span></span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># ./configure --with-php-config=/usr/local/php7/bin/php-config</span></span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># make &amp;&amp; make install</span></span><br><span class="line">Installing shared extensions: /usr/<span class="keyword">local</span>/php7/lib/php/extensions/no-debug-zts<span class="number">-20160303</span>/</span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta">#  echo <span class="string">'extension=pcntl.so'</span> &gt;&gt; /usr/local/php7/etc/php.ini</span></span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># killall php-fpm</span></span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># php-fpm</span></span><br><span class="line">[root<span class="symbol">@wx</span> pcntl]<span class="meta"># php -m | grep pcntl</span></span><br><span class="line">pcntl</span><br></pre></td></tr></table></figure>
+<h2 id="下载-PHP-Resque"><a href="#下载-PHP-Resque" class="headerlink" title="下载 PHP-Resque"></a>下载 PHP-Resque</h2><p>下载<code>PHP-Resque</code>库可参考以下任意一种方式：</p>
+<ul>
+<li>Github下载：<a href="https://github.com/chrisboulton/php-resque" target="_blank" rel="noopener">连接地址</a></li>
+<li>直接下载：<a href="https://github.com/chrisboulton/php-resque/zipball/master" target="_blank" rel="noopener">连接地址</a></li>
+<li>Git方式克隆:</li>
+</ul>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wx <span class="symbol">~]# git clone git</span>:<span class="comment">//github.com/chrisboulton/php-resque.git</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Composer下载：</li>
+</ul>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> ~]<span class="meta"># composer require chrisboulton/php-resque</span></span><br></pre></td></tr></table></figure>
+<p>将以上下载的<code>PHP-Resque</code>库文件放在项目中合理位置，并引入该文件。</p>
+<h1 id="启动Worker"><a href="#启动Worker" class="headerlink" title="启动Worker"></a>启动Worker</h1><p><code>php-resque</code>的环境变量有:</p>
+<ul>
+<li><code>QUEUE</code>： 必选，会决定 worker 要执行什么任务，重要的在前，例如 QUEUE=notify,mail,log 。也可以设定為 QUEUE=* 表示执行所有任务。</li>
+<li><code>APP_INCLUDE</code> ：可选，加载文件用的。可以设成 APP_INCLUDE=require.php ，在 require.php 中引入所有 Job 的 Class即可。</li>
+<li><code>COUNT</code>：设定 worker 数量，预设是1，比如 COUNT=5 。</li>
+<li><code>REDIS_BACKEND</code>： 设定 Redis 的 ip, port。如果没设定，预设是连 localhost:6379 。</li>
+<li><code>VERBOSE</code>：啰嗦模式，设置 1 为启用，会输出基本的调试信息</li>
+<li><code>VVERBOSE</code>：设置“1”启用更啰嗦模式，会输出详细的调试信息</li>
+<li><code>VVERBOSE</code> ：比较详细的 log， VVERBOSE=1 debug 的时候可以开出来看。</li>
+<li><code>INTERVAL</code> ：worker 检查 queue 的间隔，预设是五秒 INTERVAL=5 。</li>
+<li><code>PIDFILE</code> ： 如果你是开单 worker，可以指定 PIDFILE 把 pid 写入，例如 PIDFILE=/var/run/resque.pid 。</li>
+<li><code>BACKGROUND</code> ：可以把 resque 丢到背景执行。或者使用 php resque.php &amp;就可以了。</li>
+<li><code>PREFIX</code>：前缀。在 Redis 数据库中为队列的 KEY 添加前缀，以方便多个 Worker 运行在同一个Redis 数据库中方便区分。默认为空。</li>
+</ul>
+<p><code>Resque_Job_Status</code>四种状态：</p>
+<ul>
+<li><code>Resque_Job_Status::STATUS_WAITING</code> = 1; (等待)</li>
+<li><code>Resque_Job_Status::STATUS_RUNNING</code> = 2; (正在执行)</li>
+<li><code>Resque_Job_Status::STATUS_FAILED</code> = 3; (失败)</li>
+<li><code>Resque_Job_Status::STATUS_COMPLETE</code> = 4; (结束)</li>
+</ul>
+<p>Job类：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Job</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 导出文件表</span></span><br><span class="line">    <span class="keyword">private</span> $exportTable = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setUp</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">       <span class="comment">// .. Set up environment for this job</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">perform</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// .. Run job</span></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">tearDown</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// ... Remove environment for this job</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Resque类：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Resque</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Create a new job and save it to the specified queue.</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> string $queue The name of the queue to place the job in.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> string $class The name of the class that contains the code to execute the job.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> array $args Any optional arguments that should be passed when the job is executed.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> boolean $trackStatus Set to true to be able to monitor the status of a job.</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span> string|boolean Job ID when the job was created, false if creation was cancelled due to beforeEnqueue</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">enqueue</span><span class="params">($queue, $class, $args = null, $trackStatus = false)</span></span></span><br><span class="line"><span class="function">       </span>&#123;</span><br><span class="line">           $id = Resque::generateJobId();</span><br><span class="line">           $hookParams = <span class="keyword">array</span>(</span><br><span class="line">               <span class="string">'class'</span> =&gt; $class,</span><br><span class="line">               <span class="string">'args'</span> =&gt; $args,</span><br><span class="line">               <span class="string">'queue'</span> =&gt; $queue,</span><br><span class="line">               <span class="string">'id'</span> =&gt; $id,</span><br><span class="line">           );</span><br><span class="line">           <span class="keyword">try</span> &#123;</span><br><span class="line">               Resque_Event::trigger(<span class="string">'beforeEnqueue'</span>, $hookParams);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">catch</span>(Resque_Job_DontCreate $e) &#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           Resque_Job::create($queue, $class, $args, $trackStatus, $id);</span><br><span class="line">           Resque_Event::trigger(<span class="string">'afterEnqueue'</span>, $hookParams);</span><br><span class="line">           <span class="keyword">return</span> $id;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>加入队列：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">Resque:</span><span class="symbol">:setBackend</span>(<span class="string">'redis://user:pass@127.0.0.1:6379'</span>);</span><br><span class="line"><span class="variable">$jobId</span> = <span class="symbol">Resque:</span><span class="symbol">:enqueue</span>(<span class="string">'default'</span>, <span class="string">'Job'</span>, <span class="variable">$args</span>, <span class="keyword">true</span>);</span><br></pre></td></tr></table></figure></the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/队列/" rel="tag"># 队列</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2018/04/13/2018/2018-04-13-docker-04/" rel="next" title="【Docker】使用 Dockerfile 定制镜像 (四)">
+                <i class="fa fa-chevron-left"></i> 【Docker】使用 Dockerfile 定制镜像 (四)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2018/07/04/2018/2018-07-04-php-operation-mode/" rel="prev" title="PHP的运行模式">
+                PHP的运行模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.gif"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">精于心，简于形</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是消息队列"><span class="nav-number">1.</span> <span class="nav-text">什么是消息队列?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要使用消息队列"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用消息队列?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用消息队列的应用场景"><span class="nav-number">3.</span> <span class="nav-text">使用消息队列的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是队列系统？"><span class="nav-number">4.</span> <span class="nav-text">什么是队列系统？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装-PHP-Resque"><span class="nav-number">5.</span> <span class="nav-text">安装 PHP-Resque</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Redis"><span class="nav-number">5.1.</span> <span class="nav-text">安装 Redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-PHP-Redis-扩展"><span class="nav-number">5.2.</span> <span class="nav-text">安装 PHP-Redis 扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装环境"><span class="nav-number">5.2.1.</span> <span class="nav-text">安装环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装编译工具"><span class="nav-number">5.2.2.</span> <span class="nav-text">安装编译工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码安装"><span class="nav-number">5.2.3.</span> <span class="nav-text">源码安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置php支持"><span class="nav-number">5.2.4.</span> <span class="nav-text">配置php支持</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-PCNTL-扩展"><span class="nav-number">5.3.</span> <span class="nav-text">安装 PCNTL 扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译时添加"><span class="nav-number">5.3.1.</span> <span class="nav-text">编译时添加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译后补救"><span class="nav-number">5.3.2.</span> <span class="nav-text">编译后补救</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载-PHP-Resque"><span class="nav-number">5.4.</span> <span class="nav-text">下载 PHP-Resque</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#启动Worker"><span class="nav-number">6.</span> <span class="nav-text">启动Worker</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
