@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="PHP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：Xdebug是一个开放源代码的PHP程序调试器(即一个Debug工具)，可以用来跟踪，调试和分析PHP程序的运行状况。它作为PHP调试工具，提供了丰富的调试函数，可将Xdebug安装配置为Zend studio、PHPStrom调试PHP的第三方插件，通过开启自动跟踪(auto_trace)和分析器功能，可以直观的看到PHP源代码的性能数据，以便优化PHP代码。本文主要讲解在CentOS7中">
+<meta name="keywords" content="PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xdebug-PHP的调试和分析工具">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2018/08/09/2018/2018-08-09-xdebug-tool/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：Xdebug是一个开放源代码的PHP程序调试器(即一个Debug工具)，可以用来跟踪，调试和分析PHP程序的运行状况。它作为PHP调试工具，提供了丰富的调试函数，可将Xdebug安装配置为Zend studio、PHPStrom调试PHP的第三方插件，通过开启自动跟踪(auto_trace)和分析器功能，可以直观的看到PHP源代码的性能数据，以便优化PHP代码。本文主要讲解在CentOS7中">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/xdebug-tool/PHPxdebug.png">
+<meta property="og:updated_time" content="2018-09-11T02:22:11.671Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Xdebug-PHP的调试和分析工具">
+<meta name="twitter:description" content="摘要：Xdebug是一个开放源代码的PHP程序调试器(即一个Debug工具)，可以用来跟踪，调试和分析PHP程序的运行状况。它作为PHP调试工具，提供了丰富的调试函数，可将Xdebug安装配置为Zend studio、PHPStrom调试PHP的第三方插件，通过开启自动跟踪(auto_trace)和分析器功能，可以直观的看到PHP源代码的性能数据，以便优化PHP代码。本文主要讲解在CentOS7中">
+<meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/xdebug-tool/PHPxdebug.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2018/08/09/2018/2018-08-09-xdebug-tool/"/>
+
+
+
+
+
+  <title>Xdebug-PHP的调试和分析工具 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2018/08/09/2018/2018-08-09-xdebug-tool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Xdebug-PHP的调试和分析工具</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-09T01:46:24+08:00">
+                2018-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：<code>Xdebug</code>是一个开放源代码的<code>PHP</code>程序调试器(即一个<code>Debug</code>工具)，可以用来跟踪，调试和分析<code>PHP</code>程序的运行状况。它作为<code>PHP</code>调试工具，提供了丰富的调试函数，可将<code>Xdebug</code>安装配置为<code>Zend studio</code>、<code>PHPStrom</code>调试PHP的第三方插件，通过开启自动跟踪(<code>auto_trace</code>)和分析器功能，可以直观的看到<code>PHP</code>源代码的性能数据，以便优化<code>PHP</code>代码。本文主要讲解在<code>CentOS7</code>中如何进行<code>Xdebug</code>的源码安装，并简单介绍了传值赋值和传引用赋值时，使用<code>xdebug_debug_zval()</code>函数显示<code>refcount</code>和<code>is_ref</code>的值。<br><img src="/hexo_blog/img/article/xdebug-tool/PHPxdebug.png" alt="">
+</strong><br><a id="more"></a></p>
+<p><the rest="" of="" contents="" |="" 余下全文=""></the></p>
+<h1 id="关于Xdebug"><a href="#关于Xdebug" class="headerlink" title="关于Xdebug"></a>关于Xdebug</h1><p><code>Xdebug</code>是一个开放源代码的<code>PHP</code>程序调试器(即一个<code>Debug</code>工具)，可以用来跟踪，调试和分析<code>PHP</code>程序的运行状况。</p>
+<p>它提供了各种自带的函数，并对已有的某些<code>PHP</code>函数进行覆写，可以方便地用于调试排错；<code>Xdebug</code>还可以跟踪程序的运行，通过对日志文件的分析，我们可以迅速找到程序运行的瓶颈所在，提高程序效率，从而提高整个系统的性能。</p>
+<h1 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h1><p>先检查<code>Liux</code>版本：</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@wx</span> ~]# cat /etc/redhat-<span class="keyword">release</span> </span><br><span class="line">CentOS Linux <span class="keyword">release</span> <span class="number">7.5</span>.<span class="number">1804</span> (Core)</span><br></pre></td></tr></table></figure>
+<p>查看<code>PHP</code>版本：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wx ~]# php -v</span><br><span class="line">PHP 7.1.15 (cli) (built: Jul 25 2018 20:18:54) ( ZTS )</span><br><span class="line">Copyright (c) 1997-2018 The PHP Group</span><br><span class="line">Zend Engine v3.1.0, Copyright (c) 1998-2018 Zend Technologies</span><br></pre></td></tr></table></figure>
+<p>所需相关信息如下所示：</p>
+<p>操作系统：<code>CentOS Linux release 7.5.1804 (Core)</code><br>phpize目录：<code>/usr/local/php7/bin/phpize</code><br>php安装目录：<code>/usr/local/php7</code><br>php.ini配置文件路径：<code>/usr/local/php7/etc/php.ini</code><br>php-config路径：<code>/usr/local/php7/bin/php-config</code></p>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><p>这部分描述如何进行源码安装<code>Xdebug</code>。</p>
+<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p>方法一：<a href="https://xdebug.org/download.php" target="_blank" rel="noopener">官方下载地址</a><br>方法二：<a href="https://github.com/xdebug/xdebug" target="_blank" rel="noopener">Github下载地址</a><br>方法三：Git 地址：<br><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">clone</span> <span class="title">git</span>://github.com/xdebug/xdebug.git</span><br></pre></td></tr></table></figure></p>
+<h2 id="源码下载"><a href="#源码下载" class="headerlink" title="源码下载"></a>源码下载</h2><p>根据安装的<code>PHP</code>版本，选择合适的<code>Xdebug</code>版本。这里选择<code>Xdebug 2.6.1</code>的版本进行安装。</p>
+<p>下载命令如下：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># wget https://xdebug.org/files/xdebug-2.6.1.tgz</span></span><br><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># tar -xzf xdebug-2.6.1.tgz</span></span><br><span class="line">[root<span class="symbol">@wx</span> server]<span class="meta"># rm -rf xdebug-2.6.1.tgz</span></span><br></pre></td></tr></table></figure>
+<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="meta">@wx</span> server]<span class="comment"># cd xdebug-2.6.1</span></span><br><span class="line">[root<span class="meta">@wx</span> xdebug-2.6.1]<span class="comment"># /usr/local/php7/bin/phpize</span></span><br><span class="line">Configuring for:</span><br><span class="line">PHP Api Version: 20160303</span><br><span class="line">Zend Module Api No: 20160303</span><br><span class="line">Zend Extension Api No: 320160303</span><br><span class="line">[root<span class="meta">@wx</span> xdebug-2.6.1]<span class="comment"># ./configure --with-php-config=/usr/local/php7/bin/php-config --enable-xdebug</span></span><br><span class="line">[root<span class="meta">@wx</span> xdebug-2.6.1]<span class="comment"># make &amp;&amp; make install</span></span><br><span class="line">Installing shared extensions: /usr/local/php7/lib/php/extensions/no-debug-zts-20160303/</span><br><span class="line">  +----------------------------------------------------------------------+</span><br><span class="line">  |<span class="string"> </span>|</span><br><span class="line">  |<span class="string"> INSTALLATION INSTRUCTIONS </span>|</span><br><span class="line">  |<span class="string"> ========================= </span>|</span><br><span class="line">  |<span class="string"> </span>|</span><br><span class="line">  |<span class="string"> See http://xdebug.org/install.php#configure-php for instructions </span>|</span><br><span class="line">  |<span class="string"> on how to enable Xdebug for PHP. </span>|</span><br><span class="line">  |<span class="string"> </span>|</span><br><span class="line">  |<span class="string"> Documentation is available online as well: </span>|</span><br><span class="line">  |<span class="string"> - A list of all settings: http://xdebug.org/docs-settings.php </span>|</span><br><span class="line">  |<span class="string"> - A list of all functions: http://xdebug.org/docs-functions.php </span>|</span><br><span class="line">  |<span class="string"> - Profiling instructions: http://xdebug.org/docs-profiling2.php </span>|</span><br><span class="line">  |<span class="string"> - Remote debugging: http://xdebug.org/docs-debugger.php </span>|</span><br><span class="line">  |<span class="string"> </span>|</span><br><span class="line">  |<span class="string"> </span>|</span><br><span class="line">  |<span class="string"> NOTE: Please disregard the message </span>|</span><br><span class="line">  |<span class="string"> You should add "extension=xdebug.so" to php.ini </span>|</span><br><span class="line">  |<span class="string"> that is emitted by the PECL installer. This does not work for </span>|</span><br><span class="line">  |<span class="string"> Xdebug. </span>|</span><br><span class="line">  |<span class="string"> </span>|</span><br><span class="line">  +----------------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注，请留意安装完成后<code>Installing shared extensions: /usr/local/php7/lib/php/extensions/no-debug-zts-20160303/</code></p>
+</blockquote>
+<p>需要记录下<code>xdebug.so</code>的路径，后续配置<code>PHP</code>时需要。</p>
+<h2 id="配置PHP"><a href="#配置PHP" class="headerlink" title="配置PHP"></a>配置PHP</h2><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> xdebug<span class="number">-2.6</span><span class="number">.1</span>]<span class="meta"># echo <span class="string">'zend_extension="/usr/local/php7/lib/php/extensions/no-debug-zts-20160303/xdebug.so"'</span> &gt;&gt; /usr/local/php7/etc/php.ini</span></span><br><span class="line">[root<span class="symbol">@wx</span> xdebug<span class="number">-2.6</span><span class="number">.1</span>]<span class="meta"># killall php-fpm</span></span><br><span class="line">[root<span class="symbol">@wx</span> xdebug<span class="number">-2.6</span><span class="number">.1</span>]<span class="meta"># php-fpm</span></span><br><span class="line">[root<span class="symbol">@wx</span> xdebug<span class="number">-2.6</span><span class="number">.1</span>]<span class="meta"># php -m | grep xdebug</span></span><br><span class="line">xdebug</span><br></pre></td></tr></table></figure>
+<h1 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h1><p>每个<code>php</code>变量存在一个叫<code>zval</code>的变量容器中。一个<code>zval</code>变量容器，除了包含变量的类型和值，还包括两个字节的额外信息。</p>
+<p>第一个额外字节是<code>refcount</code>，用以表示指向这个<code>zval</code>变量容器的变量(也称符号即<code>symbol</code>)个数。所有的符号存在一个符号表中，其中每个符号都有作用域(<code>scope</code>)，那些主脚本(比如：通过浏览器请求的的脚本)和每个函数或者方法也都有作用域。</p>
+<p>第二个是<code>is_ref</code>，是个<code>bool</code>值，用来标识这个变量是否是属于引用集合(<code>reference set</code>)。通过这个字节，<code>php</code>引擎才能把普通变量和引用变量区分开来，由于<code>php</code>允许用户通过使用&amp;来使用自定义引用，<code>zval</code>变量容器中还有一个内部引用计数机制，来优化内存使用。</p>
+<p>具体可参照<a href="http://www.php.net/manual/zh/features.gc.refcounting-basics.php#features.gc.refcounting-basics" target="_blank" rel="noopener">引用计数相关基本知识</a>。</p>
+<p>关于传值赋值和传引用赋值，可以使用<code>xdebug_debug_zval()</code>函数显示<code>refcount</code>和<code>is_ref</code>的值。</p>
+<h2 id="传值赋值"><a href="#传值赋值" class="headerlink" title="传值赋值"></a>传值赋值</h2><p>新建文件<code>test1.php</code>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@wx www]# vim test1.php</span><br><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$a = <span class="string">'wangxiong'</span>;</span></span><br><span class="line"><span class="php">$c = $b = $a;</span></span><br><span class="line"><span class="php">xdebug_debug_zval( <span class="string">'a'</span> );</span></span><br><span class="line"><span class="php"><span class="keyword">unset</span>( $b, $c );</span></span><br><span class="line"><span class="php">xdebug_debug_zval( <span class="string">'a'</span> );</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>运行如下命令后：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wx www]# php test1.php</span><br><span class="line">a: (<span class="attribute">refcount</span>=4, <span class="attribute">is_ref</span>=0)='wangxiong'</span><br><span class="line">a: (<span class="attribute">refcount</span>=2, <span class="attribute">is_ref</span>=0)='wangxiong'</span><br></pre></td></tr></table></figure>
+<p>新建文件<code>test2.php</code>：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> www]<span class="meta"># vim test2.php</span></span><br><span class="line">&lt;?php</span><br><span class="line">$a = <span class="string">'wangxiong'</span><span class="comment">;</span></span><br><span class="line">$c = $b = $a<span class="comment">;</span></span><br><span class="line">$c = $b = <span class="string">'lensxiong'</span><span class="comment">;</span></span><br><span class="line">xdebug_debug_zval(<span class="string">'a'</span>)<span class="comment">;</span></span><br><span class="line">xdebug_debug_zval(<span class="string">'b'</span>)<span class="comment">;</span></span><br><span class="line">xdebug_debug_zval(<span class="string">'c'</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>运行如下命令后：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wx www]# php test2.php</span><br><span class="line">a: (<span class="attribute">refcount</span>=2, <span class="attribute">is_ref</span>=0)='wangxiong'</span><br><span class="line">b: (<span class="attribute">refcount</span>=3, <span class="attribute">is_ref</span>=0)='lensxiong'</span><br><span class="line">c: (<span class="attribute">refcount</span>=3, <span class="attribute">is_ref</span>=0)='lensxiong'</span><br></pre></td></tr></table></figure>
+<p>COW特性：</p>
+<blockquote>
+<p>写时复制<code>copy on write</code>。刚开始<code>$a</code> ，<code>$b</code> 都指向同一个结构体，当有一方修改值的时候，比如<code>$b</code> ，才会进行分裂。</p>
+</blockquote>
+<h2 id="传引用赋值"><a href="#传引用赋值" class="headerlink" title="传引用赋值"></a>传引用赋值</h2><p>新建文件<code>test3.php</code>：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> www]<span class="meta"># vim test3.php</span></span><br><span class="line">&lt;?php</span><br><span class="line">$a = <span class="number">3</span><span class="comment">;</span></span><br><span class="line">$b = &amp;$a<span class="comment">;</span></span><br><span class="line">xdebug_debug_zval(<span class="string">'a'</span>)<span class="comment">;</span></span><br><span class="line">xdebug_debug_zval(<span class="string">'b'</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>运行如下命令后：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wx www]# php test3.php</span><br><span class="line">a: (<span class="attribute">refcount</span>=2, <span class="attribute">is_ref</span>=1)=3</span><br><span class="line">b: (<span class="attribute">refcount</span>=2, <span class="attribute">is_ref</span>=1)=3</span><br></pre></td></tr></table></figure></p>
+<p>新建文件<code>test4.php</code>：<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@wx</span> www]<span class="meta"># vim test4.php</span></span><br><span class="line">&lt;?php</span><br><span class="line">$a = <span class="number">3</span><span class="comment">;</span></span><br><span class="line">$b = &amp;$a<span class="comment">;</span></span><br><span class="line">$b = <span class="number">5</span><span class="comment">;</span></span><br><span class="line">xdebug_debug_zval(<span class="string">'a'</span>)<span class="comment">;</span></span><br><span class="line">xdebug_debug_zval(<span class="string">'b'</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>运行如下命令后：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wx www]# php test4.php</span><br><span class="line">a: (<span class="attribute">refcount</span>=2, <span class="attribute">is_ref</span>=1)=5</span><br><span class="line">b: (<span class="attribute">refcount</span>=2, <span class="attribute">is_ref</span>=1)=5</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2018/07/18/2018/2018-07-18-docker-05/" rel="next" title="【Docker】Docker 容器数据卷 (五)">
+                <i class="fa fa-chevron-left"></i> 【Docker】Docker 容器数据卷 (五)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2018/09/01/2018/2018-09-01-little-prince/" rel="prev" title="读《小王子》">
+                读《小王子》 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/hexo_blog/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="主页">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>主页</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="导航">
+                      
+                        <i class="fa fa-fw fa-bars"></i>导航</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于Xdebug"><span class="nav-number">1.</span> <span class="nav-text">关于Xdebug</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装环境"><span class="nav-number">2.</span> <span class="nav-text">安装环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装配置"><span class="nav-number">3.</span> <span class="nav-text">安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载地址"><span class="nav-number">3.1.</span> <span class="nav-text">下载地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码下载"><span class="nav-number">3.2.</span> <span class="nav-text">源码下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译安装"><span class="nav-number">3.3.</span> <span class="nav-text">编译安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置PHP"><span class="nav-number">3.4.</span> <span class="nav-text">配置PHP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单使用"><span class="nav-number">4.</span> <span class="nav-text">简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传值赋值"><span class="nav-number">4.1.</span> <span class="nav-text">传值赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传引用赋值"><span class="nav-number">4.2.</span> <span class="nav-text">传引用赋值</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
