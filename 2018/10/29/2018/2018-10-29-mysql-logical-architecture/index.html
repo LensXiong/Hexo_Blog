@@ -88,8 +88,7 @@
 <meta property="og:description" content="摘要：﻿本篇文章为MySQL高级篇系列的开篇，主要是从理论和自身的工作实际出发，去探索高性能的MySQL 知识，从基础出发，一步一步构建自己的知识体系。知识主要来自于《高性能MySQL》第三版，官方标准手册以及高级讲师的讲解，自身的业务实践。本篇主要是对整个MySQL逻辑架构图的介绍，如果能在头脑中构建出一幅MySQL各组件之间如何协同工作的架构图，将非常有助于深入理解MySQL服务器的相关知识。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2018/mysql-logical-architecture/01.png?raw=true">
-<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2018/mysql-logical-architecture/01.png?raw=true">
-<meta property="og:updated_time" content="2019-02-26T02:37:28.971Z">
+<meta property="og:updated_time" content="2019-02-26T02:50:43.253Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【MySQL高级】逻辑架构和存储引擎">
 <meta name="twitter:description" content="摘要：﻿本篇文章为MySQL高级篇系列的开篇，主要是从理论和自身的工作实际出发，去探索高性能的MySQL 知识，从基础出发，一步一步构建自己的知识体系。知识主要来自于《高性能MySQL》第三版，官方标准手册以及高级讲师的讲解，自身的业务实践。本篇主要是对整个MySQL逻辑架构图的介绍，如果能在头脑中构建出一幅MySQL各组件之间如何协同工作的架构图，将非常有助于深入理解MySQL服务器的相关知识。">
@@ -379,7 +378,7 @@
 </strong><br><a id="more"></a></p>
 <the rest="" of="" contents="" |="" 余下全文="">
 
-<h1 id="逻辑架构图"><a href="#逻辑架构图" class="headerlink" title="逻辑架构图"></a>逻辑架构图</h1><p>由上到下分为四层：<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2018/mysql-logical-architecture/01.png?raw=true" alt="逻辑架构图"></p>
+<h1 id="逻辑架构图"><a href="#逻辑架构图" class="headerlink" title="逻辑架构图"></a>逻辑架构图</h1><p>通过以上<code>MySQL</code>逻辑架构图可知，由上到下分为连接层、服务层、引擎层、存储层共四层。</p>
 <h2 id="连接层"><a href="#连接层" class="headerlink" title="连接层"></a>连接层</h2><p>连接层的服务并不是<code>MySQ</code>所独有的，大多数基于网络的客户端、服务器的工具或者服务都有类似的架构。</p>
 <p>它是一些客户端和连接服务，包含本地<code>sock</code>通信和大多数基于客户端/服务端工具实现的类似于<code>TCP/IP</code>的通信。</p>
 <p>主要完成一些类似于连接处理、授权认证、及相关的安全方案。在该层上引入了线程池的概念，为通过认证安全接入的客户端提供线程。</p>
@@ -478,6 +477,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/hexo_blog/2018/11/17/2018/2018-11-17-mysql-sql-joins/" rel="prev" title="﻿【MySQL高级】七种 Joins 文氏图解">
+                ﻿【MySQL高级】七种 Joins 文氏图解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -557,7 +560,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-count">52</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
