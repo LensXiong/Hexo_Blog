@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：作为一名开发者，完成业务功能只是第一步，如何将代码和SQL语句写的优雅，执行效率高，运行速度快是区别平庸和优秀最直接的因素。如果在你的认知里面，索引就像字典中的目录一样，是为了快速查找内容，显然，你还需要努力去学习索引更多的知识。索引，作为MySQL优化最重要的一部分，需要掌握索引的基础知识，索引带来的优劣，基本语法和分类，除此之外，只有正确理解索引的检索原理，在后期进行创建和使用索引才能更">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL高级】索引优化分析（一）">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2018/12/04/2018/2018-12-04-mysql-index-optimization-01/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：作为一名开发者，完成业务功能只是第一步，如何将代码和SQL语句写的优雅，执行效率高，运行速度快是区别平庸和优秀最直接的因素。如果在你的认知里面，索引就像字典中的目录一样，是为了快速查找内容，显然，你还需要努力去学习索引更多的知识。索引，作为MySQL优化最重要的一部分，需要掌握索引的基础知识，索引带来的优劣，基本语法和分类，除此之外，只有正确理解索引的检索原理，在后期进行创建和使用索引才能更">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2018/mysql-index-optimization-01/01.jpg?raw=true">
+<meta property="og:updated_time" content="2019-02-26T03:36:55.174Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【MySQL高级】索引优化分析（一）">
+<meta name="twitter:description" content="摘要：作为一名开发者，完成业务功能只是第一步，如何将代码和SQL语句写的优雅，执行效率高，运行速度快是区别平庸和优秀最直接的因素。如果在你的认知里面，索引就像字典中的目录一样，是为了快速查找内容，显然，你还需要努力去学习索引更多的知识。索引，作为MySQL优化最重要的一部分，需要掌握索引的基础知识，索引带来的优劣，基本语法和分类，除此之外，只有正确理解索引的检索原理，在后期进行创建和使用索引才能更">
+<meta name="twitter:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2018/mysql-index-optimization-01/01.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2018/12/04/2018/2018-12-04-mysql-index-optimization-01/"/>
+
+
+
+
+
+  <title>【MySQL高级】索引优化分析（一） | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2018/12/04/2018/2018-12-04-mysql-index-optimization-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【MySQL高级】索引优化分析（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-04T09:09:24+08:00">
+                2018-12-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：作为一名开发者，完成业务功能只是第一步，如何将代码和SQL语句写的优雅，执行效率高，运行速度快是区别平庸和优秀最直接的因素。如果在你的认知里面，索引就像字典中的目录一样，是为了快速查找内容，显然，你还需要努力去学习索引更多的知识。索引，作为<code>MySQL</code>优化最重要的一部分，需要掌握索引的基础知识，索引带来的优劣，基本语法和分类，除此之外，只有正确理解索引的检索原理，在后期进行创建和使用索引才能更轻松自如的应对。最后，也对适合创建索引的场景和不适合创建索引的场景进行相关的阐述。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="索引基础"><a href="#索引基础" class="headerlink" title="索引基础"></a>索引基础</h1><p><code>MySQL</code>官方对索引的定义为：索引（<code>Index</code>）是存储引擎用于快速找到记录的一种数据结构。<br>索引的本质：一种数据结构。<br>索引的目的：提高查询效率。<br>索引解决：① <code>where</code>条件后面的字段拼装查询效率。②<code>order by</code> 后面的字段排序如何查询快。<br>简而言之，可以将索引理解为：<strong>排好序的快速查找结构。</strong></p>
+<blockquote>
+<p><code>Index</code>在数组中称为下标，在数据库中称为索引，在<code>Git</code>中称为暂存区。</p>
+</blockquote>
+<p>在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式（比如指针）引用（指向）数据。这样就可以在这些数据结构上实现高级查找算法，而这种数据结构，就是索引。</p>
+<blockquote>
+<p>频繁的<code>update</code>除了会更新数据，也会更新索引。</p>
+</blockquote>
+<p>一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储在磁盘上。<br>我们平常说的索引，如果没有特别指明，都是指B树（多路搜索树，并不一定是二叉的，也有可能是三叉）结构组织的索引，其中聚集索引、次要索引、复合索引、前缀索引、唯一索引默认都是使用B+树索引，统称为索引。当然，除了B+树这种类型的索引之外，还有哈希索引（<code>hash index</code>）。</p>
+<h1 id="索引优劣"><a href="#索引优劣" class="headerlink" title="索引优劣"></a>索引优劣</h1><p>索引的优势：<br>① 索引大大减少了服务器需要扫描的数据量。<br>② 索引可以帮助服务器避免排序和临时表，通过索引列对数据进行排序，降低数据排序的成本，降低了<code>CPU</code>的消耗。<br>③ 索引可以将随机<code>IO</code>变为顺序<code>IO</code>，类似图书馆书目索引，提高数据检索的效率，降低数据库的<code>IO</code>成本。</p>
+<p>索引的劣势：<br>① 占用空间：实际上，索引也是一张表，该表保留了主键与索引字段，并指向实体表的记录，所以索引列也是需要占用空间的。<br>② 降低更新表的速度：虽然索引大大提高了查询速度，但是也会降低更新表的速度，如对表进行<code>INSERT</code>、<code>UPDATE</code>和<code>DELETE</code>时，都会调整因为更新所带来的键值变化后的索引信息。<br>③ 索引优化需要花费大量的时间：索引只是提高效率的一个因素，如果表的数据量较大，就需要花时间研究去建立最优的索引，也要进行<code>SQL</code>优化查询。因为各种业务不同，对于所建的索引也是不同的，也需要根据实际业务去寻找最优的方式。</p>
+<h1 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h1><p>① 单值索引：一个索引只包含单个列，一个表可以有多个单列索引。<br>② 唯一索引：索引列的值必须唯一，但允许有空值。<br>③ 复合索引：一个索引包含多个列。</p>
+<h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建</span></span><br><span class="line"><span class="keyword">CREATE</span> [<span class="keyword">UNIQUE</span>] <span class="keyword">INDEX</span> indexName <span class="keyword">ON</span> <span class="keyword">table</span> (columnname(<span class="keyword">length</span>));</span><br><span class="line"><span class="comment">-- 更新</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">table</span> <span class="keyword">ADD</span> [<span class="keyword">UNIQUE</span>] <span class="keyword">INDEX</span> indexName <span class="keyword">ON</span> <span class="keyword">table</span> (columnname(<span class="keyword">length</span>));</span><br><span class="line"><span class="comment">-- 删除</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> [indexName] <span class="keyword">ON</span> <span class="keyword">table</span>;</span><br><span class="line"><span class="comment">-- 查看</span></span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">INDEX</span> <span class="keyword">FROM</span> <span class="keyword">table</span>\G;</span><br></pre></td></tr></table></figure>
+<p>使用<code>ALTER</code>命令为数据表添加索引语法如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 主键索引，意味着索引值必须是唯一的，且不能为NULL</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> PRIMARY <span class="keyword">KEY</span>(column_list);</span><br><span class="line"><span class="comment">-- 唯一索引，该索引的值必须是唯一的，除了NULL外，NULL可能会出现多次。</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> <span class="keyword">UNIQUE</span> index_name(column_list);</span><br><span class="line"><span class="comment">-- 普通索引，索引值可出现多次</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> <span class="keyword">INDEX</span> index_name(column_list);</span><br><span class="line"><span class="comment">-- 全文索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> FULLTEXT index_name(column_list);</span><br></pre></td></tr></table></figure>
+<h1 id="检索原理"><a href="#检索原理" class="headerlink" title="检索原理"></a>检索原理</h1><p><code>MySQL</code>支持的索引类型，主要有<code>B-Tree</code>索引、<code>Hash</code>索引、<code>R-Tree</code>（空间数据）索引、<code>Full-Text</code>全文索引等，其中主要介绍<code>B-Tree</code>索引的检索原理：</p>
+<h2 id="初始化介绍"><a href="#初始化介绍" class="headerlink" title="初始化介绍"></a>初始化介绍</h2><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2018/mysql-index-optimization-01/01.jpg?raw=true" alt="检索原理"><br>如上图所示的一颗<code>B+</code>树，浅蓝色的称为磁盘块，每个磁盘块包含几个数据项（深蓝色所示）和指针（黄色所示）。如磁盘块1包含数据项17和35，包含指针P1、P2、P3，P1表示小于17的磁盘块，P2表示在17和35之间的磁盘块，P3表示大于35的磁盘块。真实的数据存在于叶子节点即3、5、9、10、13、15、23、29、36、60、75、79、90、99。非叶子节点不存储真实的数据，只存储指引搜索方向的数据项，如17、35并不真实存在于数据表。</p>
+<h2 id="查找过程"><a href="#查找过程" class="headerlink" title="查找过程"></a>查找过程</h2><p>如果要查找<br>数据项29，那么首先会把磁盘块1由磁盘加载到内存，此时发生一次IO，在内存中用二分查找确定29在17和35之间，锁定磁盘块1的P2指针，内存时间非常短（相比于磁盘IO）可以忽略不计，通过磁盘块1的P2指针的磁盘地址把磁盘块3加载到内存，发生第二次IO，29在26和30之间，锁定磁盘块3的P2指针，通过指针加载磁盘块8到内存，发生第三次IO，同时内存中做二分查找找到29，结束查询，总计三次IO。</p>
+<p>真实的情况是，3层的<code>B+</code>树可以表示上百万的数据，如果上百万的数据查找只需要三次IO，性能提高将是巨大的，如果没有索引，每个数据项都要发生一次IO，那么总共需要百万次的IO，显然成本非常非常的高。</p>
+<h2 id="索引场景"><a href="#索引场景" class="headerlink" title="索引场景"></a>索引场景</h2><p>适合创建索引的场景如下：<br>① 主键自动建立唯一索引。<br>② 频繁作为查询条件的字段应该创建索引。<br>③ 查询中与其他表关联的字段，外键关系建立索引。<br>④ 单键/组合索引的选择时，在高并发下倾向创建组合索引。<br>⑤ 查询中排序的字段，排序字段如果通过索引去访问将大大提高排序速度。<br>⑥ 查询中统计或者分组字段。</p>
+<p>不适合创建索引的场景如下：<br>① 频繁更新的字段不适合创建索引，因为每次更新不单单是更新记录还会更新索引。<br>② <code>where</code>条件中用不到的字段不创建索引。<br>③ 表数据太少，实际上，三百万左右数据以下属于表数据太少。<br>④ 经常增删改的表，建立索引虽然增加了查询速度，但是会降低更新表的速度。<br>⑤ 数据重复且分布平均的表字段，为它建立索引就没有太大的实际效果。</p>
+<blockquote>
+<p>假如一个表有10万行记录，有一个字段只有F和M两种值，且每个值得分布概率大约为50%，那么对这个字段建立索引一般不会提高数据库的查询速度。</p>
+</blockquote>
+<p>索引的选择性是指索引列中不同值得数目与表中记录数的比。如果一个表中有2000条数据，表索引列有1980个不同的值，那么这个索引的选择性就是1980/2000=0.99。一个索引的选择性越接近1，这个索引的效率就越高。</p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2018/11/17/2018/2018-11-17-mysql-sql-joins/" rel="next" title="﻿【MySQL高级】七种 SQL JOINS 文氏图解">
+                <i class="fa fa-chevron-left"></i> ﻿【MySQL高级】七种 SQL JOINS 文氏图解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#索引基础"><span class="nav-number">1.</span> <span class="nav-text">索引基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引优劣"><span class="nav-number">2.</span> <span class="nav-text">索引优劣</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引分类"><span class="nav-number">3.</span> <span class="nav-text">索引分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本语法"><span class="nav-number">4.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#检索原理"><span class="nav-number">5.</span> <span class="nav-text">检索原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化介绍"><span class="nav-number">5.1.</span> <span class="nav-text">初始化介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找过程"><span class="nav-number">5.2.</span> <span class="nav-text">查找过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引场景"><span class="nav-number">5.3.</span> <span class="nav-text">索引场景</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
