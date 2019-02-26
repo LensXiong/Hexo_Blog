@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：在索引优化分析的前两篇文章中，我们讨论了索引相关基础知识，也重点介绍了EXPLAIN执行计划。针对于索引的分析，本篇文章以单表优化、两表优化、三表优化为例，详细介绍了未创建索引和创建索引情况下语句的执行情况，尤其是在Join连接的情况下，如何更好的建立索引才能使性能更优化。">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL高级】索引优化分析（三）">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/01/08/2019/2019-01-08-mysql-index-optimization-03/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：在索引优化分析的前两篇文章中，我们讨论了索引相关基础知识，也重点介绍了EXPLAIN执行计划。针对于索引的分析，本篇文章以单表优化、两表优化、三表优化为例，详细介绍了未创建索引和创建索引情况下语句的执行情况，尤其是在Join连接的情况下，如何更好的建立索引才能使性能更优化。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/01.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/02.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/03.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/04.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/05.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/06.jpg?raw=true">
+<meta property="og:updated_time" content="2019-02-26T04:37:34.842Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【MySQL高级】索引优化分析（三）">
+<meta name="twitter:description" content="摘要：在索引优化分析的前两篇文章中，我们讨论了索引相关基础知识，也重点介绍了EXPLAIN执行计划。针对于索引的分析，本篇文章以单表优化、两表优化、三表优化为例，详细介绍了未创建索引和创建索引情况下语句的执行情况，尤其是在Join连接的情况下，如何更好的建立索引才能使性能更优化。">
+<meta name="twitter:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/01.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/01/08/2019/2019-01-08-mysql-index-optimization-03/"/>
+
+
+
+
+
+  <title>【MySQL高级】索引优化分析（三） | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/01/08/2019/2019-01-08-mysql-index-optimization-03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【MySQL高级】索引优化分析（三）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-08T02:09:24+08:00">
+                2019-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：在索引优化分析的前两篇文章中，我们讨论了索引相关基础知识，也重点介绍了<code>EXPLAIN</code>执行计划。针对于索引的分析，本篇文章以单表优化、两表优化、三表优化为例，详细介绍了未创建索引和创建索引情况下语句的执行情况，尤其是在<code>Join</code>连接的情况下，如何更好的建立索引才能使性能更优化。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="索引分析"><a href="#索引分析" class="headerlink" title="索引分析"></a>索引分析</h1><h2 id="单表优化案例"><a href="#单表优化案例" class="headerlink" title="单表优化案例"></a>单表优化案例</h2><p>相关建表语句和数据如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="string">`article`</span>(</span><br><span class="line"><span class="string">`id`</span> <span class="built_in">INT</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT,</span><br><span class="line"><span class="string">`author_id`</span> <span class="built_in">INT</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`category_id`</span> <span class="built_in">INT</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`views`</span> <span class="built_in">INT</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`comments`</span> <span class="built_in">INT</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`title`</span> VARBINARY(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`content`</span> <span class="built_in">TEXT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`article`</span>(<span class="string">`author_id`</span>,<span class="string">`category_id`</span>,<span class="string">`views`</span>,<span class="string">`comments`</span>,<span class="string">`title`</span>,<span class="string">`content`</span>) <span class="keyword">VALUES</span> </span><br><span class="line">(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="string">'1'</span>,<span class="string">'1'</span>),</span><br><span class="line">(<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="string">'2'</span>,<span class="string">'2'</span>),</span><br><span class="line">(<span class="number">1</span>,<span class="number">1</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="string">'3'</span>,<span class="string">'3'</span>);</span><br></pre></td></tr></table></figure>
+<p>要求：查询<code>category_id</code>为1且<code>comments</code>大于1的情况下，<code>views</code>最多的<code>article_id</code>。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> id,author_id <span class="keyword">FROM</span> article <span class="keyword">WHERE</span> <span class="symbol">`category_id`</span> = <span class="number">1</span> <span class="keyword">AND</span> <span class="symbol">`comments`</span> &gt; <span class="number">1</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> views <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/01.jpg?raw=true" alt="index-optimization-01"><br>未建索引的情况下，从上图可以看到上面的查询语句进行全表扫描（<code>All</code>）和文件内排序（<code>Using filesort</code>）。显然，这种查询是最坏的情况，优化是必须的。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- ALTER TABLE `article` ADD <span class="keyword">INDEX</span> idx_article_ccv(<span class="symbol">`category_id`</span>,<span class="symbol">`comments`</span>,<span class="symbol">`views`</span>);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">index</span> idx_article_ccv <span class="keyword">on</span> article(<span class="symbol">`category_id`</span>,<span class="symbol">`comments`</span>,<span class="symbol">`views`</span>);</span><br><span class="line">SHOW <span class="keyword">INDEX</span> <span class="keyword">FROM</span> <span class="symbol">`article`</span>;</span><br><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> id,author_id <span class="keyword">FROM</span> article <span class="keyword">WHERE</span> <span class="symbol">`category_id`</span> = <span class="number">1</span> <span class="keyword">AND</span> <span class="symbol">`comments`</span> &gt; <span class="number">1</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> views <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/02.jpg?raw=true" alt="index-optimization-02"></p>
+<p>经过创建索引后再次执行<code>SQL</code>语句，会发现<code>type</code>访问类型由全表扫描<code>ALL</code>变成了<code>rang</code>范围，但是扫描的时候依然进行了文件内排序（<code>Using filesort</code>）。</p>
+<blockquote>
+<p>我们已经建立了索引，为什么没有用？</p>
+</blockquote>
+<p>这是因为按照<code>BTree</code>索引的工作原理，先排序<code>category_id</code>，如果遇到相同的<code>category_id</code>则再排序<code>comments</code>，如果遇到相同的<code>comments</code>则再排序<code>views</code>。而本次查询的<code>comments</code>字段在联合索引的中间位置，<code>comments</code> &gt; 1条件是一个范围值（<code>type</code>值为<code>range</code>）,<code>MySQL</code>无法利用索引再对后面的<code>views</code>部分进行检索，也就是说<code>range</code>类型查询字段后面的索引无效。<br><figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> idx_article_ccv <span class="keyword">ON</span> article;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> idx_article_cv <span class="keyword">ON</span> <span class="symbol">`article`</span>(category_id,views);</span><br><span class="line">SHOW <span class="keyword">INDEX</span> <span class="keyword">FROM</span> <span class="symbol">`article`</span>;</span><br><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> id,author_id <span class="keyword">FROM</span> article <span class="keyword">WHERE</span> <span class="symbol">`category_id`</span> = <span class="number">1</span> <span class="keyword">AND</span> <span class="symbol">`comments`</span> &gt; <span class="number">1</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> views <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/03.jpg?raw=true" alt="index-optimization-03"><br>经过第三次的分析并重新创建了索引，可将<code>Extra</code>中的<code>Using filesort</code>优化处理掉。</p>
+<h2 id="两表优化案例"><a href="#两表优化案例" class="headerlink" title="两表优化案例"></a>两表优化案例</h2><p>建表语句如下：</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> TABLE <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="symbol">`class`</span>(</span><br><span class="line"><span class="symbol">`id`</span> INT(<span class="number">10</span>) UNSIGNED <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"><span class="symbol">`card`</span> INT(<span class="number">10</span>) UNSIGNED <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="keyword">PRIMARY</span> <span class="keyword">KEY</span>(<span class="symbol">`id`</span>)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">CREATE</span> TABLE <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="symbol">`book`</span>(</span><br><span class="line"><span class="symbol">`bookid`</span> INT(<span class="number">10</span>) UNSIGNED <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"><span class="symbol">`card`</span> INT(<span class="number">10</span>) UNSIGNED <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="keyword">PRIMARY</span> <span class="keyword">KEY</span> (<span class="symbol">`bookid`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>分别插入20条数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">class</span>(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="string">`card`</span>) <span class="keyword">VALUES</span>(<span class="keyword">FLOOR</span>(<span class="number">1</span>+(<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br></pre></td></tr></table></figure>
+<p>未建索引时，<code>Explain</code>执行计划中的<code>type</code>为<code>ALL</code>：<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/04.jpg?raw=true" alt="index-optimization-04"><br>左连接时分别加左表索引和右表索引时的执行计划如下：<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/05.jpg?raw=true" alt="index-optimization-05"><br>左连接的特性决定左表必须全部都有，右表最好建立索引，查询优化效率最好。<br>同样，右连接的特性决定如何从左表搜索行，右边一定都会有，左边的表一定要建立索引。</p>
+<blockquote>
+<p>结论：左连接，右表建索引；右连接，左表建索引。</p>
+</blockquote>
+<h2 id="三表优化案例"><a href="#三表优化案例" class="headerlink" title="三表优化案例"></a>三表优化案例</h2><p>再增加一个表如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="string">`phone`</span>(</span><br><span class="line"><span class="string">`phoneid`</span> <span class="built_in">iNT</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"><span class="string">`card`</span> <span class="built_in">INT</span>(<span class="number">10</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">PRIMARY <span class="keyword">KEY</span> (<span class="string">`phoneid`</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span> = <span class="keyword">INNODB</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> phone(card) <span class="keyword">VALUES</span>(<span class="keyword">floor</span>(<span class="number">1</span> + (<span class="keyword">RAND</span>() * <span class="number">20</span>)));</span><br></pre></td></tr></table></figure>
+<p>三表连接时，依然遵循之前两表的原则建立索引，左连接时所有的右表都建索引，最终执行计划如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 左连接时，右表继续添加索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="string">`phone`</span> <span class="keyword">ADD</span> <span class="keyword">INDEX</span> p(<span class="string">`card`</span>);</span><br><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">class</span> <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> book <span class="keyword">ON</span> class.card = book.card <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> phone <span class="keyword">ON</span> book.card = phone.card;</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-03/06.jpg?raw=true" alt="index-optimization-06"><br>结论：<br>① 左连接时右表建索引，右连接时左边建索引的原则。<br>② 尽可能减少<code>Join</code>语句中的嵌套循环总次数，永远记住用小表驱动大表。<br>③ 优先优化嵌套循环的内层循环，保证<code>Join</code>语句中被驱动表上的<code>Join</code>条件字段已经被建立索引。<br>④ 当无法保证被驱动表的<code>Join</code>条件字段被索引且内存资源充足的前提下，<code>JoinBuffer</code>的设置可以设置大一些。</p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2018/12/28/2018/2018-12-28-mysql-index-optimization-02/" rel="next" title="【MySQL高级】索引优化分析（二）">
+                <i class="fa fa-chevron-left"></i> 【MySQL高级】索引优化分析（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#索引分析"><span class="nav-number">1.</span> <span class="nav-text">索引分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单表优化案例"><span class="nav-number">1.1.</span> <span class="nav-text">单表优化案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两表优化案例"><span class="nav-number">1.2.</span> <span class="nav-text">两表优化案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三表优化案例"><span class="nav-number">1.3.</span> <span class="nav-text">三表优化案例</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
