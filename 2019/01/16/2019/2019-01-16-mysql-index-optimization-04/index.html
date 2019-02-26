@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：MySQL 索引通常是被用于提高WHERE条件的数据行匹配时的搜索速度，在索引的使用过程中，存在一些使用细节和注意事项。为了避免索引失效，本篇文章主要分析了十种情况，其中包括最佳全值匹配、最左前缀原则（中间索引不能跳）、索引列少计算、存储引擎不能使用索引中范围条件右边的列、尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select *、like 以通配符开头（%abc...">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL高级】索引优化分析（四）">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/01/16/2019/2019-01-16-mysql-index-optimization-04/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：MySQL 索引通常是被用于提高WHERE条件的数据行匹配时的搜索速度，在索引的使用过程中，存在一些使用细节和注意事项。为了避免索引失效，本篇文章主要分析了十种情况，其中包括最佳全值匹配、最左前缀原则（中间索引不能跳）、索引列少计算、存储引擎不能使用索引中范围条件右边的列、尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select *、like 以通配符开头（%abc...">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/01.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/02.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/03.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/04.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/05.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/06.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/07.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/08.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/09.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/10.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/11.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/12.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/13.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/14.jpg?raw=true">
+<meta property="og:updated_time" content="2019-02-26T06:05:01.176Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【MySQL高级】索引优化分析（四）">
+<meta name="twitter:description" content="摘要：MySQL 索引通常是被用于提高WHERE条件的数据行匹配时的搜索速度，在索引的使用过程中，存在一些使用细节和注意事项。为了避免索引失效，本篇文章主要分析了十种情况，其中包括最佳全值匹配、最左前缀原则（中间索引不能跳）、索引列少计算、存储引擎不能使用索引中范围条件右边的列、尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select *、like 以通配符开头（%abc...">
+<meta name="twitter:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/01.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/01/16/2019/2019-01-16-mysql-index-optimization-04/"/>
+
+
+
+
+
+  <title>【MySQL高级】索引优化分析（四） | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/01/16/2019/2019-01-16-mysql-index-optimization-04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【MySQL高级】索引优化分析（四）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-16T02:09:24+08:00">
+                2019-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：<code>MySQL</code> 索引通常是被用于提高<code>WHERE</code>条件的数据行匹配时的搜索速度，在索引的使用过程中，存在一些使用细节和注意事项。为了避免索引失效，本篇文章主要分析了十种情况，其中包括最佳全值匹配、最左前缀原则（中间索引不能跳）、索引列少计算、存储引擎不能使用索引中范围条件右边的列、尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免<code>select *</code>、<code>like</code> 以通配符开头（<code>%abc...</code>）<code>MySQL</code>索引会失效变成全表扫描等情况。
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<p>建表语句如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> staffs(</span><br><span class="line"><span class="string">`id`</span> <span class="built_in">INT</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT,</span><br><span class="line"><span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">24</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'姓名'</span>,</span><br><span class="line"><span class="string">`age`</span> <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> <span class="keyword">COMMENT</span> <span class="string">'年龄'</span>,</span><br><span class="line"><span class="string">`pos`</span> <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'职位'</span>,</span><br><span class="line"><span class="string">`add_time`</span> <span class="keyword">TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">COMMENT</span> <span class="string">'入职时间'</span></span><br><span class="line">) <span class="keyword">CHARSET</span> utf8 <span class="keyword">COMMENT</span> <span class="string">'员工记录表'</span>;</span><br></pre></td></tr></table></figure>
+<p>数据插入：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> staffs(<span class="keyword">name</span>,age,pos,add_time) <span class="keyword">VALUES</span>(<span class="string">'z3'</span>,<span class="number">22</span>,<span class="string">'manager'</span>,<span class="keyword">NOW</span>());</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> staffs(<span class="keyword">name</span>,age,pos,add_time) <span class="keyword">VALUES</span>(<span class="string">'July'</span>,<span class="number">23</span>,<span class="string">'dev'</span>,<span class="keyword">NOW</span>());</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> staffs(<span class="keyword">name</span>,age,pos,add_time) <span class="keyword">VALUES</span>(<span class="string">'2000'</span>,<span class="number">23</span>,<span class="string">'dev'</span>,<span class="keyword">NOW</span>());</span><br></pre></td></tr></table></figure>
+<p>建立索引语句如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> staffs <span class="keyword">ADD</span> <span class="keyword">INDEX</span> idx_staffs_nameAgePos(<span class="keyword">name</span>,age,pos);</span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">INDEX</span> <span class="keyword">FROM</span> staffs;</span><br></pre></td></tr></table></figure>
+<h1 id="全值匹配最佳"><a href="#全值匹配最佳" class="headerlink" title="全值匹配最佳"></a>全值匹配最佳</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/01.jpg?raw=true" alt="mysql-index-optimization-04-01"></p>
+<h1 id="最左前缀原则（中间索引不能跳）"><a href="#最左前缀原则（中间索引不能跳）" class="headerlink" title="最左前缀原则（中间索引不能跳）"></a>最左前缀原则（中间索引不能跳）</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/02.jpg?raw=true" alt="mysql-index-optimization-04-02"><br>由上面的执行分析可知，如果索引为多列，要遵守最左前缀法则。<br>查询从索引的最左前列开始并且不能跳过索引中的列。</p>
+<h1 id="索引列少计算"><a href="#索引列少计算" class="headerlink" title="索引列少计算"></a>索引列少计算</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/03.jpg?raw=true" alt="mysql-index-optimization-04-03"><br>不在索引列上做任何操作（计算、函数、（自动或手动）类型转换），否则会导致索引失效而转向全表扫描。</p>
+<h1 id="存储引擎不能使用索引中范围条件右边的列"><a href="#存储引擎不能使用索引中范围条件右边的列" class="headerlink" title="存储引擎不能使用索引中范围条件右边的列"></a>存储引擎不能使用索引中范围条件右边的列</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/04.jpg?raw=true" alt="mysql-index-optimization-04-04"><br>根据上面的执行计划可知，当索引中查询条件为范围查询时，索引范围查询右边列会失效。</p>
+<h1 id="尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select"><a href="#尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select" class="headerlink" title="尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select*"></a>尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select*</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/05.jpg?raw=true" alt="mysql-index-optimization-04-05"><br>建立索引的列<code>name</code>,<code>age</code>,<code>pos</code>尽量与查询的列保持顺序一致和个数一致。</p>
+<h1 id="MySQL在使用不等于（-或者-lt-gt-）的时候无法使用索引，会导致全表扫描"><a href="#MySQL在使用不等于（-或者-lt-gt-）的时候无法使用索引，会导致全表扫描" class="headerlink" title="MySQL在使用不等于（!=或者&lt;&gt;）的时候无法使用索引，会导致全表扫描"></a><code>MySQL</code>在使用不等于（!=或者&lt;&gt;）的时候无法使用索引，会导致全表扫描</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/06.jpg?raw=true" alt="mysql-index-optimization-04-06"></p>
+<h1 id="is-null，is-not-null-也无法使用索引"><a href="#is-null，is-not-null-也无法使用索引" class="headerlink" title="is null，is not null 也无法使用索引"></a><code>is null</code>，<code>is not null</code> 也无法使用索引</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/07.jpg?raw=true" alt="mysql-index-optimization-04-07"></p>
+<h1 id="like以通配符开头（-39-abc-39-）MySQL索引会失效变成全表扫描"><a href="#like以通配符开头（-39-abc-39-）MySQL索引会失效变成全表扫描" class="headerlink" title="like以通配符开头（&#39;%abc...&#39;）MySQL索引会失效变成全表扫描"></a>like以通配符开头（<code>&#39;%abc...&#39;</code>）<code>MySQL</code>索引会失效变成全表扫描</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/08.jpg?raw=true" alt="mysql-index-optimization-04-08"></p>
+<blockquote>
+<p>当模糊查询<code>LIKE</code>的百分号写在右边时索引才有效。但实际生产环境往往需要左右都是模糊查询，那如何解决<code>like</code>‘%查询字符串%’时索引不被使用的方法’？<br>建表语句和数据如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tbl_user(</span><br><span class="line"><span class="string">`id`</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"><span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`age`</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`email`</span> <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span>=<span class="keyword">INNODB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tbl_user(<span class="keyword">name</span>,age,email) <span class="keyword">VALUES</span>(<span class="string">'1aa1'</span>,<span class="number">21</span>,<span class="string">'w@gmail.com'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tbl_user(<span class="keyword">name</span>,age,email) <span class="keyword">VALUES</span>(<span class="string">'2aa2'</span>,<span class="number">211</span>,<span class="string">'x@gmail.com'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tbl_user(<span class="keyword">name</span>,age,email) <span class="keyword">VALUES</span>(<span class="string">'3aa3'</span>,<span class="number">985</span>,<span class="string">'wx@gmail.com'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tbl_user(<span class="keyword">name</span>,age,email) <span class="keyword">VALUES</span>(<span class="string">'4aa4'</span>,<span class="number">95</span>,<span class="string">'xw@gmail.com'</span>);</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>创建索引语句如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> idx_user_nameAge <span class="keyword">ON</span> tbl_user(<span class="keyword">name</span>,age);</span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">INDEX</span> <span class="keyword">FROM</span> tbl_user;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/09.jpg?raw=true" alt="mysql-index-optimization-04-09"><br>单独的<code>id</code>，单独的<code>name</code>，单独的<code>age</code>都会用到索引，查询的字段为索引的全部或者部分字段，会使用索引查询，如果查询的字段比所建索引字段多，索引会失效。<br>因此，对于<code>like</code>‘%查询字符串%’时，使用覆盖索引来进行查询可以解决索引失效的问题。</p>
+<h1 id="字符串不加单引号索引失效"><a href="#字符串不加单引号索引失效" class="headerlink" title="字符串不加单引号索引失效"></a>字符串不加单引号索引失效</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/10.jpg?raw=true" alt="mysql-index-optimization-04-10"></p>
+<h1 id="少用or，用它来连接时索引会失效"><a href="#少用or，用它来连接时索引会失效" class="headerlink" title="少用or，用它来连接时索引会失效"></a>少用or，用它来连接时索引会失效</h1><p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/11.jpg?raw=true" alt="mysql-index-optimization-04-11"><br>案例1：<br>假设<code>index(a,b,c)</code></p>
+<table>
+<thead>
+<tr>
+<th>where语句</th>
+<th>索引是否被使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>where a = 3</td>
+<td>Y，使用到a</td>
+</tr>
+<tr>
+<td>where a = 3 and b = 5</td>
+<td>Y，使用到a，b</td>
+</tr>
+<tr>
+<td>where a = 3 and b = 5 and c = 4</td>
+<td>Y，使用到a，b，c</td>
+</tr>
+<tr>
+<td>where b = 3 或者 where b = 3 and c = 4 或者 where c = 4</td>
+<td>N</td>
+</tr>
+<tr>
+<td>where a = 3 and c = 5</td>
+<td>使用到了a，但是c没有被使用，因为b中间断了</td>
+</tr>
+<tr>
+<td>where a = 3 and b &gt; 4 and c = 5</td>
+<td>使用到了a和b，c不能用在范围之后，b断了</td>
+</tr>
+<tr>
+<td>where a = 3 and b like ‘kk%’ and c = 4</td>
+<td>Y，使用到a，b，c</td>
+</tr>
+<tr>
+<td>where a = 3 and b like ‘%kk’ and c = 4</td>
+<td>Y，只用到a</td>
+</tr>
+<tr>
+<td>where a = 3 and b like ‘%kk%’ and c = 4</td>
+<td>Y，只用到a</td>
+</tr>
+<tr>
+<td>where a = 3 and b like ‘k%kk%’ and c = 4</td>
+<td>Y，使用到a，b，c</td>
+</tr>
+</tbody>
+</table>
+<p>案例2：<br>建表语句：</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> TABLE test03(</span><br><span class="line"><span class="symbol">`id`</span> INT <span class="keyword">PRIMARY</span> <span class="keyword">KEY</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"><span class="symbol">`c1`</span> CHAR(<span class="number">10</span>),</span><br><span class="line"><span class="symbol">`c2`</span> CHAR(<span class="number">10</span>),</span><br><span class="line"><span class="symbol">`c3`</span> CHAR(<span class="number">10</span>),</span><br><span class="line"><span class="symbol">`c4`</span> CHAR(<span class="number">10</span>),</span><br><span class="line"><span class="symbol">`c5`</span> CHAR(<span class="number">10</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>插入数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> test03(c1,c2,c3,c4,c5) <span class="keyword">VALUES</span>(<span class="string">'a1'</span>,<span class="string">'a2'</span>,<span class="string">'a3'</span>,<span class="string">'a4'</span>,<span class="string">'a5'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> test03(c1,c2,c3,c4,c5) <span class="keyword">VALUES</span>(<span class="string">'b1'</span>,<span class="string">'b2'</span>,<span class="string">'b3'</span>,<span class="string">'b4'</span>,<span class="string">'b5'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> test03(c1,c2,c3,c4,c5) <span class="keyword">VALUES</span>(<span class="string">'c1'</span>,<span class="string">'c2'</span>,<span class="string">'c3'</span>,<span class="string">'c4'</span>,<span class="string">'c5'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> test03(c1,c2,c3,c4,c5) <span class="keyword">VALUES</span>(<span class="string">'d1'</span>,<span class="string">'d2'</span>,<span class="string">'d3'</span>,<span class="string">'d4'</span>,<span class="string">'d5'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> test03(c1,c2,c3,c4,c5) <span class="keyword">VALUES</span>(<span class="string">'e1'</span>,<span class="string">'e2'</span>,<span class="string">'e3'</span>,<span class="string">'e4'</span>,<span class="string">'e5'</span>);</span><br></pre></td></tr></table></figure>
+<p>创建复合索引：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> idx_test03_c1234 <span class="keyword">on</span> test03(c1,c2,c3,c4);</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">index</span> <span class="keyword">from</span> test03;</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/12.jpg?raw=true" alt="mysql-index-optimization-04-12"><br>① 索引全值匹配时，顺序不一致<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/13.jpg?raw=true" alt="mysql-index-optimization-04-13"><br>从上图可以看出，我们所建立的索引顺序为<code>c1</code>，<code>c2</code>，<code>c3</code>，<code>c4</code>，但是当我们查询顺序与所建的索引顺序不一致时，执行计划依然是最优的索引查询，<code>type</code>为<code>ref</code>,<code>ref</code>依然为<code>const</code>。这是因为<code>MySQL</code>逻辑架构层服务层中自带查询优化器，会在<code>SQL</code>执行语句之前进行优化处理。</p>
+<blockquote>
+<p>避免MySQL底层会多一层转化，在不影响业务数据查询时，建议<code>SQL</code>语句与索引建立的顺序保持一致。</p>
+</blockquote>
+<p>② 范围之后全失效<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-index-optimization-04/14.jpg?raw=true" alt="mysql-index-optimization-04-14"><br>分析得到，第一种情况用到3个索引，是因为查询顺序与所建立的索引顺序一致，到<code>c3</code>之后变成了范围查询，<code>c4</code>失效，因此只用到三个索引<code>c1</code>，<code>c2</code>，<code>c3</code>；第二种情况用到了<code>c1</code>和<code>c2</code>，因为<code>c4</code>是范围查询，导致<code>c3</code>也失效，只用到了两个索引。第三种情况用到2个索引，因为<code>c4</code>断层，导致<code>c3</code>和<code>c4</code>没有用到索引，<code>c3</code>的作用在于排序而不是查找。第四种情况和第三种是一样的。第五种情况用到了2个索引，并且额外用到了文件排序。</p>
+<p>优化总结口诀：</p>
+<blockquote>
+<p>全值匹配我最爱，最左前缀要遵守；<br>带头大哥不能死，中间兄弟不能断；<br>索引列上少计算，范围之后全失效；<br>LIKE百分写最右，覆盖索引不写星；<br>不等空值还有or，索引失效要少用；<br>VAR引号不可丢，SQL高级也不难。</p>
+</blockquote>
+<p>结论：<br>① 全值匹配最佳，所建立的索引字段与查询条件中的字段一一对应（个数和顺序一致）是最佳的。<br>② 如果索引为多列，要遵守最左前缀法则。查询从索引的最左前列开始并且不能跳过索引中的列。<br>③ 不在索引列上做任何操作（计算、函数、（自动或手动）类型转换），会导致索引失效而转向全表扫描。<br>④ 存储引擎不能使用索引中范围条件右边的列。<br>⑤ 尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免<code>select*</code>。<br>⑥ <code>MySQL</code>在使用不等于（!=或者&lt;&gt;）的时候无法使用索引，会导致全表扫描。<br>⑦ <code>is null</code>，<code>is not null</code> 也无法使用索引。<br>⑧ <code>like</code>以通配符开头（<code>%abc...</code>）<code>MySQL</code>索引会失效变成全表扫描。<br>⑨ 字符串不加单引号索引失效。<br>⑩ 少用<code>or</code>，用它来连接时索引会失效。</p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/01/08/2019/2019-01-08-mysql-index-optimization-03/" rel="next" title="【MySQL高级】索引优化分析（三）">
+                <i class="fa fa-chevron-left"></i> 【MySQL高级】索引优化分析（三）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#全值匹配最佳"><span class="nav-number">1.</span> <span class="nav-text">全值匹配最佳</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最左前缀原则（中间索引不能跳）"><span class="nav-number">2.</span> <span class="nav-text">最左前缀原则（中间索引不能跳）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#索引列少计算"><span class="nav-number">3.</span> <span class="nav-text">索引列少计算</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储引擎不能使用索引中范围条件右边的列"><span class="nav-number">4.</span> <span class="nav-text">存储引擎不能使用索引中范围条件右边的列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select"><span class="nav-number">5.</span> <span class="nav-text">尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），避免select*</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL在使用不等于（-或者-lt-gt-）的时候无法使用索引，会导致全表扫描"><span class="nav-number">6.</span> <span class="nav-text">MySQL在使用不等于（!=或者&lt;&gt;）的时候无法使用索引，会导致全表扫描</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#is-null，is-not-null-也无法使用索引"><span class="nav-number">7.</span> <span class="nav-text">is null，is not null 也无法使用索引</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#like以通配符开头（-39-abc-39-）MySQL索引会失效变成全表扫描"><span class="nav-number">8.</span> <span class="nav-text">like以通配符开头（&#39;%abc...&#39;）MySQL索引会失效变成全表扫描</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串不加单引号索引失效"><span class="nav-number">9.</span> <span class="nav-text">字符串不加单引号索引失效</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#少用or，用它来连接时索引会失效"><span class="nav-number">10.</span> <span class="nav-text">少用or，用它来连接时索引会失效</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
