@@ -87,14 +87,15 @@
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：慢查询日志是MySQL提供的一种日志记录，它是数据库调优的一个主要依据，通过分析慢查询日志我们可以对相关SQL语句变慢的原因进行进一步的分析。由于日志跟踪出来的文件是一个文本文件，查看起来费时费力，MySQL也提供了一个工具便于从文本文件里面查找的工具mysqldumpslow。本篇文章除了介绍慢查询日志的概念和具体参数，也重点介绍了MySQL分析日志工具mysqldumpslow。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/03.jpg?raw=true">
 <meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/01.jpg?raw=true">
 <meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/02.jpg?raw=true">
 <meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/03.jpg?raw=true">
-<meta property="og:updated_time" content="2019-03-03T13:39:00.434Z">
+<meta property="og:updated_time" content="2019-03-03T13:45:05.893Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="﻿【MySQL高级】查询截取分析-慢查询日志">
 <meta name="twitter:description" content="摘要：慢查询日志是MySQL提供的一种日志记录，它是数据库调优的一个主要依据，通过分析慢查询日志我们可以对相关SQL语句变慢的原因进行进一步的分析。由于日志跟踪出来的文件是一个文本文件，查看起来费时费力，MySQL也提供了一个工具便于从文本文件里面查找的工具mysqldumpslow。本篇文章除了介绍慢查询日志的概念和具体参数，也重点介绍了MySQL分析日志工具mysqldumpslow。">
-<meta name="twitter:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/01.jpg?raw=true">
+<meta name="twitter:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/03.jpg?raw=true">
 
 
 
@@ -376,7 +377,7 @@
       
 
       
-        <p><strong><br>摘要：慢查询日志是<code>MySQL</code>提供的一种日志记录，它是数据库调优的一个主要依据，通过分析慢查询日志我们可以对相关SQL语句变慢的原因进行进一步的分析。由于日志跟踪出来的文件是一个文本文件，查看起来费时费力，<code>MySQL</code>也提供了一个工具便于从文本文件里面查找的工具<code>mysqldumpslow</code>。本篇文章除了介绍慢查询日志的概念和具体参数，也重点介绍了<code>MySQL</code>分析日志工具<code>mysqldumpslow</code>。
+        <p><strong><br>摘要：慢查询日志是<code>MySQL</code>提供的一种日志记录，它是数据库调优的一个主要依据，通过分析慢查询日志我们可以对相关SQL语句变慢的原因进行进一步的分析。由于日志跟踪出来的文件是一个文本文件，查看起来费时费力，<code>MySQL</code>也提供了一个工具便于从文本文件里面查找的工具<code>mysqldumpslow</code>。本篇文章除了介绍慢查询日志的概念和具体参数，也重点介绍了<code>MySQL</code>分析日志工具<code>mysqldumpslow</code>。<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/03.jpg?raw=true" alt="慢查询日志-03">
 </strong><br><a id="more"></a></p>
 <the rest="" of="" contents="" |="" 余下全文="">
 
@@ -387,10 +388,8 @@
 <p>可以通过设置<code>long_query_time</code>为0来捕获所有的查询。</p>
 </blockquote>
 <h1 id="慢查询日志参数"><a href="#慢查询日志参数" class="headerlink" title="慢查询日志参数"></a>慢查询日志参数</h1><p>默认情况下，<code>MySQL</code>数据库没有开启慢查询日志，需要手动设置参数<code>slow_query_log</code>。当然，如果不是调优需要的话，一般不建议启动该参数，因为开启慢查询日志会或多或少带来一定的性能影响。慢查询日志支持将日志记录写入文件。</p>
-<p>查看是否开启：</p>
-<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SHOW <span class="keyword">VARIABLES</span> LIKE <span class="comment">'%slow_query_log%'</span>;</span><br></pre></td></tr></table></figure>
-<p>设置开启：</p>
-<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">set</span> global <span class="comment">slow_query_log = 1</span>;</span><br></pre></td></tr></table></figure>
+<p>查看是否开启：<br><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SHOW <span class="keyword">VARIABLES</span> LIKE <span class="comment">'%slow_query_log%'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>设置开启：<br><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">set</span> global <span class="comment">slow_query_log = 1</span>;</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/01.jpg?raw=true" alt="慢查询日志-01"></p>
 <blockquote>
 <p>第一次设置以后查看没有生效，先关闭数据库连接，再重新连接，再次查询就可以看到实际上是修改了。</p>
@@ -410,7 +409,57 @@
 <p>修改无效，需要重新连接或新开一个会话才能看到修改值。</p>
 </blockquote>
 <p>查看慢查询的条数：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show global status like <span class="string">'%Slow_queries%'</span>;</span></span><br></pre></td></tr></table></figure></p>
-<h1 id="日志分析工具"><a href="#日志分析工具" class="headerlink" title="日志分析工具"></a>日志分析工具</h1><p>在生产环境中，如果要手工分析日志，查找、分析<code>SQL</code>，显然是个体力活。<code>MySQL</code>提供了日志分析工具<code>mysqldumpslow</code>。<br>|参数|说明|<br>|–|–|<br>|s|表示按照何种方式排序|<br>|c|访问次数|<br>|l|锁定时间|<br>|r|返回记录|<br>|t|查询时间|<br>|al|平均锁定时间|<br>|ar|平均返回记录数|<br>|at|平均查询时间|<br>|-t|是top n的意思，即为返回前面多少条的数据|<br>|-g|后边可以写一个正则匹配模式，大小写不敏感的|</p>
+<h1 id="日志分析工具"><a href="#日志分析工具" class="headerlink" title="日志分析工具"></a>日志分析工具</h1><p>在生产环境中，如果要手工分析日志，查找、分析<code>SQL</code>，显然是个体力活。<code>MySQL</code>提供了日志分析工具<code>mysqldumpslow</code>。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s</td>
+<td>表示按照何种方式排序</td>
+</tr>
+<tr>
+<td>c</td>
+<td>访问次数</td>
+</tr>
+<tr>
+<td>l</td>
+<td>锁定时间</td>
+</tr>
+<tr>
+<td>r</td>
+<td>返回记录</td>
+</tr>
+<tr>
+<td>t</td>
+<td>查询时间</td>
+</tr>
+<tr>
+<td>al</td>
+<td>平均锁定时间</td>
+</tr>
+<tr>
+<td>ar</td>
+<td>平均返回记录数</td>
+</tr>
+<tr>
+<td>at</td>
+<td>平均查询时间</td>
+</tr>
+<tr>
+<td>-t</td>
+<td>是top n的意思，即为返回前面多少条的数据</td>
+</tr>
+<tr>
+<td>-g</td>
+<td>后边可以写一个正则匹配模式，大小写不敏感的</td>
+</tr>
+</tbody>
+</table>
 <p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-slow-query/03.jpg?raw=true" alt="慢查询日志-03"></p>
 <p>得到返回记录集最多的10个<code>SQL</code>：<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldumpslow -s r -t <span class="number">10</span> /var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span>/<span class="title">slow</span>-<span class="title">query</span>.<span class="title">log</span></span></span><br></pre></td></tr></table></figure></p>
 <p>得到访问次数最多的10个<code>SQL</code>：<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldumpslow -s c -t <span class="number">10</span> /var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span>/<span class="title">slow</span>-<span class="title">query</span>.<span class="title">log</span></span></span><br></pre></td></tr></table></figure></p>
