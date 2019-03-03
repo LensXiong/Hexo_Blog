@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：MySQL锁机制是数据库为了保证数据的一致性而使各种共享资源在被并发访问变得有序所设计的一种规则，对于任何一种数据库来说都需要有相应的锁定机制。MySQL为了解决并发、数据安全的问题，使用了锁机制。本篇文章主要介绍了锁的基本概念及锁的分类。从对数据操作的粒度，通过相关案例分析了行锁(INNODB引擎)、表锁(MYISAM引擎)和页级锁(BDB引擎 )，对于相关问题给出一些基本的优化方案。">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="﻿【MySQL高级】MySQL锁机制">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/03/03/2019/2019-03-03-mysql-lock/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：MySQL锁机制是数据库为了保证数据的一致性而使各种共享资源在被并发访问变得有序所设计的一种规则，对于任何一种数据库来说都需要有相应的锁定机制。MySQL为了解决并发、数据安全的问题，使用了锁机制。本篇文章主要介绍了锁的基本概念及锁的分类。从对数据操作的粒度，通过相关案例分析了行锁(INNODB引擎)、表锁(MYISAM引擎)和页级锁(BDB引擎 )，对于相关问题给出一些基本的优化方案。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/02.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/01.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/02.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/03.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/04.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/05.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/06.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/07.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/08.jpg?raw=true">
+<meta property="og:updated_time" content="2019-03-03T14:30:19.111Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="﻿【MySQL高级】MySQL锁机制">
+<meta name="twitter:description" content="摘要：MySQL锁机制是数据库为了保证数据的一致性而使各种共享资源在被并发访问变得有序所设计的一种规则，对于任何一种数据库来说都需要有相应的锁定机制。MySQL为了解决并发、数据安全的问题，使用了锁机制。本篇文章主要介绍了锁的基本概念及锁的分类。从对数据操作的粒度，通过相关案例分析了行锁(INNODB引擎)、表锁(MYISAM引擎)和页级锁(BDB引擎 )，对于相关问题给出一些基本的优化方案。">
+<meta name="twitter:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/02.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/03/03/2019/2019-03-03-mysql-lock/"/>
+
+
+
+
+
+  <title>﻿【MySQL高级】MySQL锁机制 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/03/03/2019/2019-03-03-mysql-lock/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">﻿【MySQL高级】MySQL锁机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-03T08:09:24+08:00">
+                2019-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：<code>MySQL</code>锁机制是数据库为了保证数据的一致性而使各种共享资源在被并发访问变得有序所设计的一种规则，对于任何一种数据库来说都需要有相应的锁定机制。<code>MySQL</code>为了解决并发、数据安全的问题，使用了锁机制。本篇文章主要介绍了锁的基本概念及锁的分类。从对数据操作的粒度，通过相关案例分析了行锁(<code>INNODB</code>引擎)、表锁(<code>MYISAM</code>引擎)和页级锁(<code>BDB</code>引擎 )，对于相关问题给出一些基本的优化方案。<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/02.jpg?raw=true" alt="mysql-lock-02">
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>锁是计算机协调多个进程或线程并发访问某一资源的机制。</p>
+<blockquote>
+<p>当并发事务同时访问一个资源时，有可能导致数据不一致，因此需要一种机制来将数据访问顺序化，以保证数据库数据的一致性。锁就是其中的一种机制。</p>
+</blockquote>
+<p>在数据库中，除传统的计算资源（如<code>CPU</code>、<code>RAM</code>、<code>I/O</code>）等以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。</p>
+<blockquote>
+<p>商品秒杀时，如何保证商品数量不超出实际库存？</p>
+</blockquote>
+<p>这里，除了必须用到事务处理，还需要使用锁对有限的商品资源进行隔离，解决隔离和并发的矛盾。</p>
+<h1 id="锁分类"><a href="#锁分类" class="headerlink" title="锁分类"></a>锁分类</h1><p>从数据操作的类型来分，可分为读锁和写锁。读锁也称为共享锁，是针对同一份数据，多个读操作可以同时进行而不会互相影响。写锁也称为排它锁，当前写操作没有完成前，它会阻断其他写锁和读锁。<br>从对数据操作的粒度分，可分为行锁(<code>INNODB</code>引擎)、表锁(<code>MYISAM</code>引擎)和页级锁(<code>BDB</code>引擎 )。</p>
+<h1 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h1><p>表级锁是<code>MySQL</code>中锁定粒度最大的一种锁，表示对当前操作的整张表加锁，它实现简单，资源消耗较少，被大部分<code>MySQL</code>引擎支持。最常使用的<code>MYISAM</code>与<code>INNODB</code>都支持表级锁定。下面通过手动增加表锁来进行表级锁分析。<br>建表语句1，使用<code>MYISAM</code>引擎：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> mylock(</span><br><span class="line"><span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> primary <span class="keyword">key</span> auto_increment,</span><br><span class="line"><span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">20</span>)</span><br><span class="line">)<span class="keyword">engine</span> myisam;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> mylock(<span class="keyword">name</span>) <span class="keyword">values</span>(<span class="string">'a'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> mylock(<span class="keyword">name</span>) <span class="keyword">values</span>(<span class="string">'b'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> mylock(<span class="keyword">name</span>) <span class="keyword">values</span>(<span class="string">'c'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> mylock(<span class="keyword">name</span>) <span class="keyword">values</span>(<span class="string">'d'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> mylock(<span class="keyword">name</span>) <span class="keyword">values</span>(<span class="string">'e'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>建表语句2：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> book(</span><br><span class="line"><span class="string">`id`</span> <span class="built_in">INT</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT,</span><br><span class="line"><span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">24</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'姓名'</span>,</span><br><span class="line"><span class="string">`age`</span> <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span> <span class="keyword">COMMENT</span> <span class="string">'年龄'</span>,</span><br><span class="line"><span class="string">`pos`</span> <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">''</span> <span class="keyword">COMMENT</span> <span class="string">'职位'</span></span><br><span class="line">) <span class="keyword">CHARSET</span> utf8 <span class="keyword">COMMENT</span> <span class="string">'员工记录表'</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="keyword">name</span>,age,pos) <span class="keyword">VALUES</span>(<span class="string">'z3'</span>,<span class="number">22</span>,<span class="string">'manager'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="keyword">name</span>,age,pos) <span class="keyword">VALUES</span>(<span class="string">'July'</span>,<span class="number">23</span>,<span class="string">'dev'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="keyword">name</span>,age,pos) <span class="keyword">VALUES</span>(<span class="string">'2000'</span>,<span class="number">23</span>,<span class="string">'dev'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>手动增加表锁的语法：<br><figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lock</span> table 表名字<span class="number">1</span> <span class="keyword">read</span>(<span class="keyword">write</span>),表名字<span class="number">2</span> <span class="keyword">read</span>(<span class="keyword">write</span>),其它：</span><br></pre></td></tr></table></figure></p>
+<p>查看加锁表的信息：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show open tables;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show OPEN TABLES <span class="built_in">where</span> In_use &gt; 0;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> lock table mylock <span class="built_in">read</span>,book write;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/01.jpg?raw=true" alt="mysql-lock-01"></p>
+<p>读写锁会对数据操作和系统性能会产生一定的影响：</p>
+<blockquote>
+<p>对表1<code>mylock</code>进行加读锁，<code>session-1</code>和<code>session-2</code>是否可以查看和操作。</p>
+</blockquote>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; lock <span class="keyword">table</span> mylock <span class="comment">read</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/02.jpg?raw=true" alt="mysql-lock-02"></p>
+<p>根据查询结果可知：<br>① 当给<code>mylock</code>加读锁时， <code>session-1</code>只可读<code>mylock</code>表，无法写表和读取其它表。<code>session-2</code>可读任意表，但不能写<code>mylock</code>表。<br>② 表加读锁之后，写表时系统会产生阻塞，只有当解锁之后才会立即进行写操作。</p>
+<blockquote>
+<p>对表1<code>mylock</code>进行加写锁，<code>session-1</code>和<code>session-2</code>是否可以查看和操作。</p>
+</blockquote>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/03.jpg?raw=true" alt="mysql-lock-03"><br>① 当对<code>mylock</code>加写锁时，<code>session-1</code>可读可写<code>mylock</code>表，<code>session-2</code>不能读和写<code>mylock</code>表，但是可以读和写<code>book</code>表。<br>② 只有当解锁<code>mylock</code>表后，<code>session-2</code>的写操作解除阻塞，才可进行写操作。</p>
+<blockquote>
+<p>MySQL的读写锁有什么区别？</p>
+</blockquote>
+<p>1、对<code>MyISAM</code>表的读操作（加读锁），不会阻塞其他进程对同一表的读请求，但会阻塞对同一表的写请求，只有当锁释放后，才会执行其他进程的写操作。<br>2、对<code>MyISAM</code>表的写操作（加写锁），会阻塞其他进程对同一表的读和写操作，只有当写锁释放后，才会执行其他进行的读写操作。</p>
+<p>结论：读锁会阻塞写，但是不会阻塞读。写锁则会把所有的读和写都阻塞。</p>
+<p>记录<code>MySQL</code>内部表级锁定的情况，两个变量说明如下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show status like <span class="string">'table%'</span>;</span></span><br></pre></td></tr></table></figure></p>
+<p><code>Table_locks_immediate</code>：产生表级锁定的次数，表示可以立即获取锁的查询次数，每立即获取锁值加1。<br><code>Table_locks_waited</code>：出现表级锁定争用而发生等待的次数（不能立即获取锁的次数，每等待一次锁值加1），此值高则说明存在着较严重的表级锁争用情况。</p>
+<p><code>MyISAM</code>的读写锁调度是写优先，这也是<code>MyISAM</code>不适合做写为主表的引擎，因为写锁后，其他线程不能做任何操作，大量的更新会使查询很难得到锁，从而造成永远阻塞。</p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/04.jpg?raw=true" alt="mysql-lock-04"></p>
+<h1 id="行级锁"><a href="#行级锁" class="headerlink" title="行级锁"></a>行级锁</h1><p><code>行级锁</code>是<code>MySQL</code>中锁定粒度最细的一种锁，表示只针对当前操作的行进行加锁。行级锁能大大减少数据库操作的冲突。其加锁粒度最小，但加锁的开销也最大。<code>INNODB</code>引擎除了支持表级锁定，也支持行级锁，但<code>INNODB</code>引擎偏向行级锁。<code>INNODB</code>引擎和<code>MyISAM</code>引擎最大的两点不同之处，一是<code>INNODB</code>引擎支持事务，二是<code>INNODB</code>引擎采用行级锁。</p>
+<blockquote>
+<p>由于行锁支持事务，需要明白什么是事务？事务的四大属性具体指的什么？</p>
+</blockquote>
+<p>事务是由一组<code>SQL</code>语句组成的逻辑处理单元，事务具有<code>ACID</code>属性。<br><code>Atomicity</code>（原子性）：原子性是指事务包含的所有操作要么全部成功，要么全部失败回滚。 因此，事务的操作如果成功就必须要完全应用到数据库，如果操作失败则不会对数据库有任何影响，也就是说，事务是应用中不可再分的最小逻辑执行体。<br><code>Consistent</code>（一致性）：在事务开始和完成时，数据都必须保持一致状态。这意味着所有相关的数据规则都必须应用于事务的修改，以保持数据的完整性；事务结束时，所有的内部数据结构（如B树索引或双向链表）也都必须是正确的。拿转账来说，假设用户A和用户B两者的钱加起来一共是5000，那么不管A和B之间如何转账，转几次账，事务结束后两个用户的钱相加起来应该还得是5000，这就是事务的一致性。<br><code>Isolation</code>（隔离性）：数据库系统提供一定的隔离机制，保证事务在不受外部并发操作影响的独立环境执行，这意味着事务处理过程中的中间状态对外部是不可见的，反之亦然。举例来说，对于任意两个并发的事务 T1 和 T2，在事务 T1 看来，T2 要么在 T1 开始之前就已经结束，要么在 T1 结束之后才开始，这样每个事务都感觉不到有其他事务在并发地执行。<br><code>Durable</code>（持久性）：事务完成之后，它对数据的修改是永久存在的，即使出现系统故障也能够保持。换句换说，事务一旦提交，对数据库所做的任何改变都要记录到永久的存储器中(通常就是保存到物理数据库)。</p>
+<p>创建<code>SQL</code>语句，使用<code>INNODB</code>引擎：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test_innodb_lock(a <span class="built_in">int</span>(<span class="number">11</span>),b <span class="built_in">varchar</span>(<span class="number">16</span>)) <span class="keyword">engine</span>=<span class="keyword">innodb</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'b2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'3'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">4</span>,<span class="string">'4000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">5</span>,<span class="string">'5000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">6</span>,<span class="string">'6000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">7</span>,<span class="string">'7000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">8</span>,<span class="string">'8000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">9</span>,<span class="string">'9000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test_innodb_lock <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'b1'</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> test_innodb_a_ind <span class="keyword">on</span> test_innodb_lock(a);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> test_innodb_lock_b_ind <span class="keyword">on</span> test_innodb_lock(b);</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/05.jpg?raw=true" alt="mysql-lock-05"><br>如上所示，因为没有设置自动提交，因为事务的隔离性，会出现读己之所写(左边更新表后自己读取数据为4001，但是右边在<code>commit</code>前读取的数据为4000，<code>commit</code>后才读取到4001)。</p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/06.jpg?raw=true" alt="mysql-lock-06"></p>
+<p>当左边第二次更新为4002但未执行<code>commit</code>命令时，右边第三次更新为4003会发生阻塞（等待7.43秒），只有当左边提交<code>commit</code>后，右边阻塞才会继续执行。</p>
+<blockquote>
+<p>索引失效后除了会导致系统性能下降，还会导致行锁变表锁。</p>
+</blockquote>
+<p>间隙锁：</p>
+<blockquote>
+<p>什么是间隙锁？</p>
+</blockquote>
+<p>当我们使用范围条件而不是相等条件去检索数据，并请求共享锁或排它锁时，<code>InnoDB</code>会给符合条件的已有数据的索引项加锁；对于键值在条件范围内但并不存在的记录，叫做间隙（<code>GAP</code>）,<br><code>InnoDB</code>也会对这个间隙加锁，这种锁机制就是所谓的间隙锁（<code>Next-Key</code>锁）。</p>
+<blockquote>
+<p>间隙锁带来的危害？</p>
+</blockquote>
+<p>间隙锁有一个比较致命的弱点，就是当锁定一个范围键值后，即使某些不存在的键值也会被无辜的锁定，而造成在锁定的时候无法插入锁定键值范围内的任何数据，在某些场景下可能会对性能造成很大的危害。</p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/07.jpg?raw=true" alt="mysql-lock-07"></p>
+<p>由上图可以看出，当进行范围更新时，因为未<code>commit</code>，右边进行数据插入时处于阻塞状态（持续时间为19.54秒），只有当<code>commit</code>提交后，阻塞才会消失。</p>
+<blockquote>
+<p>如何锁定某一行？如何为需要更新的某一行上锁？</p>
+</blockquote>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-lock/08.jpg?raw=true" alt="mysql-lock-08"><br>在业务需要锁定某一行的时候，可进行如上语句的操作。<code>select * for update</code>锁定某一行后，其它进行某一行的操作会被阻塞，直到锁定行的会话提交<code>commit</code>。</p>
+<h1 id="页级锁"><a href="#页级锁" class="headerlink" title="页级锁"></a>页级锁</h1><p>页级锁是<code>MySQL</code>中锁定粒度介于行级锁和表级锁中间的一种锁。表级锁速度快，但冲突多，行级冲突少，但速度慢。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p><code>InnoDB</code>存储引擎由于实现了行级锁定，虽然在锁定机制的实现方面所带来的性能损耗可能会比表级锁定会要高一些，但是在整体并发处理能力方面要远远优于<code>MyISAM</code>的表级锁定。当系统并发量较高的时候，<code>InnoDB</code>的整体性能和<code>MyISAM</code>相比就会有比较明显的优势。</p>
+<p>但是，<code>InnoDB</code>存储引擎的行级锁定同样也有其脆弱的一面，当我们使用不当的时候，可能会让<code>InnoDB</code>存储引擎的整体性能表现不仅不能比<code>MyISAM</code>高，甚至可能会更差，比如使用不当（索引失效等）时，行锁变表锁。</p>
+<p>优化方案：<br>① 尽可能让所有的数据检索都通过索引来完成，避免无索引行锁升级为表锁（<code>varchar</code>类型不加单引号会使索引失效）。<br>② 合理设计索引，尽量缩小锁的范围。<br>③ 尽可能减少检索条件，避免间隙锁。<br>④ 尽量控制事务大小，减少锁定资源和时间长度。<br>⑤ 尽可能低级别事务隔离。</p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/02/25/2019/2019-02-26-mysql-show-profile/" rel="next" title="【MySQL高级】使用SHOW PROFILE命令分析性能">
+                <i class="fa fa-chevron-left"></i> 【MySQL高级】使用SHOW PROFILE命令分析性能
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">61</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#锁分类"><span class="nav-number">2.</span> <span class="nav-text">锁分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#表级锁"><span class="nav-number">3.</span> <span class="nav-text">表级锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#行级锁"><span class="nav-number">4.</span> <span class="nav-text">行级锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#页级锁"><span class="nav-number">5.</span> <span class="nav-text">页级锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
