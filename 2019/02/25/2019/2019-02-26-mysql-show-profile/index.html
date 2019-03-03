@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Think," />
+  <meta name="keywords" content="MySQL," />
 
 
 
@@ -79,18 +79,23 @@
 
 
 
-<meta name="description" content="摘要：你可以做到每天训练投篮8小时，但如果你的技能是错误的，那最好的成果也不过是你擅长以一种错误的方式投篮而已。单一的练习只会让人固守成规，而刻意练习则是一种极简单又极强大的成功模式。在我有限的认知中，我从始至终都认为杰出不是一种天赋，而是一种技巧。我们都具有杰出的天赋，足以在几乎所有的领域取得大师级别的成就，而达到这种成就的最有效的方法，就是“刻意练习”(Delibrate Practice)。">
-<meta name="keywords" content="Think">
+<meta name="description" content="摘要：分析SQL执行带来的开销是优化SQL的重要手段。在MySQL数据库中，可以通过配置profiling参数来启用SQL剖析。该参数开启后，后续执行的SQL语句都将记录其资源开销，诸如IO，上下文切换，CPU，Memory等等。根据这些开销进一步分析当前SQL瓶颈从而进行优化与调整。本篇文章主要介绍了相关语法及参数说明、结合实例分析如何使用及剖析结论。">
+<meta name="keywords" content="MySQL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="学习背后的道理，刻意练习">
-<meta property="og:url" content="http://wwxiong.com/hexo_blog/2017/06/22/2017/2017-06-21-deliberately-practice/index.html">
+<meta property="og:title" content="【MySQL高级】使用SHOW PROFILE命令分析性能">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/02/25/2019/2019-02-26-mysql-show-profile/index.html">
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
-<meta property="og:description" content="摘要：你可以做到每天训练投篮8小时，但如果你的技能是错误的，那最好的成果也不过是你擅长以一种错误的方式投篮而已。单一的练习只会让人固守成规，而刻意练习则是一种极简单又极强大的成功模式。在我有限的认知中，我从始至终都认为杰出不是一种天赋，而是一种技巧。我们都具有杰出的天赋，足以在几乎所有的领域取得大师级别的成就，而达到这种成就的最有效的方法，就是“刻意练习”(Delibrate Practice)。">
+<meta property="og:description" content="摘要：分析SQL执行带来的开销是优化SQL的重要手段。在MySQL数据库中，可以通过配置profiling参数来启用SQL剖析。该参数开启后，后续执行的SQL语句都将记录其资源开销，诸如IO，上下文切换，CPU，Memory等等。根据这些开销进一步分析当前SQL瓶颈从而进行优化与调整。本篇文章主要介绍了相关语法及参数说明、结合实例分析如何使用及剖析结论。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-06-22T02:19:40.000Z">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/03.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/01.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/02.jpg?raw=true">
+<meta property="og:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/03.jpg?raw=true">
+<meta property="og:updated_time" content="2019-03-03T14:16:48.487Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="学习背后的道理，刻意练习">
-<meta name="twitter:description" content="摘要：你可以做到每天训练投篮8小时，但如果你的技能是错误的，那最好的成果也不过是你擅长以一种错误的方式投篮而已。单一的练习只会让人固守成规，而刻意练习则是一种极简单又极强大的成功模式。在我有限的认知中，我从始至终都认为杰出不是一种天赋，而是一种技巧。我们都具有杰出的天赋，足以在几乎所有的领域取得大师级别的成就，而达到这种成就的最有效的方法，就是“刻意练习”(Delibrate Practice)。">
+<meta name="twitter:title" content="【MySQL高级】使用SHOW PROFILE命令分析性能">
+<meta name="twitter:description" content="摘要：分析SQL执行带来的开销是优化SQL的重要手段。在MySQL数据库中，可以通过配置profiling参数来启用SQL剖析。该参数开启后，后续执行的SQL语句都将记录其资源开销，诸如IO，上下文切换，CPU，Memory等等。根据这些开销进一步分析当前SQL瓶颈从而进行优化与调整。本篇文章主要介绍了相关语法及参数说明、结合实例分析如何使用及剖析结论。">
+<meta name="twitter:image" content="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/03.jpg?raw=true">
 
 
 
@@ -120,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2017/06/22/2017/2017-06-21-deliberately-practice/"/>
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/02/25/2019/2019-02-26-mysql-show-profile/"/>
 
 
 
 
 
-  <title>学习背后的道理，刻意练习 | Wangxiong's Notes</title>
+  <title>【MySQL高级】使用SHOW PROFILE命令分析性能 | Wangxiong's Notes</title>
   
 
 
@@ -283,7 +288,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2017/06/22/2017/2017-06-21-deliberately-practice/">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/02/25/2019/2019-02-26-mysql-show-profile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wang Xiong">
@@ -300,7 +305,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">学习背后的道理，刻意练习</h1>
+          <h1 class="post-title" itemprop="name headline">【MySQL高级】使用SHOW PROFILE命令分析性能</h1>
         
 
         <div class="post-meta">
@@ -312,8 +317,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-22T11:11:14+08:00">
-                2017-06-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-25T23:09:24+08:00">
+                2019-02-25
               </time>
             
 
@@ -335,8 +340,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/学习/" itemprop="url" rel="index">
-                    <span itemprop="name">学习</span>
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
                   </a>
                 </span>
 
@@ -372,29 +377,67 @@
       
 
       
-        <p><strong><br>摘要：你可以做到每天训练投篮8小时，但如果你的技能是错误的，那最好的成果也不过是你擅长以一种错误的方式投篮而已。单一的练习只会让人固守成规，而刻意练习则是一种极简单又极强大的成功模式。在我有限的认知中，我从始至终都认为杰出不是一种天赋，而是一种技巧。我们都具有杰出的天赋，足以在几乎所有的领域取得大师级别的成就，而达到这种成就的最有效的方法，就是“刻意练习”(Delibrate Practice)。
+        <p><strong><br>摘要：分析<code>SQL</code>执行带来的开销是优化<code>SQL</code>的重要手段。在<code>MySQL</code>数据库中，可以通过配置<code>profiling</code>参数来启用<code>SQL</code>剖析。该参数开启后，后续执行的<code>SQL</code>语句都将记录其资源开销，诸如<code>IO</code>，上下文切换，<code>CPU</code>，<code>Memory</code>等等。根据这些开销进一步分析当前<code>SQL</code>瓶颈从而进行优化与调整。本篇文章主要介绍了相关语法及参数说明、结合实例分析如何使用及剖析结论。<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/03.jpg?raw=true" alt="show-profile-03">
 </strong><br><a id="more"></a></p>
-<p><the rest="" of="" contents="" |="" 余下全文=""></the></p>
-<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><blockquote>
-<p>有人读了很多书，变成了高手；更多人终日学习，却依旧平庸。为什么？</p>
-</blockquote>
-<p>答案是你是否掌握了学习背后的道理，你是否拥有更高级的思维模型。</p>
-<p>查理芒格说：“人类只有发明了发明的方法之后才能快速发展；我们只有学习了学习的方法之后才能成为高手”。</p>
-<p>而在商界则有一条非常有用的古老准则，它分成两步：</p>
-<p>第一步，找到一个简单的基本的道理。</p>
-<p>第二步，非常严格地按照这个道理行事。</p>
-<p>这个世界上只有0.01%的人能够成为厉害的人，而99.99%都不太厉害。</p>
-<p>问题的关键在于你是否掌握了学习背后的道理，你是否拥有更高级的思维模型。</p>
-<p>只有通过积累大量正确的刻意的练习，你才能拥有破局的能力。</p>
-<p>你才能击透工作的本质，成为一个很厉害的人。</p>
-<h1 id="创建思维模型"><a href="#创建思维模型" class="headerlink" title="创建思维模型"></a>创建思维模型</h1><h1 id="探究事物本质"><a href="#探究事物本质" class="headerlink" title="探究事物本质"></a>探究事物本质</h1><h1 id="走出舒适区"><a href="#走出舒适区" class="headerlink" title="走出舒适区"></a>走出舒适区</h1><p>低水平的重复练习确实能带来熟练的技能，但同时会让人沉湎于技能带来的自满中，不再进步，不再思考，甚至变得麻木。</p>
-<h1 id="设定特定目标"><a href="#设定特定目标" class="headerlink" title="设定特定目标"></a>设定特定目标</h1><h1 id="有意识的练习"><a href="#有意识的练习" class="headerlink" title="有意识的练习"></a>有意识的练习</h1><h1 id="获得反馈并调整"><a href="#获得反馈并调整" class="headerlink" title="获得反馈并调整"></a>获得反馈并调整</h1><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>◆ “一万小时定律”有着巨大的缺陷——长时间错误的反复练习并不必然导向成功，甚至能把你练废。</p>
-<p>◆ 专业选手和业余选手之间的本质区别，并不在于掌握技能的熟练程度，而在于是否掌握了套路。</p>
-<p>◆ 刻意练习者的成功公式：成功=核心算法（套路）*大量重复动作。</p>
-<p>◆ 不要做“chicken head”，不要作舒适区里炫技的小猴子。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="http://mp.weixin.qq.com/s/tUMkO3E1aQcKB5zVgv4wbw" target="_blank" rel="noopener">你与高手的距离，并非只差了一万小时练习</a></p>
-<p><a href="http://mp.weixin.qq.com/s/f9WHUl-rqWLHC49qips_og" target="_blank" rel="noopener">《刻意练习》一书，此生不可错过</a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
 
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在<code>MySQL</code>数据库中，可以通过配置<code>profiling</code>参数来启用<code>SQL</code>剖析。该参数开启后，后续执行的<code>SQL</code>语句都将记录其资源开销，诸如<code>IO</code>，上下文切换，<code>CPU</code>，<code>Memory</code>等，根据这些开销分析当前<code>SQL</code>瓶颈从而进行优化与调整。`</p>
+<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">SHOW<span class="built_in"> PROFILE </span>[type [, type] <span class="built_in">..</span>. ]</span><br><span class="line">    [<span class="keyword">FOR</span> QUERY n]</span><br><span class="line">    [LIMIT row_count [OFFSET offset]]</span><br><span class="line">type: &#123;</span><br><span class="line">    ALL</span><br><span class="line">  | BLOCK IO</span><br><span class="line">  | CONTEXT SWITCHES</span><br><span class="line">  | CPU</span><br><span class="line">  | IPC</span><br><span class="line">  | MEMORY</span><br><span class="line">  |<span class="built_in"> PAGE </span>FAULTS</span><br><span class="line">  | SOURCE</span><br><span class="line">  | SWAPS</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h1><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALL</td>
+<td>显示所有的开销信息</td>
+</tr>
+<tr>
+<td>BLOCK IO</td>
+<td>显示块IO开销信息</td>
+</tr>
+<tr>
+<td>CONTEXT SWITCHES</td>
+<td>上下文切换相关开销</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>显示CPU开销信息</td>
+</tr>
+<tr>
+<td>IPC</td>
+<td>显示发送和接收相关开销信息</td>
+</tr>
+<tr>
+<td>MEMORY</td>
+<td>显示内存开销信息</td>
+</tr>
+<tr>
+<td>PAGE FAULTS</td>
+<td>显示页面错误开销信息</td>
+</tr>
+<tr>
+<td>SOURCE</td>
+<td>显示来自源代码的函数名，以及函数发生的文件的名称和行号</td>
+</tr>
+<tr>
+<td>SWAPS</td>
+<td>显示交换次数相关开销信息</td>
+</tr>
+</tbody>
+</table>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p><code>profiling</code>是由 <code>profiling</code> 会话变量控制的，它的默认值为0（<code>OFF</code>）。通过将<code>profiling</code>设置为1或者<code>ON</code>来启用<code>profiling</code>。 </p>
+<p>查看<code>profiling</code>的值并设置开启：</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show <span class="keyword">variables</span> like <span class="comment">'profiling%'</span>; <span class="comment">/*查看profiling的值*/</span></span><br><span class="line">mysql&gt; select @@profiling;</span><br><span class="line">mysql&gt; <span class="keyword">SET</span> profiling <span class="comment">= 1</span>; <span class="comment">/*设置为1开启*/</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/01.jpg?raw=true" alt="show-profile-01"><br>基于上篇文章利用存储过程批量插入的数据，运行如下<code>SQL</code>:<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * <span class="keyword">from</span> emp<span class="built_in"> group </span>by id%10 limit 150000;</span><br><span class="line">mysql&gt; select * <span class="keyword">from</span> emp<span class="built_in"> group </span>by id%20 limit  5;</span><br><span class="line">mysql&gt; show profiles;</span><br></pre></td></tr></table></figure></p>
+<p><code>show profiles</code>显示发送到服务器的最近语句的列表，列表的大小由<code>profiling_history_size</code>会话变量控制，该变量的默认值为15，最大值是100。<br><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/02.jpg?raw=true" alt="show-profile-02"><br>通过以下命令进一步查看某一条资源的消耗情况，如<code>io</code>，<code>cpu</code>：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show<span class="built_in"> profile </span>cpu,block io <span class="keyword">for</span> query 9;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://github.com/LensXiong/hexo_source_code/blob/master/img/technology/2019/mysql-show-profile/03.jpg?raw=true" alt="show-profile-03"><br>由上图可知一条<code>SQL</code>的完整生命周期，包括初始化，连接前检查权限，优化语句，策略分析，预处理，创建临时表，执行语句，传送数据，删除临时表，查询结束，关闭表，释放资源等一系列工作，其中可以看出因为语句用到<code>group by</code>，会导致创建和删除临时表操作，这是导致这条<code>SQL</code>语句执行慢的最主要原因。</p>
+<h1 id="剖析结论"><a href="#剖析结论" class="headerlink" title="剖析结论"></a>剖析结论</h1><p>当使用上面的语句诊断<code>SQL</code>后，如果出现以下四种情况，会导致性能下降，需要进行语句的优化处理：<br>① <code>converting HEAP to MyISAM</code>，查询结果太大，内存不够使用磁盘。<br>② <code>Creating tmp table</code> 创建临时表，先拷贝数据到临时表，用完后在进行删除。<br>③ <code>Copying to tmp table on disk</code> 将内存中的临时表复制到磁盘，出现此状态非常危险。<br>④ <code>locked</code> 锁表。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://dev.mysql.com/doc/refman/8.0/en/show-profile.html" target="_blank" rel="noopener">官方SHOW PROFILE Syntax文档说明</a></p>
+</the>
       
     </div>
     
@@ -411,7 +454,7 @@
       
         <div class="post-tags">
           
-            <a href="/hexo_blog/tags/Think/" rel="tag"># Think</a>
+            <a href="/hexo_blog/tags/MySQL/" rel="tag"># MySQL</a>
           
         </div>
       
@@ -424,8 +467,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2017/06/18/2017/2017-06-18-the-one-thing/" rel="next" title="最重要的事，只有一件">
-                <i class="fa fa-chevron-left"></i> 最重要的事，只有一件
+              <a href="/hexo_blog/2019/02/14/2019/2019-02-15-mysql-query-optimization-05/" rel="next" title="【MySQL高级】存储过程批量插入数据">
+                <i class="fa fa-chevron-left"></i> 【MySQL高级】存储过程批量插入数据
               </a>
             
           </div>
@@ -433,10 +476,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2017/06/27/2017/2017-06-28-sql-optimization-up/" rel="prev" title="MySQL优化原理 (一)">
-                MySQL优化原理 (一) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -600,7 +639,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建思维模型"><span class="nav-number">2.</span> <span class="nav-text">创建思维模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#探究事物本质"><span class="nav-number">3.</span> <span class="nav-text">探究事物本质</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#走出舒适区"><span class="nav-number">4.</span> <span class="nav-text">走出舒适区</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设定特定目标"><span class="nav-number">5.</span> <span class="nav-text">设定特定目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#有意识的练习"><span class="nav-number">6.</span> <span class="nav-text">有意识的练习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获得反馈并调整"><span class="nav-number">7.</span> <span class="nav-text">获得反馈并调整</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结"><span class="nav-number">8.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">9.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法"><span class="nav-number">2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参数"><span class="nav-number">3.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#剖析结论"><span class="nav-number">5.</span> <span class="nav-text">剖析结论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
