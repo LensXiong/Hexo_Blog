@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Go," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：﻿写这篇文章的初衷是为了鼓励和鞭策自己积极拥抱Go语言，更是一次我对自己认知的升级和思想的破局开始。工作时间长了，选择一个新技术的时候不像刚开始工作那样，Linux、Redis、JavaScript，Docker等统统都学，学完之后才发现每个技术都非常深，想要真正掌握和吃透谈何容易。现在面对这么多新的技术，更加冷静和沉着，会理性的去分析我为什么要做件事情，如果做了我是不是能够坚持下去，我如何">
+<meta name="keywords" content="Go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Go 语言】积极拥抱Go语言">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/06/07/2019/2019-06-07-go-start-01/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：﻿写这篇文章的初衷是为了鼓励和鞭策自己积极拥抱Go语言，更是一次我对自己认知的升级和思想的破局开始。工作时间长了，选择一个新技术的时候不像刚开始工作那样，Linux、Redis、JavaScript，Docker等统统都学，学完之后才发现每个技术都非常深，想要真正掌握和吃透谈何容易。现在面对这么多新的技术，更加冷静和沉着，会理性的去分析我为什么要做件事情，如果做了我是不是能够坚持下去，我如何">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/LensXiong/hexo_source_code/master/img/technology/2019/go-start/go.jpeg">
+<meta property="og:updated_time" content="2019-06-07T04:14:17.438Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Go 语言】积极拥抱Go语言">
+<meta name="twitter:description" content="摘要：﻿写这篇文章的初衷是为了鼓励和鞭策自己积极拥抱Go语言，更是一次我对自己认知的升级和思想的破局开始。工作时间长了，选择一个新技术的时候不像刚开始工作那样，Linux、Redis、JavaScript，Docker等统统都学，学完之后才发现每个技术都非常深，想要真正掌握和吃透谈何容易。现在面对这么多新的技术，更加冷静和沉着，会理性的去分析我为什么要做件事情，如果做了我是不是能够坚持下去，我如何">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/LensXiong/hexo_source_code/master/img/technology/2019/go-start/go.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/06/07/2019/2019-06-07-go-start-01/"/>
+
+
+
+
+
+  <title>【Go 语言】积极拥抱Go语言 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/06/07/2019/2019-06-07-go-start-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Go 语言】积极拥抱Go语言</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-07T11:09:24+08:00">
+                2019-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：﻿写这篇文章的初衷是为了鼓励和鞭策自己积极拥抱<code>Go</code>语言，更是一次我对自己认知的升级和思想的破局开始。工作时间长了，选择一个新技术的时候不像刚开始工作那样，<code>Linux</code>、<code>Redis</code>、<code>JavaScript</code>，<code>Docker</code>等统统都学，学完之后才发现每个技术都非常深，想要真正掌握和吃透谈何容易。现在面对这么多新的技术，更加冷静和沉着，会理性的去分析我为什么要做件事情，如果做了我是不是能够坚持下去，我如何做的更好….C位出道的<code>Go</code>语言比起 <code>Java</code> 语言，可能只是一个幼儿园的小朋友，但是我依然相信长江后浪推前浪，浮事新人换旧人。容器、微服务、区块链等新事物的出现，背后都离不开<code>Go</code>语言，顺应时代的发展，我需要将它作为一剂加速剂推动自身的发展。思前想后，冷静分析写下这篇文章后，我决定勇敢踏上这段征程，<code>Go</code>的学习只是一个开始，它不是学习一门语言这么简单，它是我思想转变，认知升级的一次破局。未来已来。要走的路，依然很远。加油，你可以的。<br><img src="https://raw.githubusercontent.com/LensXiong/hexo_source_code/master/img/technology/2019/go-start/go.jpeg" alt="go.jpeg">
+</strong><br><a id="more"></a></p>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<p>作为一个四年以上工作经验的<code>PHP</code>，写这篇文章的目的是为了对自己进行第二门语言的扩展，为了这个选择我也做了很多的努力，看大量的分析文章、请教<code>Go</code>同事、听业界最一流的演讲等，因为我深知选择比努力更重要。</p>
+<p>1995 年，横空出世的 <code>Java</code> 语言以其颠覆式的特性霸占了企业级软件领域，这一占就是二十多年。二十年后的今天，当跨平台、垃圾回收、面向对象等不在是什么新鲜词的时候，新的语言层出不穷，<code>Scala</code> 、<code>Python</code>、<code>Lisp</code>、<code>Go</code>都有自己擅长和颠覆的领域。正所谓长江后浪推前浪，浮事新人换旧人。那些不断积累沉淀的人和事总会推动旧的人和事的发展，那些有一定资历的新人新事胜过旧人旧事 。</p>
+<p><code>Java</code>凭借顽强的生命力和在软件领域强悍的霸主地位，我相信在未来是不会没落的，我也希望它的发展越来越好，继续推动整个领域的前进。但是整个社会的前进，的确需要允许新事物的出现，就像一个企业需要源源不断的注入新的血液，才会给企业长远的发展带来动力和希望。</p>
+<p><code>Go</code> 语言支持多种编程范式、提供给力的程序构建和发布工具，以及在并发编程方面的极度简化。我认为它这不仅仅只是一门新的语言，我更愿意相信它是一次革新。正因为<code>Java</code>语言发展二十多年经历的太多，在很多方面很难改变：编写代码冗长、侵入式的接口实现声明和类继承声明、复杂的匿名内部类，以及困难重重的线程间协调和调度，我相信如果不是考虑性能瓶颈，我依然相信<code>PHP</code>是世界上最好的语言。</p>
+<p>然而恰恰就是这样的时间才能诞生出<code>Go</code>这样的新语言，它把对内核线程的使用和调度操作都内置到其运行时系统中，它的 <code>Goroutine</code>与内核线程之间 <code>M:N</code> 的关系，让我们可以使用成千上万个 <code>Goroutine</code> 去执行并发代码块而仅仅耗费极少的内核线程。（<code>Java</code> 线程与内核线程之间关系是 1:1 ）。<code>GO</code>的基因天生就是为了支持并发，<code>Goroutine</code> 和 <code>channel</code> 使得编写高并发的服务端软件变得相当容易，很多情况下完全不需要考虑锁机制以及由此带来的各种问题。</p>
+<p>对于一个研发团队来说，项目成败的关键因素是：成本、质量和时间。<code>Go</code>的一系列特点，导致使它既容易上手，又易于维护。一个初中级工程师使用<code>GO</code>语言，就能轻松写出高并发高负载生产级别的代码，而且质量相当有保证。而同样的工程，如果用<code>C++</code>或<code>java</code>等语言，则需要至少3-5年经验的工程师来完成，同时质量还是要让人担心。对于成长型或创业团队来说，使用<code>GO</code>语言，可以让大量初中级工程师承担主要开发工作，还能保证相当优秀的结果，从资金成本和时间成本控制的角度，我想这是选择<code>Go</code>语言的理由之一。</p>
+<p>还有一个能让我去学习<code>Go</code>的理由，它是区块链主流开发语言。是的，我也很疑惑为什么会是<code>Go</code>而不是<code>Java</code>。很多基于稳定区块链的<code>DApps</code>和<code>tools</code>都是用的<code>Go</code>语言，你所需要的某个功能，很轻松就能找到一个相对应的库。<code>Go</code>是编译型的，所以直接由操作系统执行，这让我们可以更自如地实现像以太坊沙盒一样的技术。而如果是<code>Java</code>，因为它本身的运行载体<code>JVM</code>就是一个虚拟机，要再在上面做一个沙盒，实质是更高一层的抽象，会浪费计算机资源。</p>
+<p>为什么<code>Go</code>语言能成为区块链主流开发语言呢？</p>
+<blockquote>
+<p>因为区块链系统开发涉及到算力及应用，这些<code>C++</code>、<code>Java</code>语言自然可以解决，但是繁琐的开发成本过高，用其他上层语言，如<code>Java</code>、<code>Python</code>、<code>Nodejs</code>等虽然能降低开发成本，但是性能及区块链的算力又跟不上，所以很多企业在开发区块链技术的时候，就会选择开发成本低并且开发性能客观的<code>Go</code>语言作为首选语言。</p>
+</blockquote>
+<p>随着大数据和云计算时代背景下的高并发、分布式应用场景越来越刚需，未来服务端发展的潮流必然是容器化、分布式、微服务化等，这个时候必须有新的语言来适应未来的发展。</p>
+<p>容器化：</p>
+<blockquote>
+<p>所有今天在使用的容器软件都是 <code>Go</code>语言 写的，不是 99%，也不是 95%-100%。<code>Go</code>语言绝对是容器领域的霸主，大家所熟知的<code>Docker</code>和<code>Kubernets</code>（<code>K8S</code>）就是使用<code>Go</code>语言开发的。</p>
+</blockquote>
+<p>分布式：</p>
+<blockquote>
+<p>分布式最好的应用就是以太坊（<code>Ethereum</code>），它是一个开源的有智能合约功能的公共区块链平台，以太坊上的分布式应用程序不会停机，也不能被关掉。</p>
+</blockquote>
+<p>微服务：</p>
+<blockquote>
+<p>微服务的应用不得不提到今日头条，之前今日头条主要编程语言是 <code>Python</code>以及部分 <code>C++</code>。随着业务和流量的快速增长，服务端的压力越来越大，随之而来问题频出。<code>Python</code> 的解释性语言特性以及其落后的多进程服务模型受到了巨大的挑战，当时的服务端架构是一个典型的单体架构，耦合严重，部分独立功能也急需从单体架构中拆出来。而现在今日头条当前后端服务超过80%的流量是跑在 <code>Go</code> 构建的服务上。微服务数量超过100个，高峰 <code>QPS</code> 超过700万，日处理请求量超过3000亿，是业内最大规模的<code>Go</code> 应用。</p>
+</blockquote>
+<p>在比特币领域，不管你听到过什么，比特币都还没有死掉。比特币整个生态系统的高性能和高安全的保证需求，它们默契的共同点是使用<code>Go</code>语言。</p>
+<p>根据<a href="https://zhuanlan.zhihu.com/p/44703613" target="_blank" rel="noopener">Go语言为什么能成为区块链主流开发语言？</a>，区块链广泛的应用领域有金融领域、司法领域、行政领域、人事领域、商业领域、人工智能。这些领域的痛点在未来我想是必然需要去解决的，毕竟人类的发展始终是不断向前的过程。</p>
+<p>简单总结下，用以更好的鞭策自己去专注<code>Go</code>的领域：</p>
+<blockquote>
+</blockquote>
+<p>① 几乎所有新的、有趣的东西都是用 <code>Go</code>语言写的，包括容器、微服务、区块链。<br>② <code>Go</code> 语言既拥有编译型编程语言固有的高运行效率，又具有解释型编程语言常有的高开发效率。<br>③ 保持简单、面向契约和利于协作是 <code>Go</code> 语言最突出的设计哲学。<br>④ 学会顺应时代的发展，站在未来十年去思考，<code>Go</code>或许就是未来的云计算语言。<br>⑤ 重要的不是简单学习<code>Go</code>这门语言，而是积极拥抱新事物，新思想，从中收获更多的思想。</p>
+<p>随着互联网的快速发展，<code>PHP</code>由于开发速度快的特性依然会徘徊和游离在互联网的边缘，但未来仍然是前后端分离、模块化、高度服务化等。这段时间，我认真的比较过<code>Java</code>语言和<code>Python</code>语言，也通过不断的学习和请教，我最终还是转向<code>Go</code>，<code>PHP</code>和<code>Go</code>同属于<code>C</code>语言系，加上这些年实际工作开发经验，对于我来说其实是挺完美的选择。我希望未来的我不断专研<code>PHP</code>，朝着精通<code>Go</code>的方向脚踏实地一步一个脚印的走。</p>
+<p>很多时候选择比努力更重要，方向选对了才能事半功倍。我不知道这次选择是否正确，但是目前的时间节点我认为是正确，至于未来是否正确，就交给时间来检验。</p>
+<p>未来已来。要走的路，依然很远。加油，你可以的。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://zhuanlan.zhihu.com/p/44703613" target="_blank" rel="noopener">Go语言为什么能成为区块链主流开发语言？</a></p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/Go/" rel="tag"># Go</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/05/28/2019/2019-05-28-linux-command-02/" rel="next" title="﻿﻿【Linux 系统】命令大全总结（一）">
+                <i class="fa fa-chevron-left"></i> ﻿﻿【Linux 系统】命令大全总结（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
