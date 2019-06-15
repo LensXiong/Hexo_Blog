@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Laravel," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：学会使用一个工具是最基本的前提，如果你能理解工具背后的原理，站在一个更高的层面去深度剖析和思考，这才是你应该做的事情。写Laravel源码分析系列文章，除了让自身能力不断提升，更重要的是希望完成一个个原始积累，最终让自己的思维方式从量变能够得到质变。本篇文章主要通过对源码进行分析，重点阐述Laravel框架一次请求的完整生命周期。整个生命周期包括以下几个部分：第一，载入 Composer 生">
+<meta name="keywords" content="Laravel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="﻿【Laravel 源码分析】一次请求的生命周期">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/06/15/2019/2019-06-15-laravel-source-code-02/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：学会使用一个工具是最基本的前提，如果你能理解工具背后的原理，站在一个更高的层面去深度剖析和思考，这才是你应该做的事情。写Laravel源码分析系列文章，除了让自身能力不断提升，更重要的是希望完成一个个原始积累，最终让自己的思维方式从量变能够得到质变。本篇文章主要通过对源码进行分析，重点阐述Laravel框架一次请求的完整生命周期。整个生命周期包括以下几个部分：第一，载入 Composer 生">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-15T15:31:11.554Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="﻿【Laravel 源码分析】一次请求的生命周期">
+<meta name="twitter:description" content="摘要：学会使用一个工具是最基本的前提，如果你能理解工具背后的原理，站在一个更高的层面去深度剖析和思考，这才是你应该做的事情。写Laravel源码分析系列文章，除了让自身能力不断提升，更重要的是希望完成一个个原始积累，最终让自己的思维方式从量变能够得到质变。本篇文章主要通过对源码进行分析，重点阐述Laravel框架一次请求的完整生命周期。整个生命周期包括以下几个部分：第一，载入 Composer 生">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/06/15/2019/2019-06-15-laravel-source-code-02/"/>
+
+
+
+
+
+  <title>﻿【Laravel 源码分析】一次请求的生命周期 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/06/15/2019/2019-06-15-laravel-source-code-02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">﻿【Laravel 源码分析】一次请求的生命周期</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-15T14:19:24+08:00">
+                2019-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：学会使用一个工具是最基本的前提，如果你能理解工具背后的原理，站在一个更高的层面去深度剖析和思考，这才是你应该做的事情。写<code>Laravel</code>源码分析系列文章，除了让自身能力不断提升，更重要的是希望完成一个个原始积累，最终让自己的思维方式从量变能够得到质变。本篇文章主要通过对源码进行分析，重点阐述<code>Laravel</code>框架一次请求的完整生命周期。整个生命周期包括以下几个部分：第一，载入 <code>Composer</code> 生成的自动加载设置；第二，创建服务容器实例并完成内核的绑定（包含<code>HTTP</code>内核和<code>Console</code>内核）；第三，从服务容器中解析处理 <code>HTTP</code>请求的 <code>Kernel</code> 实例；第四，调用<code>Kernel</code> 实例中的<code>handle()</code>方法接收一个 <code>HTTP</code> 请求，并最终生成一个 <code>HTTP</code> 响应；第五，将响应值发送给客户端；第六，终止程序，做一些善后及清理工作。结合本篇文章及源码，你将逐步明白<code>Laravel</code>中一次<code>HTTP</code>请求的完整生命周期。
+</strong><br><a id="more"></a></p>
+<p><the rest="" of="" contents="" |="" 余下全文="">
+﻿</the></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>当<code>Web</code>服务器（<code>Apache/Nginx</code>）的请求被导向单入口文件 <code>public/index.php</code>时， <code>index.php</code>中极简的代码出色的完成整个<code>HTTP</code>的请求，逻辑组织既严谨又完美，以下便是其优雅的六行代码：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php"><span class="comment">// 加载项目依赖</span></span></span><br><span class="line"><span class="php"><span class="keyword">require</span> <span class="keyword">__DIR__</span>.<span class="string">'/../bootstrap/autoload.php'</span>;</span></span><br><span class="line"><span class="php"><span class="comment">// 创建服务容器实例并完成内核的绑定（包含`Http`内核和`Console`内核）和注册异常处理</span></span></span><br><span class="line"><span class="php">$app = <span class="keyword">require_once</span> <span class="keyword">__DIR__</span>.<span class="string">'/../bootstrap/app.php'</span>;</span></span><br><span class="line"><span class="php"><span class="comment">//  服务容器解析内核实例</span></span></span><br><span class="line"><span class="php">$kernel = $app-&gt;make(Illuminate\Contracts\Http\Kernel::class);</span></span><br><span class="line"><span class="php"><span class="comment">//  接收请求并返回响应</span></span></span><br><span class="line"><span class="php">$response = $kernel-&gt;handle(</span></span><br><span class="line"><span class="php">    $request = Illuminate\Http\Request::capture()</span></span><br><span class="line"><span class="php">);</span></span><br><span class="line"><span class="php"><span class="comment">// 发送响应到客户端</span></span></span><br><span class="line"><span class="php">$response-&gt;send();</span></span><br><span class="line"><span class="php"><span class="comment">// 终止程序，清理中间件</span></span></span><br><span class="line"><span class="php">$kernel-&gt;terminate($request, $response);</span></span><br></pre></td></tr></table></figure></p>
+<p>上面这段单入口文件代码完成了一次<code>Http</code>请求的完整生命周期，具体过程如下：</p>
+<blockquote>
+</blockquote>
+<p>① 载入<code>composer</code>自动加载设置，以完成项目中所有依赖的加载。<br>② 创建一个 <code>Application</code> 实例，作为全局的服务容器，同时完成内核的绑定（包含<code>Http</code>内核和<code>Console</code>内核）及注册异常处理。<br>③ 将处理请求的核心类 <code>Kernel</code> 实现实例绑定到该全局的服务容器中，以便后续通过它处理 <code>HTTP</code> 请求。<br>④ 将捕获的请求传递给 <code>Kernel</code> 实例的<code>handle()</code>方法进行处理，处理结果最终返回一个响应的实例。<br>⑤ 将返回的响应实例发送给客户端。<br>⑥ 执行 <code>Kernel</code> 实例上的 <code>terminate()</code> 终止程序，做一些善后及清理工作，最后退出脚本。</p>
+<h1 id="加载项目依赖"><a href="#加载项目依赖" class="headerlink" title="加载项目依赖"></a>加载项目依赖</h1><p><code>Composer</code>是<code>PHP</code>中用来管理依赖（<code>dependency</code>）关系的工具，你可以在自己的项目中声明所依赖的外部工具库（<code>libraries</code>），<code>Composer</code>会帮你安装这些依赖的库文件。<br>在<code>Laravel</code>所有组件的加载工作，入口文件中仅需一行代码即可完成：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="keyword">__DIR__</span>.<span class="string">'/../bootstrap/autoload.php'</span>;</span><br></pre></td></tr></table></figure></p>
+<h1 id="服务容器实例创建"><a href="#服务容器实例创建" class="headerlink" title="服务容器实例创建"></a>服务容器实例创建</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$app = <span class="keyword">require_once</span> <span class="keyword">__DIR__</span>.<span class="string">'/../bootstrap/app.php'</span>;</span><br></pre></td></tr></table></figure>
+<p>单入口文件的第二段代码加载<code>/bootstrap/app.php</code>，主要完成了服务实例的创建、完成内核的绑定（包含<code>Http</code>内核和<code>Console</code>内核）及注册异常处理，以下我们通过源码来看看究竟做了哪些工作？<br><figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// 创建服务容器实例</span><br><span class="line"><span class="keyword">$app = new Illuminate\Foundation\Application</span>(</span><br><span class="line">    realpath(__DIR__.'/../')</span><br><span class="line">);</span><br><span class="line">// 将 App<span class="symbol">\H</span>ttp<span class="symbol">\K</span>ernel 实例绑定到 Illuminate<span class="symbol">\C</span>ontracts<span class="symbol">\H</span>ttp<span class="symbol">\K</span>ernel 接口</span><br><span class="line"><span class="keyword">$app-&gt;singleton</span>(</span><br><span class="line">    Illuminate<span class="symbol">\C</span>ontracts<span class="symbol">\H</span>ttp<span class="symbol">\K</span>ernel::class,</span><br><span class="line">    App<span class="symbol">\H</span>ttp<span class="symbol">\K</span>ernel::class</span><br><span class="line">);</span><br><span class="line">// 将 App<span class="symbol">\C</span>onsole<span class="symbol">\K</span>ernel 实例绑定到 Illuminate<span class="symbol">\C</span>ontracts<span class="symbol">\C</span>onsole<span class="symbol">\K</span>ernel 接口</span><br><span class="line"><span class="keyword">$app-&gt;singleton</span>(</span><br><span class="line">    Illuminate<span class="symbol">\C</span>ontracts<span class="symbol">\C</span>onsole<span class="symbol">\K</span>ernel::class,</span><br><span class="line">    App<span class="symbol">\C</span>onsole<span class="symbol">\K</span>ernel::class</span><br><span class="line">);</span><br><span class="line">// 将 App<span class="symbol">\E</span>xceptions<span class="symbol">\H</span>andler 实例绑定到 IIlluminate<span class="symbol">\C</span>ontracts<span class="symbol">\D</span>ebug<span class="symbol">\E</span>xceptionHandler 接口</span><br><span class="line"><span class="keyword">$app-&gt;singleton</span>(</span><br><span class="line">    Illuminate<span class="symbol">\C</span>ontracts<span class="symbol">\D</span>ebug<span class="symbol">\E</span>xceptionHandler::class,</span><br><span class="line">    App<span class="symbol">\E</span>xceptions<span class="symbol">\H</span>andler::class</span><br><span class="line">);</span><br><span class="line">return <span class="keyword">$app;</span></span><br></pre></td></tr></table></figure></p>
+<p>以绑定<code>Http</code>实例为例：<br><code>singleton()</code> 方法会以单例方式在服务容器中将 <code>App\Http\Kernel</code>实例绑定到 <code>Illuminate\Contracts\Http\Kernel</code>接口，后续我们要获取 <code>App\Http\Kernel</code>实例，就可以通过 <code>Illuminate\Contracts\Http\Kernel</code> 接口从服务容器中获取，获取方法是 <code>$app-&gt;make()</code>：<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$kernel = $app-&gt;make(Illuminate\Contracts\Http\Kernel::<span class="class"><span class="keyword">class</span>);</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="解析内核实例"><a href="#解析内核实例" class="headerlink" title="解析内核实例"></a>解析内核实例</h1><p>通过以上服务容器实例的创建，并完成相关内核的绑定后，就会通过服务容器的<code>make()</code>方法将内核解析出来，而解析的过程实质就是内核实例化的过程。那么内核是如何进行实例化？<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$kernel = $app-&gt;make(Illuminate\Contracts\Http\Kernel::<span class="class"><span class="keyword">class</span>);</span></span><br></pre></td></tr></table></figure></p>
+<p>上面创建实例的时候 <code>Illuminate\Contracts\Http\Kernel</code>接口被绑定的实例是 <code>App\Http\Kernel</code>，而 <code>App\Http\Kernel</code>继承<br><code>HttpKernel</code>类，所以我们最终定位到<code>vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php</code>中：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 中间件的优先顺序列表</span></span><br><span class="line"><span class="keyword">protected</span> $middlewarePriority = [</span><br><span class="line">        \Illuminate\Session\Middleware\StartSession::class,</span><br><span class="line">        \Illuminate\View\Middleware\ShareErrorsFromSession::class,</span><br><span class="line">        \Illuminate\Auth\Middleware\Authenticate::class,</span><br><span class="line">        \Illuminate\Session\Middleware\AuthenticateSession::class,</span><br><span class="line">        \Illuminate\Routing\Middleware\SubstituteBindings::class,</span><br><span class="line">        \Illuminate\Auth\Middleware\Authorize::class,</span><br><span class="line">    ];</span><br><span class="line"><span class="comment">// 创建 HTTP 内核实例</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(Application $app, Router $router)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;app = $app;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;router = $router;</span><br><span class="line">        $router-&gt;middlewarePriority = <span class="keyword">$this</span>-&gt;middlewarePriority;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;middlewareGroups <span class="keyword">as</span> $key =&gt; $middleware) &#123;</span><br><span class="line">            $router-&gt;middlewareGroup($key, $middleware);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;routeMiddleware <span class="keyword">as</span> $key =&gt; $middleware) &#123;</span><br><span class="line">            $router-&gt;aliasMiddleware($key, $middleware);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 注册中间件组</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">middlewareGroup</span><span class="params">($name, array $middleware)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;middlewareGroups[$name] = $middleware;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//  为中间件注册别名</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">aliasMiddleware</span><span class="params">($name, $class)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;middleware[$name] = $class;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过以上<code>_construct()</code>构造函数我们可以看出，解析内核实例时传入两个参数为<code>$app</code>和<code>$router</code>两个实例，接下来主要完成以下里两个步骤：<br>① 将内核自定义的一些中间件优先注册到路由器中，目的是在实际处理 <code>Http</code>请求前调用这些中间件实现过滤请求的目的。<br>② 为路由中间件设置别名。</p>
+<h1 id="处理HTTP请求"><a href="#处理HTTP请求" class="headerlink" title="处理HTTP请求"></a>处理HTTP请求</h1><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$response</span> = <span class="variable">$kernel</span>-&gt;handle(</span><br><span class="line">    <span class="variable">$request</span> = Illuminate\Http\<span class="symbol">Request:</span><span class="symbol">:capture</span>()</span><br><span class="line">);]</span><br></pre></td></tr></table></figure>
+<p>创建完内核实例之后，下面我们就正式进入 <code>$kernel-&gt;handle()</code>方法内部看看<code>Http</code>请求是被如何处理的。<br>打开 <code>Illuminate\Foundation\Http\Kernel</code>（<code>App\Http\Kernel</code> 的父类），查看<code>handle ()</code> 方法，可以看到核心处理逻辑通过 <code>sendRequestThroughRouter ()</code>方法实现：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 处理 HTTP 请求</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">handle</span><span class="params">($request)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            $request-&gt;enableHttpMethodParameterOverride();</span><br><span class="line">            $response = <span class="keyword">$this</span>-&gt;sendRequestThroughRouter($request);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (<span class="keyword">Exception</span> $e) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;reportException($e);</span><br><span class="line">            $response = <span class="keyword">$this</span>-&gt;renderException($request, $e);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable $e) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;reportException($e = <span class="keyword">new</span> FatalThrowableError($e));</span><br><span class="line">            $response = <span class="keyword">$this</span>-&gt;renderException($request, $e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;app[<span class="string">'events'</span>]-&gt;dispatch(</span><br><span class="line">            <span class="keyword">new</span> Events\RequestHandled($request, $response)</span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">return</span> $response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送请求到路由（发送请求前，先调用 bootstrap() 方法运用应用的启动类）</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">sendRequestThroughRouter</span><span class="params">($request)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 将 $request 实例注册到 APP 容器 供后续使用</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;app-&gt;instance(<span class="string">'request'</span>, $request);</span><br><span class="line">        <span class="comment">// 清除之前 $request 实例缓存</span></span><br><span class="line">        Facade::clearResolvedInstance(<span class="string">'request'</span>);</span><br><span class="line">        <span class="comment">// 启动引导程序</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;bootstrap();</span><br><span class="line">        <span class="comment">// 发送请求至路由</span></span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">new</span> Pipeline(<span class="keyword">$this</span>-&gt;app))</span><br><span class="line">                    -&gt;send($request)</span><br><span class="line">                    -&gt;through(<span class="keyword">$this</span>-&gt;app-&gt;shouldSkipMiddleware() ? [] : <span class="keyword">$this</span>-&gt;middleware)</span><br><span class="line">                    -&gt;then(<span class="keyword">$this</span>-&gt;dispatchToRouter());</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 启动引导程序类</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">bootstrap</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (! <span class="keyword">$this</span>-&gt;app-&gt;hasBeenBootstrapped()) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;app-&gt;bootstrapWith(<span class="keyword">$this</span>-&gt;bootstrappers());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 获取应用bootstrap类</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">bootstrappers</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;bootstrappers;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span> $bootstrappers = [</span><br><span class="line">        \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,</span><br><span class="line">        \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,</span><br><span class="line">        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,</span><br><span class="line">        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,</span><br><span class="line">        \Illuminate\Foundation\Bootstrap\RegisterProviders::class,</span><br><span class="line">        \Illuminate\Foundation\Bootstrap\BootProviders::class,</span><br><span class="line">    ];</span><br></pre></td></tr></table></figure></p>
+<p>通过上面的源代码我们发现在发送请求到路由之前，先调用<code>bootstrap()</code>方法启动引导程序类，相当于对整个应用进行初始化。相关的启动有加载环境变量、全局配置、异常处理、注册门面、注册服务提供者、启动服务。具体内容可选择其中一个类的启动，查看下源码究竟是如何进行的，这里暂时就不做过多说明。</p>
+<p>当以上启动类完成时，才真正进入<code>Http</code>的请求处理，我们重点来看一下这段代码：<br><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> (<span class="keyword">new</span> Pipeline($<span class="keyword">this</span>-&gt;app))</span><br><span class="line"><span class="function">                   -&gt;</span>send($request)</span><br><span class="line"><span class="function">                   -&gt;</span>through($<span class="keyword">this</span>-&gt;app-&gt;shouldSkipMiddleware() ? [] : $<span class="keyword">this</span>-&gt;middleware)</span><br><span class="line"><span class="function">                   -&gt;</span><span class="keyword">then</span>($<span class="keyword">this</span>-&gt;dispatchToRouter());</span><br></pre></td></tr></table></figure></p>
+<p>发送请求至路由的代码写的非常优雅，从中我们可以看出主要完成了：<br>① 首先实例化管道；<br>② 将 <code>$request</code> 传入管道；<br>③ 对 <code>$request</code>执行中间件处理；<br>④ 中间件处理成功后，才会将请求分发到路由器进行处理，并返回响应实例。</p>
+<blockquote>
+<p> 注：路由器会将请求 <code>URL</code> 路径与应用注册的所有路由进行匹配，如果有匹配的路由，则先收集该路由所分配的所有路由中间件，通过这些路由中间件对请求进行过滤，所有路由中间件校验通过才会运行对应的匿名函数或控制器方法，执行相应的请求处理逻辑，最后准备好待发送给客户端的响应。</p>
+</blockquote>
+<h1 id="发送响应"><a href="#发送响应" class="headerlink" title="发送响应"></a>发送响应</h1><p>发送响应由<code>Symfony\Component\HttpFoundation\Response</code>中的<code>send()</code> 方法完成，具体代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">send</span><span class="params">()</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">      <span class="keyword">$this</span>-&gt;sendHeaders();</span><br><span class="line">      <span class="keyword">$this</span>-&gt;sendContent();</span><br><span class="line">      <span class="keyword">if</span> (function_exists(<span class="string">'fastcgi_finish_request'</span>)) &#123;</span><br><span class="line">          fastcgi_finish_request();</span><br><span class="line">      &#125; <span class="keyword">elseif</span> (<span class="string">'cli'</span> !== PHP_SAPI) &#123;</span><br><span class="line">          <span class="keyword">static</span>::closeOutputBuffers(<span class="number">0</span>, <span class="keyword">true</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="终止程序"><a href="#终止程序" class="headerlink" title="终止程序"></a>终止程序</h1><p>将响应实例发送给客户端后，程序继续运行 <code>$kernel-&gt;terminate()</code>做一些善后清理工作，并最终退出脚本。<br>这些善后清理工作主要包括运行终止中间件，以及注册到服务容器的一些终止回调：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 终止中间件和服务容器的回调</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">terminate</span><span class="params">($request, $response)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;terminateMiddleware($request, $response);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;app-&gt;terminate();</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 终止中间件</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">terminateMiddleware</span><span class="params">($request, $response)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        $middlewares = <span class="keyword">$this</span>-&gt;app-&gt;shouldSkipMiddleware() ? [] : array_merge(</span><br><span class="line">            <span class="keyword">$this</span>-&gt;gatherRouteMiddleware($request),</span><br><span class="line">            <span class="keyword">$this</span>-&gt;middleware</span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">foreach</span> ($middlewares <span class="keyword">as</span> $middleware) &#123;</span><br><span class="line">            <span class="keyword">if</span> (! is_string($middleware)) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">list</span>($name) = <span class="keyword">$this</span>-&gt;parseMiddleware($middleware);</span><br><span class="line">            $instance = <span class="keyword">$this</span>-&gt;app-&gt;make($name);</span><br><span class="line">            <span class="keyword">if</span> (method_exists($instance, <span class="string">'terminate'</span>)) &#123;</span><br><span class="line">                $instance-&gt;terminate($request, $response);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 终止注册到服务容器的回调</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">terminate</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;terminatingCallbacks <span class="keyword">as</span> $terminating) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;call($terminating);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>至此，我们终于走完一次请求的完整生命周期。最后，我们试着做一下总结：<br>① 首先，所有的请求都会被<code>web</code>服务器导向单入口文件<code>public/index.php</code>；<br>② 第一步注册<code>composer</code>自动加载，以完成项目中所需依赖的加载；<br>③ 第二步在创建服务容器实例时，不仅包括项目基础服务、项目服务提供者别名、目录路径等在内的一系列注册工作，还会绑定 <code>HTTP</code> 内核及 <code>Console</code> 内核到 <code>APP</code>服务容器，绑定异常处理到服务容器；<br>④ 第三步通过服务容器去解析内核实例， 将<code>HTTP</code> 内核定义的中间件组注册到路由器，注册完后就可以在实际处理 <code>HTTP</code> 请求前调用这些中间件实现过滤请求的目的；<br>⑤ 第四步将<code>HTTP</code>请求实例注册到服务容器，并且通过启动引导程序来加载环境变量、全局配置、异常处理、注册门面、注册服务提供者、启动服务等，随后请求被分发到匹配的路由，在路由中执行中间件以过滤不满足校验规则的请求，只有通过中间件处理的请求才最终处理实际的控制器或匿名函数生成响应结果；<br>⑥ 第五步获取到响应结果后发送给请求的客户端；<br>⑦ 第六步运行程序<code>$kernel-&gt;terminate()</code>做一些善后清理工作，并最终退出脚本。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://learnku.com/articles/10421/depth-mining-of-laravel-life-cycle#11bfd9" target="_blank" rel="noopener">深度挖掘 Laravel 生命周期</a><br><a href="https://laravelacademy.org/post/8597.html" target="_blank" rel="noopener">底层原理 —— 一次 Laravel 请求的生命周期</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/Laravel/" rel="tag"># Laravel</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/06/09/2019/2019-06-09-block-chain-index-01/" rel="next" title="﻿【区块链】积极拥抱区块链">
+                <i class="fa fa-chevron-left"></i> ﻿【区块链】积极拥抱区块链
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载项目依赖"><span class="nav-number">2.</span> <span class="nav-text">加载项目依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务容器实例创建"><span class="nav-number">3.</span> <span class="nav-text">服务容器实例创建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解析内核实例"><span class="nav-number">4.</span> <span class="nav-text">解析内核实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#处理HTTP请求"><span class="nav-number">5.</span> <span class="nav-text">处理HTTP请求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#发送响应"><span class="nav-number">6.</span> <span class="nav-text">发送响应</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#终止程序"><span class="nav-number">7.</span> <span class="nav-text">终止程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
