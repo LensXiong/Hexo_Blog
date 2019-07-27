@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：因为工作的原因需要用JAVA对项目进行开发，一边维护和开发PHP项目的代码，一边开发JAVA项目。其实，用什么语言并不重要，语言只是一个工具，重要的是能够站在更高和更广的角度去思考问题。刚接触到JAVA的时候，经常听见一些名词，如果不静下心来，认真梳理并总结，不仅自己糊里糊涂，当别人问起来的时候自己也是道不清讲不明，那又有何用？本篇文章，主要是对一些基本概念和术语的解释和总结，在后期的文章中">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-27T07:12:23.375Z">
+<meta property="og:updated_time" content="2019-07-27T07:23:50.193Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="﻿【Java 基础】Java 基础术语">
 <meta name="twitter:description" content="摘要：因为工作的原因需要用JAVA对项目进行开发，一边维护和开发PHP项目的代码，一边开发JAVA项目。其实，用什么语言并不重要，语言只是一个工具，重要的是能够站在更高和更广的角度去思考问题。刚接触到JAVA的时候，经常听见一些名词，如果不静下心来，认真梳理并总结，不仅自己糊里糊涂，当别人问起来的时候自己也是道不清讲不明，那又有何用？本篇文章，主要是对一些基本概念和术语的解释和总结，在后期的文章中">
@@ -385,22 +385,21 @@
 </blockquote>
 <p>在面向对象的软件开发中，通过 <code>ORM</code>，就可以把对象映射到关系型数据库中。只要有一套程序能够做到建立对象与数据库的关联，操作对象就可以直接操作数据库数据，就可以说这套程序实现了 <code>ORM</code> 对象关系映射。</p>
 <h3 id="为什么要使用ORM"><a href="#为什么要使用ORM" class="headerlink" title="为什么要使用ORM?"></a>为什么要使用ORM?</h3><p>当实现一个应用程序时（不使用 <code>ORM</code>），我们可能会写特别多数据访问层的代码，从数据库保存数据、修改数据、删除数据，而这些代码都是重复的。而使用 <code>ORM</code> 则会大大减少重复性代码。</p>
-<p>常见的 <code>ORM</code> 框架：<code>Mybatis</code>（<code>ibatis</code>）、<code>Hibernate</code>、<code>Jpa</code></p>
+<p>常见的 <code>ORM</code> 框架：<code>Mybatis</code>（<code>ibatis</code>）、<code>Hibernate</code></p>
 <h3 id="什么是Hibernate"><a href="#什么是Hibernate" class="headerlink" title="什么是Hibernate?"></a>什么是Hibernate?</h3><p><code>Hibernate</code>是一个开放源代码的对象关系映射(<code>ORM</code>)框架，它对<code>JDBC</code>进行了非常轻量级的对象封装，并将<code>POJO</code>与数据库表建立映射关系，是一个全自动的<code>ORM</code>框架，<code>Hibernate</code>可以自动生成<code>SQL</code>语句，自动执行，通过使用对象编程思维来操纵数据库。</p>
-<h3 id="什么是JDBC"><a href="#什么是JDBC" class="headerlink" title="什么是JDBC?"></a>什么是JDBC?</h3><blockquote>
-<p>Java数据库连接，（Java Database Connectivity，简称JDBC）是Java语言中用来规范客户端程序如何来访问数据库的应用程序接口，提供了诸如查询和更新数据库中数据的方法。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JDBC stands <span class="keyword">for</span> Java Database Connectivity. JDBC is a Java API to connect and execute the query with the database. <span class="function">It is a part of <span class="title">JavaSE</span> <span class="params">(Java Standard Edition)</span>. JDBC API uses JDBC drivers to connect with the database.</span></span><br></pre></td></tr></table></figure>
 <h3 id="什么是POJO？"><a href="#什么是POJO？" class="headerlink" title="什么是POJO？"></a>什么是POJO？</h3><blockquote>
 <p>普通 Java 对象，（Plain Ordinary Java Object / Pure Old Java Object，简称POJO）是指那些没有遵从特定模型，约定或框架的 Java 对象。比如在 WEB 应用程序中建立一个数据库的映射对象时，我们用 POJO 这个名字来强调它是一个普通 Java 对象，而不是一个特殊的对象。</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POJO stands <span class="keyword">for</span> Plain Old Java Object. It is an ordinary Java object, not bound by any special restriction other than those forced by the Java Language Specification and not requiring any <span class="class"><span class="keyword">class</span> <span class="title">path</span>. <span class="title">POJOs</span> <span class="title">are</span> <span class="title">used</span> <span class="title">for</span> <span class="title">increasing</span> <span class="title">the</span> <span class="title">readability</span> <span class="title">and</span> <span class="title">re</span>-<span class="title">usability</span> <span class="title">of</span> <span class="title">a</span> <span class="title">program</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="什么是JDBC"><a href="#什么是JDBC" class="headerlink" title="什么是JDBC?"></a>什么是JDBC?</h3><blockquote>
+<p>Java数据库连接，（Java Database Connectivity，简称JDBC）是Java语言中用来规范客户端程序如何来访问数据库的应用程序接口，提供了诸如查询和更新数据库中数据的方法。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JDBC stands <span class="keyword">for</span> Java Database Connectivity. JDBC is a Java API to connect and execute the query with the database. <span class="function">It is a part of <span class="title">JavaSE</span> <span class="params">(Java Standard Edition)</span>. JDBC API uses JDBC drivers to connect with the database.</span></span><br></pre></td></tr></table></figure>
 <h3 id="JPA与Hibernate的关系"><a href="#JPA与Hibernate的关系" class="headerlink" title="JPA与Hibernate的关系"></a>JPA与Hibernate的关系</h3><p><code>JPA</code>和<code>Hibernate</code>的关系就像<code>JDBC</code>和<code>JDBC</code>驱动的关系，<code>JPA</code>是规范，<code>Hibernate</code>除了作为<code>ORM</code>框架之外，它也是一种<code>JPA</code>规范的实现。就像<code>JDBC</code>规范不能驱动底层数据库一样，<code>JPA</code>不能取代<code>Hibernate</code>，如果使用<code>JPA</code>规范进行数据库操作，底层需要<code>Hibernate</code>作为其实现类完成数据持久化工作。</p>
 <blockquote>
 <p><code>JPA</code> 实质上是一种 <code>ORM</code> 规范，注意不是 <code>ORM</code> 框架——因为 <code>JPA</code> 并未提供 <code>ORM</code> 实现，它只是制订了一些规范，提供了一些编程的 <code>API</code> 接口，但具体实现则由服务厂商来提供实现。比如像<code>Hibernate</code> ,<code>Toplink</code>等<code>ORM</code>框架的实现厂商。</p>
 </blockquote>
-<p>什么是JTA?</p>
-<blockquote>
+<h3 id="什么是JTA"><a href="#什么是JTA" class="headerlink" title="什么是JTA?"></a>什么是JTA?</h3><blockquote>
 <p><code>Java</code> 事务 <code>API</code>（<code>Java Transaction API</code>，简称<code>JTA</code> ） 是一个<code>Java</code>企业版的应用程序接口，在<code>Java</code>环境中，允许完成跨越多个<code>XA</code>资源的分布式事务。简单来讲，它是一个分布式事务管理的解决方案。</p>
 </blockquote>
 <p>注：<code>XA</code>是一个分布式事务协议，大致分为两部分：事务管理器和本地资源管理器。其中本地资源管理器往往由数据库实现，比如<code>Oracle</code>、<code>DB2</code>这些商业数据库都实现了<code>XA</code>接口，而事务管理器作为全局的调度者，负责各个本地资源的提交和回滚。</p>
@@ -616,7 +615,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是JPA"><span class="nav-number">1.</span> <span class="nav-text">什么是JPA?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是ORM"><span class="nav-number">2.</span> <span class="nav-text">什么是ORM?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用ORM"><span class="nav-number">3.</span> <span class="nav-text">为什么要使用ORM?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Hibernate"><span class="nav-number">4.</span> <span class="nav-text">什么是Hibernate?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是JDBC"><span class="nav-number">5.</span> <span class="nav-text">什么是JDBC?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是POJO？"><span class="nav-number">6.</span> <span class="nav-text">什么是POJO？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JPA与Hibernate的关系"><span class="nav-number">7.</span> <span class="nav-text">JPA与Hibernate的关系</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是Spring-Data-JPA"><span class="nav-number">7.1.</span> <span class="nav-text">什么是Spring Data JPA?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Data-JPA-与-JPA-和-Hibernate之间的关系"><span class="nav-number">8.</span> <span class="nav-text">Spring Data JPA 与 JPA 和 Hibernate之间的关系</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是JPA"><span class="nav-number">1.</span> <span class="nav-text">什么是JPA?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是ORM"><span class="nav-number">2.</span> <span class="nav-text">什么是ORM?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用ORM"><span class="nav-number">3.</span> <span class="nav-text">为什么要使用ORM?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Hibernate"><span class="nav-number">4.</span> <span class="nav-text">什么是Hibernate?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是POJO？"><span class="nav-number">5.</span> <span class="nav-text">什么是POJO？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是JDBC"><span class="nav-number">6.</span> <span class="nav-text">什么是JDBC?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JPA与Hibernate的关系"><span class="nav-number">7.</span> <span class="nav-text">JPA与Hibernate的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是JTA"><span class="nav-number">8.</span> <span class="nav-text">什么是JTA?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是Spring-Data-JPA"><span class="nav-number">8.1.</span> <span class="nav-text">什么是Spring Data JPA?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Data-JPA-与-JPA-和-Hibernate之间的关系"><span class="nav-number">9.</span> <span class="nav-text">Spring Data JPA 与 JPA 和 Hibernate之间的关系</span></a></li></ol></div>
             
 
           </div>
