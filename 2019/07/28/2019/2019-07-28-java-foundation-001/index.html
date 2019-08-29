@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：泛型是JDK5中引入的特性，它的本质是参数化类型，按照参数类型的使用范围分为泛型类、泛型方法、泛型接口。通过泛型可以定义类型安全的数据结构（类型安全），而无须使用实际的数据类型（可扩展），在程序编译期间即可发现问题并解决。本篇文章介绍了泛型类的格式及使用、泛型方法的格式及使用、泛型接口的格式和使用；最后介绍了三种类型通配符，包含类型通配符、类型通配符上限、类型通配符下限。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-27T08:55:43.880Z">
+<meta property="og:updated_time" content="2019-08-27T09:04:56.987Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="﻿【Java 基础】Java 泛型">
 <meta name="twitter:description" content="摘要：泛型是JDK5中引入的特性，它的本质是参数化类型，按照参数类型的使用范围分为泛型类、泛型方法、泛型接口。通过泛型可以定义类型安全的数据结构（类型安全），而无须使用实际的数据类型（可扩展），在程序编译期间即可发现问题并解决。本篇文章介绍了泛型类的格式及使用、泛型方法的格式及使用、泛型接口的格式和使用；最后介绍了三种类型通配符，包含类型通配符、类型通配符上限、类型通配符下限。">
@@ -380,7 +380,7 @@
 <p> 它的本质是参数化类型，所操作的数据类型被指定为一个参数。所谓的参数化类型就是将类型由原来具体的类型参数化，在使用或者调用时传入具体的类型。</p>
 <p> 这种参数类型可以用在类、方法和接口中，分别被称为泛型类、泛型方法、泛型接口。</p>
 <h3 id="泛型格式"><a href="#泛型格式" class="headerlink" title="泛型格式"></a>泛型格式</h3><p> <code>&lt;类型&gt;</code>：指定一种类型的格式，这里的类型可以看成是形参。<br> <code>&lt;类型1,类型2...&gt;</code>：指定多种类型的格式，多种类型之间用逗号隔开，这里的类型也看成是形参。<br> 注：将来具体调用时候给定的类型可以看成是实参，并且实参的类型只能是引用数据类型。</p>
-<h3 id="泛型好处："><a href="#泛型好处：" class="headerlink" title="泛型好处："></a>泛型好处：</h3><p> 1、使用泛型可以将运行时期的问题提前到编译期间，避免了强制类型转换。<br> 2、 通过泛型可以定义类型安全的数据结构（类型安全），而无须使用实际的数据类型（可扩展）。</p>
+<h3 id="泛型好处"><a href="#泛型好处" class="headerlink" title="泛型好处"></a>泛型好处</h3><p> 1、使用泛型可以将运行时期的问题提前到编译期间，避免了强制类型转换。<br> 2、 通过泛型可以定义类型安全的数据结构（类型安全），而无须使用实际的数据类型（可扩展）。</p>
 <h3 id="泛型格式和示例"><a href="#泛型格式和示例" class="headerlink" title="泛型格式和示例"></a>泛型格式和示例</h3><p> 泛型类格式：<code>修饰符 class 类名&lt;类型&gt; {}</code><br> 泛型类示例：<code>public class Generic&lt;T&gt; {}</code></p>
 <p> 泛型方法格式：<code>修饰符 &lt;类型&gt; 返回值类型 方法名(类型 变量名) {}</code><br> 泛型方法示例： <code>public &lt;T&gt; void show(T t) {}</code></p>
 <p> 泛型接口格式：<code>修饰符 interface 接口名&lt;类型&gt; {}</code><br> 泛型接口示例：<code>public interface Generic&lt;T&gt; {}</code> <code>public class GenericImpl&lt;T&gt; implements Generic&lt;T&gt; {}</code></p>
@@ -604,7 +604,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型概述"><span class="nav-number">1.</span> <span class="nav-text">泛型概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型格式"><span class="nav-number">2.</span> <span class="nav-text">泛型格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型好处："><span class="nav-number">3.</span> <span class="nav-text">泛型好处：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型格式和示例"><span class="nav-number">4.</span> <span class="nav-text">泛型格式和示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型类"><span class="nav-number">5.</span> <span class="nav-text">泛型类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型方法"><span class="nav-number">6.</span> <span class="nav-text">泛型方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型接口"><span class="nav-number">7.</span> <span class="nav-text">泛型接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型通配符"><span class="nav-number">8.</span> <span class="nav-text">类型通配符</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型概述"><span class="nav-number">1.</span> <span class="nav-text">泛型概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型格式"><span class="nav-number">2.</span> <span class="nav-text">泛型格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型好处"><span class="nav-number">3.</span> <span class="nav-text">泛型好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型格式和示例"><span class="nav-number">4.</span> <span class="nav-text">泛型格式和示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型类"><span class="nav-number">5.</span> <span class="nav-text">泛型类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型方法"><span class="nav-number">6.</span> <span class="nav-text">泛型方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型接口"><span class="nav-number">7.</span> <span class="nav-text">泛型接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型通配符"><span class="nav-number">8.</span> <span class="nav-text">类型通配符</span></a></li></ol></div>
             
 
           </div>
