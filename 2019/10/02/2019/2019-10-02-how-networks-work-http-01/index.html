@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="NetWorks," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：所谓温故而知新，为了更加全面和系统的对网络连接有更深刻的认知，在工作多年以后更需要对相关知识进行归纳和总结。本篇文章是对浏览器生成HTTP消息的简单归纳，首先例举了常见的URL的各种形式，其中包括HTTP URL 、FTP URL 、FILES URL、MAILTO URL和NEWS URL，紧接着对HTTP常见方法进行讲解，重点介绍了GET和POST的区别，GET 用于获取资源，是无副作用">
+<meta name="keywords" content="NetWorks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="﻿【网络连接】浏览器-生成HTTP消息">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/10/02/2019/2019-10-02-how-networks-work-http-01/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：所谓温故而知新，为了更加全面和系统的对网络连接有更深刻的认知，在工作多年以后更需要对相关知识进行归纳和总结。本篇文章是对浏览器生成HTTP消息的简单归纳，首先例举了常见的URL的各种形式，其中包括HTTP URL 、FTP URL 、FILES URL、MAILTO URL和NEWS URL，紧接着对HTTP常见方法进行讲解，重点介绍了GET和POST的区别，GET 用于获取资源，是无副作用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-02T15:10:57.094Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="﻿【网络连接】浏览器-生成HTTP消息">
+<meta name="twitter:description" content="摘要：所谓温故而知新，为了更加全面和系统的对网络连接有更深刻的认知，在工作多年以后更需要对相关知识进行归纳和总结。本篇文章是对浏览器生成HTTP消息的简单归纳，首先例举了常见的URL的各种形式，其中包括HTTP URL 、FTP URL 、FILES URL、MAILTO URL和NEWS URL，紧接着对HTTP常见方法进行讲解，重点介绍了GET和POST的区别，GET 用于获取资源，是无副作用">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/10/02/2019/2019-10-02-how-networks-work-http-01/"/>
+
+
+
+
+
+  <title>﻿【网络连接】浏览器-生成HTTP消息 | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/10/02/2019/2019-10-02-how-networks-work-http-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">﻿【网络连接】浏览器-生成HTTP消息</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-02T14:19:24+08:00">
+                2019-10-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：所谓温故而知新，为了更加全面和系统的对网络连接有更深刻的认知，在工作多年以后更需要对相关知识进行归纳和总结。本篇文章是对浏览器生成<code>HTTP</code>消息的简单归纳，首先例举了常见的<code>URL</code>的各种形式，其中包括<code>HTTP URL</code> 、<code>FTP URL</code> 、<code>FILES URL</code>、<code>MAILTO URL</code>和<code>NEWS URL</code>，紧接着对<code>HTTP</code>常见方法进行讲解，重点介绍了<code>GET</code>和<code>POST</code>的区别，<code>GET</code> 用于获取资源，是无副作用的，是幂等的，且可缓存； <code>POST</code> 用于处理资源，有副作用，非幂等，不可缓存。最后对<code>HTTP</code> 消息的格式进行示例详细说明，重点介绍响应状态码的分类和常用状态码的含义。
+</strong></p>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h1 id="URL的各种形式"><a href="#URL的各种形式" class="headerlink" title="URL的各种形式"></a>URL的各种形式</h1><p><code>URL</code>:<code>Uniform Resource Locator</code>，统一资源定位符，是因特网的万维网服务程序上用于指定信息位置的表示方法。除了我们熟悉的<code>HTTP URL</code>以外，还包括其他很多形式的<code>URL</code>，比如：</p>
+<ul>
+<li><code>HTTP URL</code> 方案是用来标志因特网上使用<code>HTTP</code>(<code>HyperText Transfer Protocol</code>，超文本传输协议)的可达资源。</li>
+<li><code>FTP URL</code> 方案可以用来指定因特网上使用<code>FTP</code>协议（<code>RFC959</code>）的可达主机上的文件和目录。</li>
+<li><code>FILES URL</code>方案被用来指定那些特定主机上的可访问的文件。</li>
+<li><code>MAILTO URL</code> 方案是用来指明一个个体或者服务的因特网邮件地址的。它只代表因特网邮件地址，而不表示任何其它的附加信息。</li>
+<li><code>NEWS URL</code>方案被用来查阅新闻组或者<code>USENET</code>新闻上的独立文章。</li>
+</ul>
+<p>根据访问目标的不同， <code>URL</code> 的写法也会不同。例如在访问 <code>Web</code> 服务器和 <code>FTP</code> 服务器时，<code>URL</code> 中会包含服务器的域名和要访问的文件的路径名等，而发邮件的 <code>URL</code> 则包含收件人的邮件地址。此外，根据需要，<code>URL</code> 中还会包含用户名、密码、 服务器端口号等信息。以下为常见的几种 <code>URL</code>形式：</p>
+<h2 id="使用HTTP协议访问Web服务器"><a href="#使用HTTP协议访问Web服务器" class="headerlink" title="使用HTTP协议访问Web服务器"></a>使用<code>HTTP</code>协议访问<code>Web</code>服务器</h2><p>格式：协议://用户名:密码@Web服务器的域名:端口号/文件的路径名</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//u</span>ser:password@www.wwxiong.com:<span class="number">80</span><span class="regexp">/dir/</span>file1.html</span><br><span class="line">协议:<span class="regexp">//</span>用户名:密码@WEB服务器的域名:端口号:文件的路径名</span><br></pre></td></tr></table></figure>
+<p><code>http</code>代表所使用的协议；<code>user:password</code>是用户名:密码，可省略；<code>www.wwxiong.com</code>代表web服务器的域名；80代表端口号，也是可以省略的；<code>/dir/file1.html</code>代表文件的路径名。</p>
+<h2 id="使用FTP协议上传和下载文件"><a href="#使用FTP协议上传和下载文件" class="headerlink" title="使用FTP协议上传和下载文件"></a>使用<code>FTP</code>协议上传和下载文件</h2><p>格式：ftp://用户名:密码@FTP服务器域名:端口号/文件名</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ftp:<span class="regexp">//u</span>ser:password@ftp.wwxiong.com:<span class="number">21</span><span class="regexp">/dir/</span>file1.htm</span><br></pre></td></tr></table></figure>
+<p><code>ftp</code>代表所使用的协议；<code>user:password</code>是用户名:密码，可省略；<code>ftp.wwxiong.com</code>代表<code>FTP</code>服务器的域名；21代表端口号，也是可以省略的；<code>/dir/file1.html</code>代表文件的路径名。</p>
+<h2 id="读取客户端本地文件"><a href="#读取客户端本地文件" class="headerlink" title="读取客户端本地文件"></a>读取客户端本地文件</h2><p>格式：file://主机名/文件路径名</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file:<span class="regexp">//</span>localhost<span class="regexp">/Users/</span>wangxiong<span class="regexp">/home/</span>file1.zip</span><br></pre></td></tr></table></figure>
+<p><code>file</code>代表使用文件<code>URL</code>；localhost代表主机名；<code>Users/wangxiong/home/file1.zip</code>代表文件路径名。有一种特殊情况，就是主机名可以是<code>localhost</code>或者空字符串；表示解释这个<code>URL</code>的主机。</p>
+<p>注：像<code>file:</code>这样的 <code>URL</code> 在访问时是不使用网络的，因此说 <code>URL</code> 的开头部分表示的是协议类型并不完全准确，也许理解为<code>访问方法</code>会更好一些。</p>
+<h2 id="发送电子邮件"><a href="#发送电子邮件" class="headerlink" title="发送电子邮件"></a>发送电子邮件</h2><p>格式：mailto:电子邮件地址</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">mailto</span>:lensxiong<span class="variable">@gmail</span>.com</span><br></pre></td></tr></table></figure>
+<p><code>mailto</code>协议代表因特网邮件地址，而不表示任何其它的附加信息，不像其他<code>URL</code>，<code>mailto</code>协议不代表可直接访问的数据对象。如果没有正确配置电子邮件软件，则即使在地址栏中输入<code>mailto:</code>也是无法正常工作的。</p>
+<h2 id="阅读新闻组文章"><a href="#阅读新闻组文章" class="headerlink" title="阅读新闻组文章"></a>阅读新闻组文章</h2><p>格式：news:新闻组名</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">news:comp<span class="selector-class">.protocols</span><span class="selector-class">.tcp-ip</span></span><br></pre></td></tr></table></figure>
+<h1 id="HTTP的主要方法"><a href="#HTTP的主要方法" class="headerlink" title="HTTP的主要方法"></a>HTTP的主要方法</h1><p>浏览器的第一步工作是对 <code>URL</code> 进行解析，当解析完成以后接下来就是浏览器需要告诉服务器进行怎样的操作，我们称之为方法。最常用的方法是<code>GET</code>和<code>POST</code>方法，除此之外还有很多其他的方法，比如<code>PUT</code>和 <code>DELETE</code> 等方法，我们需要认真思考一下它们的含义，以便理解 <code>HTTP</code> 协议具备的所有功能，以下为<code>HTTP</code>的主要方法及其含义：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>获取 <code>URI</code>指定的信息。如果 <code>URI</code> 指定的是文件，则返回文件的内容；如果 <code>URI</code>指定的是 <code>CGI</code>程序，则返回该程序的输出数据。</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>从客户端向服务器发送数据。一般用于发送表单中填写的数据等情况下。</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>和 <code>GET</code> 基本相同。不过它只返回 <code>HTTP</code> 的消息头 (<code>message</code> <code>header</code>)，而并不返回数据的内容。用于获取文件最后更新时间等属性信息。</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>用于通知或查询通信选项。</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>替换 <code>URI</code> 指定的服务器上的文件。如果 <code>URI</code> 指定的文件不存在，则创建该文件。</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>删除 <code>URI</code> 指定的服务器上的文件。</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>将服务器收到的请求行和头部(<code>header</code>)直接返回给客户端。用于在使用代理的环境中检查改写请求 的情况。</td>
+</tr>
+<tr>
+<td>CONNECT</td>
+<td>使用代理传输加密消息时使用的方法。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>问：GET和POST 的区别？</p>
+</blockquote>
+<p>这个问题看似很简单，其实网上的很多答案都是不正确的。从标准上来看，<code>GET</code> 和 <code>POST</code>的区别如下：</p>
+<ul>
+<li><code>GET</code> 用于获取资源，是无副作用的，是幂等的，且可缓存。</li>
+<li><code>POST</code> 用于处理资源，有副作用，非幂等，不可缓存。</li>
+</ul>
+<p>可以用以下图来表示：</p>
+<table>
+<thead>
+<tr>
+<th>幂等性</th>
+<th>改变服务器上资源的状态</th>
+<th>不改变服务器上资源的状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>幂等</td>
+<td>PUT</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>非幂等</td>
+<td>POST</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p>首先我们需要知道<code>RFC7231</code>里定义了<code>HTTP</code>方法的几个性质：</p>
+<ul>
+<li>① <code>Safe</code> - 安全性。这里的「安全」和通常理解的「安全」意义不同，如果一个方法的语义在本质上是「只读」的，那么这个方法就是安全的。客户端向服务端的资源发起的请求如果使用了是安全的方法，就不应该引起服务端任何的状态变化，因此也是无害的。 此<code>RFC</code>定义，<code>GET</code>、<code>HEAD</code>、 <code>OPTIONS</code> 和 <code>TRACE</code> 这几个方法是安全的。但是这个定义只是规范，并不能保证方法的实现也是安全的，服务端的实现可能会不符合方法语义，比如说可以使用<code>GET</code>修改用户信息的情况。引入安全这个概念的目的是为了方便网络爬虫和缓存，以免调用或者缓存某些不安全方法时引起某些意外的后果。<code>User Agent</code>（浏览器）应该在执行安全和不安全方法时做出区分对待，并给用户以提示。</li>
+<li>② <code>Idempotent</code>- 幂等性。幂等性的概念是指同一个请求方法执行多次和仅执行一次的效果完全相同。按照<code>RFC</code>规范，<code>PUT</code>、<code>DELETE</code>都是幂等的。同样，这也仅仅是规范，服务端实现是否幂等是无法确保的。引入幂等主要是为了处理同一个请求重复发送的情况，比如在请求响应前失去连接，如果方法是幂等的，就可以放心地重发一次请求。这也是浏览器在后退或者刷新时遇到<code>POST</code>会给用户提示的原因：<code>POST</code>语义不是幂等的，重复请求可能会带来意想不到的后果。</li>
+<li><code>Cacheable</code> - 可缓存性。顾名思义就是一个方法是否可以被缓存，此<code>RFC</code>里<code>GET</code>，<code>HEAD</code>和某些情况下的<code>POST</code>都是可缓存的，但是绝大多数的浏览器的实现里仅仅支持<code>GET</code>和<code>HEAD</code>。</li>
+</ul>
+<p>关于<code>GET</code>和<code>POST</code> 这两种方法的语义，<code>RFC7231</code>里原文定义如下：</p>
+<blockquote>
+<p>The GET method requests transfer of a current selected representation for the target resource. GET is the primary mechanism of information retrieval and the focus of almost all performance optimizations. Hence, when people speak of retrieving some identifiable information via HTTP, they are generally referring to making a GET request.A payload within a GET request message has no defined semantics; sending a payload body on a GET request might cause some existing implementations to reject the request.</p>
+</blockquote>
+<blockquote>
+<p>The POST method requests that the target resource process the representation enclosed in the request according to the resource’s own specific semantics.</p>
+</blockquote>
+<p>以下为错误的认识：</p>
+<p>① <code>GET</code>方法对数据长度有限制而<code>POST</code>方法没有限制？事实上，<code>HTTP</code>协议明确地指出了，<code>HTTP</code>头和<code>Body</code>都没有长度的要求，对 <code>URL</code> 限制的大多是浏览器和服务器的原因。服务器是因为处理长 <code>URL</code> 要消耗比较多的资源，为了性能和安全（防止恶意构造长 <code>URL</code> 来攻击）考虑，会给 <code>URL</code> 长度加限制，如果有人恶意地构造几个几M大小的<code>URL</code>，并不停地访问你的服务器，服务器性能就会下降。</p>
+<p>② <code>POST</code> 方法比<code>GET</code>方法安全？有人说<code>POST</code> 比<code>GET</code>安全，因为数据在地址栏上不可见。然而，从传输的角度来说，他们都是不安全的，因为 <code>HTTP</code> 在网络上是明文传输的，只要在网络节点上抓包，就能完整地获取数据报文，要想安全传输，就只有加密，也就是 <code>HTTPS</code>进行传输。</p>
+<h1 id="HTTP-消息的格式"><a href="#HTTP-消息的格式" class="headerlink" title="HTTP 消息的格式"></a>HTTP 消息的格式</h1><p><code>HTTP</code>（超文本传输协议）是一个基于请求与响应模式的、无状态的、应用层的协议，常基于<code>TCP</code>的连接方式，<code>HTTP1.1</code>版本中给出一种持续连接的机制，绝大多数的<code>Web</code>开发，都是构建在<code>HTTP</code>协议之上的<code>Web</code>应用。 <code>HTTP</code> 消息分为请求消息和响应消息，请求消息由三部分组成：请求行、消息头和消息体，响应消息也是由三部分组成：状态行、消息头和消息体。</p>
+<p>请求消息包含三部分：<br>a、请求行：包含请求方法、URI、HTTP版本信息<br>b、请求消息字段<br>c、请求消息实体</p>
+<p>请求消息示例：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 请求头</span></span><br><span class="line">GET <span class="regexp">/index.php HTTP/</span><span class="number">1.1</span></span><br><span class="line"><span class="comment">// 请求消息头</span></span><br><span class="line"><span class="string">Accept:</span>text<span class="regexp">/html,application/</span>xhtml+xml,application/xml;q=<span class="number">0.9</span></span><br><span class="line">Accept-<span class="string">Encoding:</span> gzip, deflate, br</span><br><span class="line">Accept-<span class="string">Language:</span> zh-CN,zh;q=<span class="number">0.9</span>,en;q=<span class="number">0.8</span></span><br><span class="line">Cache-<span class="string">Control:</span> no-cache</span><br><span class="line"><span class="string">Connection:</span> keep-alive</span><br><span class="line"><span class="string">Cookie:</span> ...</span><br><span class="line"><span class="string">Host:</span> www.wwxiong.com</span><br><span class="line"><span class="string">Pragma:</span> no-cache</span><br><span class="line">Sec-Fetch-<span class="string">Mode:</span> navigate</span><br><span class="line">Sec-Fetch-<span class="string">Site:</span> none</span><br><span class="line">Sec-Fetch-<span class="string">User:</span> ?1</span><br><span class="line">Upgrade-Insecure-Requests: <span class="number">1</span></span><br><span class="line">User-<span class="string">Agent:</span> Mozilla<span class="regexp">/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/</span><span class="number">537.36</span> (KHTML, like Gecko) Chrome<span class="regexp">/76.0.3809.132 Safari/</span><span class="number">537.36</span></span><br><span class="line"><span class="comment">// 请求消息体</span></span><br></pre></td></tr></table></figure>
+<p>响应消息包含三部分：<br>a、状态行：包含HTTP版本、状态码、状态码的原因短语<br>b、响应消息字段<br>c、响应消息实体<br>响应消息示例：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 状态行</span></span><br><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="comment">// 响应消息头</span></span><br><span class="line"><span class="symbol">Date:</span> Wed, <span class="number">02</span> Oct <span class="number">2019</span> <span class="number">14</span>:<span class="number">33</span>:<span class="number">47</span> GMT</span><br><span class="line"><span class="symbol">Server:</span> cloudflare</span><br><span class="line">Last-Modified: Thu, <span class="number">05</span> Sep <span class="number">2019</span> <span class="number">05</span>:<span class="number">00</span>:<span class="number">42</span> GMT</span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Cache-control: max-age=<span class="number">600</span></span><br><span class="line">Cf-ray: <span class="number">51f</span>764b428b7977e-FRA</span><br><span class="line">Content-encoding: br</span><br><span class="line">Content-type: text/html; charset=utf<span class="number">-8</span></span><br><span class="line"><span class="symbol">Expires:</span> Wed, <span class="number">02</span> Oct <span class="number">2019</span> <span class="number">14</span>:<span class="number">43</span>:<span class="number">47</span> GMT</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 响应消息体</span></span><br><span class="line"><span class="params">&lt;html&gt;</span></span><br><span class="line"><span class="params">&lt;head&gt;</span></span><br><span class="line"><span class="params">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf<span class="number">-8</span>"&gt;</span> <span class="params">&lt;title&gt;</span><span class="params">&lt;/title&gt;</span></span><br><span class="line"><span class="params">&lt;/head&gt;</span></span><br><span class="line"><span class="params">&lt;body&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="params">&lt;/body&gt;</span></span><br><span class="line"><span class="params">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h1><p><code>HTTP</code> 响应消息中状态码的第一位数字表示状态类型，第二、三位数字表示具体的情况。下表列举了第一位数字的含义，<code>HTTP</code>状态码分类:</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>分类描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1xx</td>
+<td>告知请求的处理进度和情况，服务器收到请求，需要请求者继续执行操作</td>
+</tr>
+<tr>
+<td>2xx</td>
+<td>成功，操作被成功接收并处理</td>
+</tr>
+<tr>
+<td>3xx</td>
+<td>表示需要进一步操作</td>
+</tr>
+<tr>
+<td>4xx</td>
+<td>客户端错误，请求包含语法错误或无法完成请求</td>
+</tr>
+<tr>
+<td>5xx</td>
+<td>服务器错误，服务器在处理请求的过程中发生了错误</td>
+</tr>
+</tbody>
+</table>
+<p>常用的<code>HTTP</code>状态码：</p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>英文</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>Continue</td>
+<td>继续。客户端应继续其请求</td>
+</tr>
+<tr>
+<td>200</td>
+<td>OK</td>
+<td>请求成功</td>
+</tr>
+<tr>
+<td>300</td>
+<td>Multiple Choices</td>
+<td>请求的资源可包括多个位置</td>
+</tr>
+<tr>
+<td>301</td>
+<td>Moved Permanently</td>
+<td>资源（网页等）被永久转移到其它URL</td>
+</tr>
+<tr>
+<td>302</td>
+<td>Temporarily Moved</td>
+<td>临时重定向，暂时性转移</td>
+</tr>
+<tr>
+<td>304</td>
+<td>Not Modified</td>
+<td>客户端已经执行了GET，但文件未变化。</td>
+</tr>
+<tr>
+<td>400</td>
+<td>Bad Request</td>
+<td>客户端请求的语法错误，服务器无法理解</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden</td>
+<td>服务器已经理解请求，但是拒绝执行它</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found</td>
+<td>请求的资源（网页等）不存在</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Internal Server Error</td>
+<td>内部服务器错误</td>
+</tr>
+<tr>
+<td>502</td>
+<td>Bad Gateway</td>
+<td>服务器接收到上游服务器的无效响应</td>
+</tr>
+<tr>
+<td>504</td>
+<td>Gateway Time-out</td>
+<td>网关超时，上游服务器超时</td>
+</tr>
+</tbody>
+</table>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/NetWorks/" rel="tag"># NetWorks</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/09/26/2019/2019-09-26-how-networks-work/" rel="next" title="﻿【网络连接】网络连接的全貌">
+                <i class="fa fa-chevron-left"></i> ﻿【网络连接】网络连接的全貌
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#URL的各种形式"><span class="nav-number">1.</span> <span class="nav-text">URL的各种形式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用HTTP协议访问Web服务器"><span class="nav-number">1.1.</span> <span class="nav-text">使用HTTP协议访问Web服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用FTP协议上传和下载文件"><span class="nav-number">1.2.</span> <span class="nav-text">使用FTP协议上传和下载文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取客户端本地文件"><span class="nav-number">1.3.</span> <span class="nav-text">读取客户端本地文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送电子邮件"><span class="nav-number">1.4.</span> <span class="nav-text">发送电子邮件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阅读新闻组文章"><span class="nav-number">1.5.</span> <span class="nav-text">阅读新闻组文章</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP的主要方法"><span class="nav-number">2.</span> <span class="nav-text">HTTP的主要方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-消息的格式"><span class="nav-number">3.</span> <span class="nav-text">HTTP 消息的格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP状态码"><span class="nav-number">4.</span> <span class="nav-text">HTTP状态码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
