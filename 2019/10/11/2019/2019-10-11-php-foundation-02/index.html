@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="PHP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="摘要：本系列数组函数文章主要总结了PHP数组的用法，通过参考官方手册后做的一个整理，目的在于经常回顾和思考。结合实际的工作，对一些常用的技巧也做了梳理，比如我们可以巧用array_map()和array_reduce()替代foreach循环；利用array_intersect_key()和array_flip()结合对关联数组进行获取指定键名；利用array_diff_key()和array_f">
+<meta name="keywords" content="PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="﻿【PHP语言】数组函数（一）">
+<meta property="og:url" content="http://wwxiong.com/hexo_blog/2019/10/11/2019/2019-10-11-php-foundation-02/index.html">
+<meta property="og:site_name" content="Wangxiong&#39;s Notes">
+<meta property="og:description" content="摘要：本系列数组函数文章主要总结了PHP数组的用法，通过参考官方手册后做的一个整理，目的在于经常回顾和思考。结合实际的工作，对一些常用的技巧也做了梳理，比如我们可以巧用array_map()和array_reduce()替代foreach循环；利用array_intersect_key()和array_flip()结合对关联数组进行获取指定键名；利用array_diff_key()和array_f">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-11T09:44:21.833Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="﻿【PHP语言】数组函数（一）">
+<meta name="twitter:description" content="摘要：本系列数组函数文章主要总结了PHP数组的用法，通过参考官方手册后做的一个整理，目的在于经常回顾和思考。结合实际的工作，对一些常用的技巧也做了梳理，比如我们可以巧用array_map()和array_reduce()替代foreach循环；利用array_intersect_key()和array_flip()结合对关联数组进行获取指定键名；利用array_diff_key()和array_f">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'PTDAI8CAYI',
+      apiKey: '0ee8d8726142fd3ffede4bc9f6a038b4',
+      indexName: 'lensxiong',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wwxiong.com/hexo_blog/2019/10/11/2019/2019-10-11-php-foundation-02/"/>
+
+
+
+
+
+  <title>﻿【PHP语言】数组函数（一） | Wangxiong's Notes</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?409134d3cf8c219e63f0cb0c78947ea7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wangxiong's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">始于技术，岂止于技术。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/hexo_blog/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="http://wwxiong.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wwxiong.com/hexo_blog/hexo_blog/2019/10/11/2019/2019-10-11-php-foundation-02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Xiong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wangxiong's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">﻿【PHP语言】数组函数（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-11T10:49:24+08:00">
+                2019-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong><br>摘要：本系列数组函数文章主要总结了<code>PHP</code>数组的用法，通过参考官方手册后做的一个整理，目的在于经常回顾和思考。结合实际的工作，对一些常用的技巧也做了梳理，比如我们可以巧用<code>array_map()</code>和<code>array_reduce()</code>替代<code>foreach</code>循环；利用<code>array_intersect_key()</code>和<code>array_flip()</code>结合对关联数组进行获取指定键名；利用<code>array_diff_key()</code>和<code>array_flip()</code>配合使用移除数组中的指定键名；利用<code>array_flip()</code>两次反转实现数组的去重；利用<code>array_slice()</code>来实现数字索引的重置；使用<code>array_splice()</code>来实现数组的新增、移除元素等操作。
+</strong></p>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
+<li><code>array_column()</code> — 返回多维数组中指定的单列数组，可指定数组索引键的列。</li>
+<li><code>array_map()</code>  — 对数组中的每个元素执行回调方法，基于给定的数组传入函数名称或匿名函数来获取一个新数组。</li>
+<li><code>array_reduce()</code> — 用回调函数迭代地将数组简化为单一的值。</li>
+<li><code>list()</code> — 把数组中的值赋给一组变量，可以在单次操作内就为一组变量赋值。</li>
+<li><code>array_flip()</code> — 交换数组中的键和值。</li>
+<li><code>array_intersect_key()</code> - 使用键名比较计算数组的交集。</li>
+<li><code>array_diff_key()</code> — 使用键名比较计算数组的差集。</li>
+<li><code>array_unique()</code> — 移除数组中重复的值,保留第一个遇到的键名。 </li>
+<li><code>array_slice()</code> — 从数组中取出一段指定数据（可重新排序并重置数组的数字索引）。</li>
+<li><code>array_splice()</code> — 数组移除后重新拼接（去掉数组中的某一部分并用其它值取代）。</li>
+</ul>
+<h1 id="array-column"><a href="#array-column" class="headerlink" title="array_column"></a><a href="https://www.php.net/manual/zh/function.array-column.php" target="_blank" rel="noopener">array_column</a></h1><p><code>array_column</code> — 返回多维数组中指定的单列数组，可指定数组索引键的列。<br>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_column (<span class="built_in"> array </span>$input , mixed $column_key [, mixed $index_key = null ] )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">array_column</span> <span class="params">(多维数组，返回值的列，指定数组返回时的索引列)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">从多维数组中返回单列数组。</span><br></pre></td></tr></table></figure></p>
+<p>示例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$records = [</span><br><span class="line">            [</span><br><span class="line">                <span class="string">'id'</span> =&gt; <span class="number">2135</span>,</span><br><span class="line">                <span class="string">'first_name'</span> =&gt; <span class="string">'John'</span>,</span><br><span class="line">                <span class="string">'last_name'</span> =&gt; <span class="string">'Doe'</span></span><br><span class="line">            ],</span><br><span class="line">            [</span><br><span class="line">                <span class="string">'id'</span> =&gt; <span class="number">3245</span>,</span><br><span class="line">                <span class="string">'first_name'</span> =&gt; <span class="string">'Sally'</span>,</span><br><span class="line">                <span class="string">'last_name'</span> =&gt; <span class="string">'Smith'</span>,</span><br><span class="line">            ],</span><br><span class="line">        ];</span><br><span class="line"></span><br><span class="line">        $last_names = array_column($records, <span class="string">'last_name'</span>, <span class="string">'id'</span>);</span><br><span class="line">        print_r($last_names);</span><br></pre></td></tr></table></figure></p>
+<p>上述示例返回的结果：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Array</span></span><br><span class="line">(</span><br><span class="line">    [<span class="number">2135</span>] =&gt; Doe</span><br><span class="line">    [<span class="number">3245</span>] =&gt; Smith</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<h1 id="array-map"><a href="#array-map" class="headerlink" title="array_map"></a><a href="https://www.php.net/manual/zh/function.array-map.php" target="_blank" rel="noopener">array_map</a></h1><p>通过使用 <code>array_map()</code>，可以对数组中的每个元素执行回调方法，也可以基于给定的数组传入函数名称或匿名函数来获取一个新数组。<br>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_map ( callable $callback ,<span class="built_in"> array </span>$array1 [,<span class="built_in"> array </span>$... ] )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_map ( 匿名函数或者函数名称，指定的数组<span class="number">1</span>，指定的数组<span class="number">2</span>，...)</span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回处理后的数组。</span><br></pre></td></tr></table></figure></p>
+<p>示例一：空字符截取和去空值处理<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">// 空字符截取和去空值处理</span><br><span class="line"><span class="meta">$</span><span class="bash">arr = [<span class="string">'my'</span>, <span class="string">'  name'</span>, <span class="string">''</span>, <span class="string">' is'</span>, <span class="string">' wang  '</span>, <span class="string">'    '</span>,<span class="string">' xiong  '</span>];</span></span><br><span class="line"><span class="meta">$</span><span class="bash">arrAfter = array_filter(array_map(<span class="string">'trim'</span>, <span class="variable">$arr</span>));</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">arrAfter); // [<span class="string">'my'</span>, <span class="string">'name'</span>, <span class="string">'is'</span>, <span class="string">'wang'</span>, <span class="string">'xiong'</span>]</span></span><br></pre></td></tr></table></figure></p>
+<p>示例二：转小写、首字母大写、平方、整形转换<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">// 转小写</span><br><span class="line"><span class="meta">$</span><span class="bash">cities = [<span class="string">'Beijing'</span>, <span class="string">'xiAn'</span>, <span class="string">'KunmING'</span>, <span class="string">'Chengdu'</span>];</span></span><br><span class="line"><span class="meta">$</span><span class="bash">aliases = array_map(<span class="string">'strtolower'</span>, <span class="variable">$cities</span>);</span></span><br><span class="line"><span class="meta">print_r($</span><span class="bash">aliases);// [<span class="string">'beijing'</span>, <span class="string">'xian, '</span>kunming<span class="string">', '</span>chengdu<span class="string">']</span></span></span><br><span class="line"></span><br><span class="line">// 首字母大写</span><br><span class="line"><span class="meta">$</span><span class="bash">ucfirst = array_map(<span class="string">'ucfirst'</span>, <span class="variable">$aliases</span>);</span></span><br><span class="line"><span class="meta">print_r($</span><span class="bash">ucfirst); // [<span class="string">'Beijing'</span>, <span class="string">'Xian, '</span>Kunming<span class="string">', '</span>Chengdu<span class="string">']</span></span></span><br><span class="line"></span><br><span class="line">// 平方</span><br><span class="line"><span class="meta">$</span><span class="bash">numbers = [1, -2, 3, -4, 5];</span></span><br><span class="line"><span class="meta">$</span><span class="bash">squares = array_map(<span class="keyword">function</span> (<span class="variable">$number</span>) &#123;</span></span><br><span class="line">    return $number ** 2;</span><br><span class="line">&#125;, $numbers);</span><br><span class="line"><span class="meta">print_r($</span><span class="bash">squares);// [1, 4, 9, 16, 25]</span></span><br><span class="line"></span><br><span class="line">// 整形转换</span><br><span class="line"><span class="meta">$</span><span class="bash">arr = [<span class="string">'2'</span>,<span class="string">'3'</span>,<span class="string">'4'</span>,<span class="string">'5'</span>];</span></span><br><span class="line"><span class="meta">$</span><span class="bash">arr = array_map(<span class="string">'intval'</span> , <span class="variable">$arr</span>);</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">arr); // [2,3,4,5]</span></span><br></pre></td></tr></table></figure></p>
+<p>示例三：创建自定义格式的数组和多维数组<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span></span><br><span class="line"><span class="php">$b = [<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>, <span class="string">"four"</span>, <span class="string">"five"</span>];</span></span><br><span class="line"><span class="php">$c = [<span class="string">"uno"</span>, <span class="string">"dos"</span>, <span class="string">"tres"</span>, <span class="string">"cuatro"</span>, <span class="string">"cinco"</span>];</span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php"><span class="comment">// 两个数组，一个作为键，一个作为值。</span></span></span><br><span class="line"><span class="php">$d = [];</span></span><br><span class="line"><span class="php">$d = array_map(<span class="function"><span class="keyword">function</span><span class="params">($n, $m)</span></span>&#123;</span></span><br><span class="line"><span class="php">	<span class="keyword">return</span> $d[$n] = $m;</span></span><br><span class="line"><span class="php">&#125;,$a, $b);</span></span><br><span class="line"><span class="php">print_r($d); <span class="comment">// [one,two,three,four,five]</span></span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php"><span class="comment">// 创建多维数组，传入 NULL 作为回调函数的名称，将创建多维数组（一个数组，内部包含数组。）</span></span></span><br><span class="line"><span class="php">$e = array_map(<span class="keyword">null</span>, $a, $b, $c);</span></span><br><span class="line"><span class="php">print_r($e);</span></span><br></pre></td></tr></table></figure></p>
+<p>上述示例打印结果：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Array</span></span><br><span class="line">(</span><br><span class="line">    [<span class="number">0</span>] =&gt; <span class="keyword">Array</span></span><br><span class="line">        (</span><br><span class="line">            [<span class="number">0</span>] =&gt; <span class="number">1</span></span><br><span class="line">            [<span class="number">1</span>] =&gt; one</span><br><span class="line">            [<span class="number">2</span>] =&gt; uno</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    [<span class="number">1</span>] =&gt; <span class="keyword">Array</span></span><br><span class="line">        (</span><br><span class="line">            [<span class="number">0</span>] =&gt; <span class="number">2</span></span><br><span class="line">            [<span class="number">1</span>] =&gt; two</span><br><span class="line">            [<span class="number">2</span>] =&gt; dos</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    [<span class="number">2</span>] =&gt; <span class="keyword">Array</span></span><br><span class="line">        (</span><br><span class="line">            [<span class="number">0</span>] =&gt; <span class="number">3</span></span><br><span class="line">            [<span class="number">1</span>] =&gt; three</span><br><span class="line">            [<span class="number">2</span>] =&gt; tres</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    [<span class="number">3</span>] =&gt; <span class="keyword">Array</span></span><br><span class="line">        (</span><br><span class="line">            [<span class="number">0</span>] =&gt; <span class="number">4</span></span><br><span class="line">            [<span class="number">1</span>] =&gt; four</span><br><span class="line">            [<span class="number">2</span>] =&gt; cuatro</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    [<span class="number">4</span>] =&gt; <span class="keyword">Array</span></span><br><span class="line">        (</span><br><span class="line">            [<span class="number">0</span>] =&gt; <span class="number">5</span></span><br><span class="line">            [<span class="number">1</span>] =&gt; five</span><br><span class="line">            [<span class="number">2</span>] =&gt; cinco</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<h1 id="array-reduce"><a href="#array-reduce" class="headerlink" title="array_reduce"></a><a href="https://www.php.net/manual/zh/function.array-reduce.php" target="_blank" rel="noopener">array_reduce</a></h1><p><code>array_reduce</code> — 用回调函数迭代地将数组简化为单一的值。<br>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_reduce (<span class="built_in"> array </span>$array , callable $callback [, mixed $initial = NULL ] )<span class="keyword"> :</span> mixed</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">array_reduce</span> ( 输入的数组 , 回调函数（<span class="variable">$carry</span>上次迭代的值，<span class="variable">$item</span>本次迭代的值）[处理开始前使用，如果处理结束数组为空时作为最后一个结果 ] ) : mixed</span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回迭代后的一个结果值。</span><br></pre></td></tr></table></figure></p>
+<p>示例：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span></span><br><span class="line"><span class="php">$x = [];</span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php"><span class="comment">// 求和</span></span></span><br><span class="line"><span class="php">var_dump(array_reduce($a, <span class="function"><span class="keyword">function</span> <span class="params">($carry, $item)</span></span>&#123;</span></span><br><span class="line"><span class="php">    $carry += $item;</span></span><br><span class="line"><span class="php">    <span class="keyword">return</span> $carry;</span></span><br><span class="line"><span class="php">&#125;)); <span class="comment">// int(15)</span></span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php"><span class="comment">// 如果指定了可选参数 initial，该参数将在处理开始前使用。</span></span></span><br><span class="line"><span class="php">var_dump(array_reduce($a, <span class="function"><span class="keyword">function</span> <span class="params">($carry, $item)</span> </span>&#123;</span></span><br><span class="line"><span class="php">    $carry *= $item;</span></span><br><span class="line"><span class="php">    <span class="keyword">return</span> $carry;</span></span><br><span class="line"><span class="php">&#125;, <span class="number">10</span>)); <span class="comment">// int(1200), because: 10*1*2*3*4*5</span></span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php"><span class="comment">// 指定了可选参数 initial，处理结束后返回的数组为空时调用该结果。</span></span></span><br><span class="line"><span class="php">var_dump(array_reduce($x, <span class="function"><span class="keyword">function</span> <span class="params">($carry, $item)</span></span>&#123;</span></span><br><span class="line"><span class="php">    $carry += $item;</span></span><br><span class="line"><span class="php">    <span class="keyword">return</span> $carry;</span></span><br><span class="line"><span class="php">&#125;, <span class="string">"No data to reduce"</span>)); <span class="comment">// string(17) "No data to reduce"</span></span></span><br></pre></td></tr></table></figure></p>
+<p>拼接<code>ID</code>值为（1,2,3,4,5）：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php"><span class="comment">// 拼接ID值为（1,2,3,4,5）</span></span></span><br><span class="line"><span class="php">$arr = [</span></span><br><span class="line"><span class="php">      [<span class="string">'id'</span> =&gt; <span class="number">1</span>, name =&gt; <span class="string">'a'</span>],</span></span><br><span class="line"><span class="php">      [<span class="string">'id'</span> =&gt; <span class="number">2</span>, name =&gt; <span class="string">'b'</span>],</span></span><br><span class="line"><span class="php">      [<span class="string">'id'</span> =&gt; <span class="number">3</span>, name =&gt; <span class="string">'c'</span>],</span></span><br><span class="line"><span class="php">      [<span class="string">'id'</span> =&gt; <span class="number">4</span>, name =&gt; <span class="string">'d'</span>],</span></span><br><span class="line"><span class="php">      [<span class="string">'id'</span> =&gt; <span class="number">5</span>, name =&gt; <span class="string">'e'</span>],</span></span><br><span class="line"><span class="php">];</span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php">var_dump(ltrim(array_reduce($arr, <span class="function"><span class="keyword">function</span><span class="params">($carry,$item)</span> </span>&#123;</span></span><br><span class="line"><span class="php">	<span class="keyword">return</span> $carry.<span class="string">','</span>.$item[<span class="string">'id'</span>];</span></span><br><span class="line"><span class="php">&#125;),<span class="string">','</span>)); <span class="comment">// string(9) "1,2,3,4,5"</span></span></span><br></pre></td></tr></table></figure></p>
+<h1 id="list"><a href="#list" class="headerlink" title="list"></a><a href="https://www.php.net/manual/zh/function.list.php" target="_blank" rel="noopener">list</a></h1><p><code>list</code> — 把数组中的值赋给一组变量。 简洁之处在于可以在单次操作内就为一组变量赋值。<br>格式：<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">list</span> ( mixed $var1 <span class="meta">[</span>, mixed $<span class="params">...</span> <span class="meta">]</span> ) : array</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">list</span> ( 变量<span class="number">1</span> [, 变量<span class="number">2.</span>.. ] )</span><br></pre></td></tr></table></figure></p>
+<p>返回：指定的数组</p>
+<blockquote>
+<p>类似<code>array()</code>，<code>list()</code>也是语言结构，并不是真正的函数。<br><code>PHP 5</code> 里，<code>list()</code> 从最右边的参数开始赋值； <code>PHP 7</code> 里，<code>list()</code> 从最左边的参数开始赋值。<br>在 <code>PHP 7.1.0</code> 之前的版本，<code>list()</code> 仅能用于数字索引的数组，并假定数字索引从 0 开始。</p>
+</blockquote>
+<p>示例一： <code>list()</code> 函数的基本使用<br><figure class="highlight tcl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>];</span><br><span class="line"></span><br><span class="line">// 不使用 <span class="keyword">list</span>()</span><br><span class="line">$a = $arr[<span class="number">0</span>];</span><br><span class="line">$b = $arr[<span class="number">1</span>];</span><br><span class="line">$c = $arr[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">// 使用 <span class="keyword">list</span>() 列出所有的变量</span><br><span class="line"><span class="keyword">list</span>($a, $b, $c) = $arr;</span><br><span class="line">var_dump($a, $b, $c); // <span class="keyword">string</span>(<span class="number">1</span>) <span class="string">"a"</span> <span class="keyword">string</span>(<span class="number">1</span>) <span class="string">"b"</span> <span class="keyword">string</span>(<span class="number">1</span>) <span class="string">"c"</span></span><br><span class="line"></span><br><span class="line">// 使用 <span class="keyword">list</span>() 列出其中一个变量</span><br><span class="line"><span class="keyword">list</span>(,,$d) = $arr;</span><br><span class="line">var_dump($d); // <span class="keyword">string</span>(<span class="number">1</span>) <span class="string">"c"</span></span><br><span class="line"></span><br><span class="line">// <span class="keyword">list</span>() 返回指定的数组</span><br><span class="line">$res = <span class="keyword">list</span>(,,$d) = $arr;</span><br><span class="line">var_dump($res); // [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>]</span><br><span class="line"></span><br><span class="line">// <span class="keyword">list</span>() 不能对字符串起作用</span><br><span class="line"><span class="keyword">list</span>($bar) = <span class="string">"abcde"</span>;</span><br><span class="line">var_dump($bar); // NULL</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>示例二：<code>list()</code> 用于 <code>foreach</code> 遍历<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$arrays = [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>], [<span class="number">5</span>, <span class="number">6</span>]];</span><br><span class="line"><span class="keyword">foreach</span> ($arrays <span class="keyword">as</span> <span class="keyword">list</span>($a, $b)) &#123;</span><br><span class="line">    $c = $a + $b;</span><br><span class="line">    <span class="keyword">echo</span> $c, <span class="string">', '</span>; <span class="comment">// 3, 7, 11, </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="array-flip"><a href="#array-flip" class="headerlink" title="array_flip"></a><a href="https://www.php.net/manual/zh/function.array-flip.php" target="_blank" rel="noopener">array_flip</a></h1><p><code>array_flip</code> — 交换数组中的键和值。</p>
+<p>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_flip (<span class="built_in"> array </span>$array )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>说明：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">array_flip</span><span class="params">(要交换键/值对的数组)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">成功时返回交换后的数组，如果失败返回</span> <span class="literal">NULL</span></span><br></pre></td></tr></table></figure></p>
+<p>示例1：值重复和不合法的键名<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$raw = [<span class="string">'id'</span> =&gt; <span class="number">1</span>, <span class="string">'name'</span> =&gt; <span class="string">'wangxiong'</span>, <span class="string">'gender'</span> =&gt; <span class="number">1</span>];</span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php">$flip = array_flip($raw);</span></span><br><span class="line"><span class="php"><span class="comment">// 如果同一个值出现多次，则最后一个键名将作为它的值，其它键会被丢弃。</span></span></span><br><span class="line"><span class="php">var_dump($flip); <span class="comment">// [1 =&gt; 'gender', 'wangxiong' =&gt; 'name']</span></span></span><br><span class="line"><span class="php"></span></span><br><span class="line"><span class="php">$raw = [<span class="string">'id'</span> =&gt; <span class="number">1</span>, <span class="string">'name'</span> =&gt; [<span class="string">'last'</span> =&gt; <span class="string">'wang'</span>]];</span></span><br><span class="line"><span class="php">$flip = array_flip($raw);</span></span><br><span class="line"><span class="php"><span class="comment">// 注意 array 中的值需要能够作为合法的键名（例如需要是 integer 或者 string）。如果类型不对，将出现一个警告，并且有问题的键／值对将不会出现在结果里</span></span></span><br><span class="line"><span class="php">var_dump($flip); <span class="comment">// Warning: array_flip(): Can only flip STRING and INTEGER values! [ 1 =&gt; 'id']</span></span></span><br></pre></td></tr></table></figure></p>
+<p>示例2：数组去重，保留最后的键名<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php"><span class="comment">// 要想保留最后的键名，可使用array_flip()函数两次颠倒实现。</span></span></span><br><span class="line"><span class="php">$arr = [<span class="string">'one'</span> =&gt; <span class="number">666</span>, <span class="string">'two'</span> =&gt; <span class="number">222</span>, <span class="string">'three'</span> =&gt; <span class="number">666</span>, <span class="string">'four'</span> =&gt; <span class="number">222</span>];</span></span><br><span class="line"><span class="php">$res = array_flip(array_flip($arr));</span></span><br><span class="line"><span class="php">var_dump($res); <span class="comment">// ['three' =&gt; 666, 'four' =&gt; 222]</span></span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h1 id="array-intersect-key"><a href="#array-intersect-key" class="headerlink" title="array_intersect_key"></a><a href="https://www.php.net/manual/zh/function.array-intersect-key.php" target="_blank" rel="noopener">array_intersect_key</a></h1><p><code>array_intersect_key</code> — 通过比较键名获取数组的交集。<br>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_intersect_key (<span class="built_in"> array </span>$array1 ,<span class="built_in"> array </span>$array2 [,<span class="built_in"> array </span>$... ] )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_intersect_key (数组<span class="number">1</span>, 数组<span class="number">2</span>, 数组<span class="number">3</span>)</span><br></pre></td></tr></table></figure></p>
+<p>示例1：基本使用<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$a = [<span class="string">"a"</span> =&gt; <span class="string">"red"</span>, <span class="string">"b"</span> =&gt; <span class="string">"green"</span>, <span class="string">"c"</span> =&gt; <span class="string">"blue"</span>];</span></span><br><span class="line"><span class="php">$b = [<span class="string">"a"</span> =&gt; <span class="string">"red"</span>, <span class="string">"c"</span> =&gt; <span class="string">"blue"</span>, <span class="string">"d"</span> =&gt; <span class="string">"pink"</span>];</span></span><br><span class="line"><span class="php">$c = [<span class="string">"a"</span> =&gt; <span class="string">"black"</span>, <span class="string">"d"</span> =&gt; <span class="string">"blue"</span>, <span class="string">"e"</span> =&gt; <span class="string">"orange"</span>];</span></span><br><span class="line"><span class="php">$d = [<span class="string">"a "</span> =&gt; <span class="string">"green"</span>,<span class="string">"d"</span> =&gt; <span class="string">"blue"</span>, <span class="string">"e"</span> =&gt; <span class="string">"orange"</span>];</span></span><br><span class="line"><span class="php">$result=array_intersect_key($a, $b, $c); <span class="comment">// ["a" =&gt; "red"]</span></span></span><br><span class="line"><span class="php">print_r($result);</span></span><br><span class="line"><span class="php">$result1=array_intersect_key($a, $c, $d); <span class="comment">// []</span></span></span><br><span class="line"><span class="php">print_r($result1);</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p><code>array_intersect_key()</code>返回一个数组，该数组包含了所有出现在 <code>array1</code> 中并同时出现在所有其它参数数组中的键名的值。</p>
+<blockquote>
+<p>注：在 <code>key =&gt; value</code> 对中的两个键名仅在 (<code>string</code>) <code>$key1</code> === (<code>string</code>) <code>$key2</code> 时被认为相等。换句话说，执行的是严格类型检查，因此字符串的表达必须完全一样。</p>
+</blockquote>
+<p>因此上述示例1中的<code>$result1</code>返回空数组。</p>
+<p>示例2：数组中取指定键名<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php"><span class="comment">// 取指定键名</span></span></span><br><span class="line"><span class="php">$arr = [<span class="string">'id'</span> =&gt; <span class="number">1</span>, <span class="string">'name'</span> =&gt; <span class="string">'wangxiong'</span>, <span class="string">'nick'</span> =&gt; <span class="string">'lensxiong'</span>, <span class="string">'gender'</span> =&gt; <span class="string">'M'</span>];</span></span><br><span class="line"><span class="php">$allowed = [<span class="string">'id'</span>, <span class="string">'name'</span>];</span></span><br><span class="line"><span class="php">print_r(array_flip($allowed));</span></span><br><span class="line"><span class="php"><span class="comment">// 根据键名获取数组的交集</span></span></span><br><span class="line"><span class="php">$appoint = array_intersect_key($arr, array_flip($allowed));</span></span><br><span class="line"><span class="php">print_r($appoint); <span class="comment">// ['id' =&gt; 1, 'name' =&gt; 'wangxiong']</span></span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h1 id="array-diff-key"><a href="#array-diff-key" class="headerlink" title="array_diff_key"></a><a href="https://www.php.net/manual/zh/function.array-diff-key.php" target="_blank" rel="noopener">array_diff_key</a></h1><p><code>array_diff_key</code> — 使用键名比较计算数组的差集。<br>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_diff_key (<span class="built_in"> array </span>$array1 ,<span class="built_in"> array </span>$array2 [,<span class="built_in"> array </span>$... ] )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_diff_key (数组<span class="number">1</span>, 数组<span class="number">2</span>, 数组<span class="number">3</span>)</span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`array_diff_key()` 返回一个数组，该数组包括了所有出现在 `array1` 中但是未出现在任何其它参数数组中的键名的值。</span><br></pre></td></tr></table></figure></p>
+<p>示例1：基本使用<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$a = [<span class="string">"a"</span> =&gt; <span class="string">"red"</span>, <span class="string">"b"</span> =&gt; <span class="string">"green"</span>, <span class="string">"c"</span> =&gt; <span class="string">"blue"</span>];</span></span><br><span class="line"><span class="php">$b = [<span class="string">"a"</span> =&gt; <span class="string">"red"</span>, <span class="string">"c"</span> =&gt; <span class="string">"blue"</span>, <span class="string">"d"</span> =&gt; <span class="string">"pink"</span>];</span></span><br><span class="line"><span class="php">$c = [<span class="string">"a"</span> =&gt; <span class="string">"black"</span>, <span class="string">"d"</span> =&gt; <span class="string">"blue"</span>, <span class="string">"e"</span> =&gt; <span class="string">"orange"</span>];</span></span><br><span class="line"><span class="php">$d = [<span class="string">"a "</span> =&gt; <span class="string">"green"</span>,<span class="string">"d"</span> =&gt; <span class="string">"blue"</span>, <span class="string">"e"</span> =&gt; <span class="string">"orange"</span>];</span></span><br><span class="line"><span class="php">$result = array_diff_key($a, $b, $c); </span></span><br><span class="line"><span class="php">print_r($result); <span class="comment">// ["b" =&gt; "green"]</span></span></span><br><span class="line"><span class="php">$result1 = array_diff_key($a, $c, $d); </span></span><br><span class="line"><span class="php">print_r($result1); <span class="comment">// ["b" =&gt; "green", "c" =&gt; "blue"]</span></span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>示例2：移除指定键名<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php"><span class="comment">// 移除指定键名</span></span></span><br><span class="line"><span class="php">$arr = [<span class="string">'id'</span> =&gt; <span class="number">1</span>, <span class="string">'name'</span> =&gt; <span class="string">'wangxiong'</span>, <span class="string">'nick'</span> =&gt; <span class="string">'lensxiong'</span>, <span class="string">'gender'</span> =&gt; <span class="string">'M'</span>];</span></span><br><span class="line"><span class="php">$allowed = [<span class="string">'nick'</span>, <span class="string">'gender'</span>];</span></span><br><span class="line"><span class="php">print_r(array_flip($allowed)); <span class="comment">// ['nick' =&gt; 0, 'gender' =&gt; 1]</span></span></span><br><span class="line"><span class="php"><span class="comment">// 根据键名获取数组的差集</span></span></span><br><span class="line"><span class="php">$appoint = array_diff_key($arr, array_flip($allowed));</span></span><br><span class="line"><span class="php">print_r($appoint); <span class="comment">// ['id' =&gt; 1, 'name' =&gt; 'wangxiong']</span></span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h1 id="array-unique"><a href="#array-unique" class="headerlink" title="array_unique"></a><a href="https://www.php.net/manual/zh/function.array-unique.php" target="_blank" rel="noopener">array_unique</a></h1><p><code>array_unique</code> — 移除数组中重复的值,保留第一个遇到的键名。<br>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_unique (<span class="built_in"> array </span>$array [,<span class="built_in"> int </span>$sort_flags = SORT_STRING ] )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">array_unique (输入的数组，<span class="string">[, 排序的行为默认按照字符串形式比较 ]</span>  ) </span><br><span class="line"></span><br><span class="line">排序类型标记：</span><br><span class="line">SORT_REGULAR - 按照通常方法比较（不修改类型）</span><br><span class="line">SORT_NUMERIC - 按照数字形式比较</span><br><span class="line">SORT_STRING - 按照字符串形式比较</span><br><span class="line">SORT_LOCALE_STRING - 根据当前的本地化设置，按照字符串比较。</span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回过滤后的数组。</span><br></pre></td></tr></table></figure></p>
+<p>示例1：数组去重，保留第一次出现的键名<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$arr = [<span class="string">'one'</span> =&gt; <span class="number">666</span>, <span class="string">'two'</span> =&gt; <span class="number">222</span>, <span class="string">'three'</span> =&gt; <span class="number">666</span>, <span class="string">'four'</span> =&gt; <span class="number">222</span>];</span></span><br><span class="line"><span class="php">$res = array_unique($arr);</span></span><br><span class="line"><span class="php"><span class="comment">// array_unique() 先将值作为字符串排序，然后对每个值只保留第一个遇到的键名，接着忽略所有后面的键名。</span></span></span><br><span class="line"><span class="php">var_export($res); <span class="comment">// ['one' =&gt; 666, 'two' =&gt; 222]</span></span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>示例2：四种排序类型的基本使用<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"><span class="variable">$input</span> = [<span class="number">4</span>, <span class="string">"4"</span>, <span class="string">"3"</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="string">"3"</span>];</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span> SORT_REGULAR - 按照通常方法比较（不修改类型）</span><br><span class="line">var_dump(array_unique(<span class="variable">$input</span>, SORT_REGULAR)); <span class="regexp">//</span> [<span class="number">0</span> =&gt; <span class="number">4</span>, <span class="number">2</span> =&gt; <span class="string">"3"</span>]</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span> SORT_NUMERIC - 按照数字形式比较</span><br><span class="line">var_dump(array_unique(<span class="variable">$input</span>, SORT_NUMERIC)); <span class="regexp">//</span> [<span class="number">0</span> =&gt; <span class="number">4</span>, <span class="number">2</span> =&gt; <span class="string">"3"</span>]</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span> SORT_STRING - 按照字符串形式比较</span><br><span class="line">var_dump(array_unique(<span class="variable">$input</span>, SORT_STRING)); <span class="regexp">//</span> [<span class="number">0</span> =&gt; <span class="number">4</span>, <span class="number">2</span> =&gt; <span class="string">"3"</span>]</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span> SORT_LOCALE_STRING - 根据当前的本地化设置，按照字符串比较。</span><br><span class="line">var_dump(array_unique(<span class="variable">$input</span>, SORT_LOCALE_STRING)); <span class="regexp">//</span> [<span class="number">0</span> =&gt; <span class="number">4</span>, <span class="number">2</span> =&gt; <span class="string">"3"</span>]</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="array-slice"><a href="#array-slice" class="headerlink" title="array_slice"></a><a href="https://www.php.net/manual/zh/function.array-slice.php" target="_blank" rel="noopener">array_slice</a></h1><p><code>array_slice</code> — 从数组中取出一段指定数据（可重新排序并重置数组的数字索引）<br>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_slice (<span class="built_in"> array </span>$array ,<span class="built_in"> int </span>$offset [,<span class="built_in"> int </span>$length = NULL [, bool $preserve_keys = false ]] )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">array_slice</span> <span class="params">( 输入的数组，起始位置，数据长度，是否重新排序和重置数组的数字索引)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回其中一段。 如果 `offset` 参数大于 `array` 尺寸，就会返回空的 `array`。</span><br></pre></td></tr></table></figure></p>
+<p>示例1：重置数组<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">$arr = [<span class="string">'one'</span> =&gt; <span class="number">666</span>, <span class="string">'1'</span> =&gt; <span class="number">222</span>, <span class="string">'27'</span> =&gt; <span class="number">666</span>, <span class="string">'99'</span> =&gt; <span class="number">222</span>];</span></span><br><span class="line"><span class="php"><span class="comment">//  从数组的起始位置取出数据，默认会重新排序并重置数组的数字索引</span></span></span><br><span class="line"><span class="php">var_dump(array_slice($arr, <span class="number">0</span>)); <span class="comment">// ['one' =&gt; 666, 0 =&gt; 222, 1 =&gt; 666, 2 =&gt; 222] </span></span></span><br><span class="line"><span class="php"><span class="comment">// 不重置数组的数字索引</span></span></span><br><span class="line"><span class="php">var_dump(array_slice($arr, <span class="number">0</span>, <span class="number">3</span>, <span class="keyword">TRUE</span>)); <span class="comment">// ['one' =&gt; 666, 1 =&gt; 222, 27 =&gt; 666] </span></span></span><br><span class="line"><span class="php"><span class="comment">// 起始位置从末端开始</span></span></span><br><span class="line"><span class="php">var_dump(array_slice($arr, <span class="number">-2</span>, <span class="number">1</span>, <span class="keyword">TRUE</span>)); <span class="comment">// [27 =&gt; 666] </span></span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h1 id="array-splice"><a href="#array-splice" class="headerlink" title="array_splice"></a><a href="https://www.php.net/manual/zh/function.array-splice.php" target="_blank" rel="noopener">array_splice</a></h1><p><code>array_splice</code> — 数组移除后重新拼接（去掉数组中的某一部分并用其它值取代）</p>
+<p>格式：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_splice (<span class="built_in"> array </span>&amp;$input ,<span class="built_in"> int </span>$offset [,<span class="built_in"> int </span>$length = count($input) [, mixed $replacement = array() ]] )<span class="keyword"> :</span> array</span><br></pre></td></tr></table></figure></p>
+<p>说明：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">array_splice</span> <span class="params">( 输入的数组，起始位置，移除单元数量，移除后的单元替代)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>返回：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回一个包含有被移除单元的数组。</span><br></pre></td></tr></table></figure>
+<p>示例1：基本使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>];</span></span><br><span class="line"></span><br><span class="line">// 如果省略 length，则移除数组中从 offset 到结尾的所有部分，起始值也被移除。</span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 1)); // [<span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>];</span></span><br><span class="line">// 如果指定了 length 并且为正值，则移除包含offset之后的length单元。</span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 1, 2)); // [<span class="string">"b"</span>, <span class="string">"c"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>, <span class="string">"d"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>];</span></span><br><span class="line">// 如果指定了 length 并且为负值，则移除从 offset 到数组末尾倒数 length 为止中间所有的单元。</span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 1, -1)); // [<span class="string">"b"</span>, <span class="string">"c"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>, <span class="string">"d"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>];</span></span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 1, -2)); // [<span class="string">"b"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>];</span></span><br><span class="line">// 如果设置了 length 为零，不会移除单元。</span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 2, 0, <span class="string">'e'</span>)); // []</span></span><br><span class="line">// 如果 offset 和 length 的组合结果是不会移除任何值，则 replacement 数组中的单元将被插入到 offset 指定的位置。 注意替换数组中的键名不保留。</span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"e"</span>, c<span class="string">", "</span>d<span class="string">"]</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>];</span></span><br><span class="line">// 如果给出了 replacement 数组，则被移除的单元被此数组中的单元替代。</span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, -1, 1, [<span class="string">"e"</span>,<span class="string">"f"</span>])); // [<span class="string">"d"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"e"</span>,<span class="string">"f"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>];</span></span><br><span class="line">// 当给出了 replacement 时要移除从 offset 到数组末尾所有单元时，用 count($input) 作为 length。</span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 1, count(<span class="variable">$input</span>), <span class="string">"e"</span>)); // [<span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>,<span class="string">"e"</span>]</span></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>示例2：添加新元素<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"><span class="regexp">//</span> 添加两个新元素到 <span class="variable">$input</span>  等价于array_push(<span class="variable">$input</span>, <span class="string">"x"</span>, <span class="string">"y"</span>);</span><br><span class="line"><span class="variable">$input</span> = [<span class="string">"a"</span>, <span class="string">"b"</span>];</span><br><span class="line">var_dump(array_push(<span class="variable">$input</span>, <span class="string">"x"</span>, <span class="string">"y"</span>)); <span class="regexp">//</span> <span class="number">4</span></span><br><span class="line">var_dump(<span class="variable">$input</span>); <span class="regexp">//</span> [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"x"</span> , <span class="string">"y"</span>]</span><br><span class="line"></span><br><span class="line"><span class="variable">$input</span> = [<span class="string">"a"</span>, <span class="string">"b"</span>];</span><br><span class="line">var_dump(array_splice(<span class="variable">$input</span>, count(<span class="variable">$input</span>), <span class="number">0</span>, [<span class="string">"x"</span> , <span class="string">"y"</span>])); <span class="regexp">//</span> []</span><br><span class="line">var_dump(<span class="variable">$input</span>); <span class="regexp">//</span> [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"x"</span> , <span class="string">"y"</span>]</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>示例3：移除数组最后一个元素和开头元素</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">// 移除数组最后一个元素</span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>];</span></span><br><span class="line"><span class="meta">var_dump(array_pop($</span><span class="bash">input)); // <span class="string">"c"</span></span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>, <span class="string">"b"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>];</span></span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, -1)); // [<span class="string">"c"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"a"</span>, <span class="string">"b"</span>]</span></span><br><span class="line"></span><br><span class="line">// 移除数组第一个元素</span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>];</span></span><br><span class="line"><span class="meta">var_dump(array_shift($</span><span class="bash">input)); // <span class="string">"a"</span></span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"b"</span>, <span class="string">"c"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>];</span></span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 0, 1)); // [<span class="string">"a"</span>]</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"b"</span>, <span class="string">"c"</span>]</span></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>示例4：数组开头插入元素<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">// 数组开头插入元素</span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>];</span></span><br><span class="line"><span class="meta">var_dump(array_unshift($</span><span class="bash">input, <span class="string">"d"</span>, <span class="string">"e"</span>)); // 5</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">input = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>];</span></span><br><span class="line"><span class="meta">var_dump(array_splice($</span><span class="bash">input, 0, 0, [<span class="string">"d"</span>, <span class="string">"e"</span>])); // []</span></span><br><span class="line"><span class="meta">var_dump($</span><span class="bash">input); // [<span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>]</span></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+</the>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/10/05/2019/2019-10-05-how-networks-work-http-02/" rel="next" title="﻿【网络连接】DNS解析过程">
+                <i class="fa fa-chevron-left"></i> ﻿【网络连接】DNS解析过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.jpg"
+                alt="Wang Xiong" />
+            
+              <p class="site-author-name" itemprop="name">Wang Xiong</p>
+              <p class="site-description motion-element" itemprop="description">知行合一，格物致知。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com" target="_blank" title="Jekyll">
+                      
+                        <i class="fa fa-fw fa-address-book"></i>Jekyll</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://wwxiong.com/navigation/index.html" target="_blank" title="Navbar">
+                      
+                        <i class="fa fa-fw fa-bars"></i>Navbar</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/LensXiong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lensxiong@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-column"><span class="nav-number">2.</span> <span class="nav-text">array_column</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-map"><span class="nav-number">3.</span> <span class="nav-text">array_map</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-reduce"><span class="nav-number">4.</span> <span class="nav-text">array_reduce</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#list"><span class="nav-number">5.</span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-flip"><span class="nav-number">6.</span> <span class="nav-text">array_flip</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-intersect-key"><span class="nav-number">7.</span> <span class="nav-text">array_intersect_key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-diff-key"><span class="nav-number">8.</span> <span class="nav-text">array_diff_key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-unique"><span class="nav-number">9.</span> <span class="nav-text">array_unique</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-slice"><span class="nav-number">10.</span> <span class="nav-text">array_slice</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#array-splice"><span class="nav-number">11.</span> <span class="nav-text">array_splice</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Xiong</span>
+
+  
+</div>
+
+<div>
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> </div>
+
+</div>
+
+<div>
+
+  <div class="theme-info">Theme by <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+</div>
+
+<div>京ICP备 <a href="http://icp.alexa.cn/">16010164号-1</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
