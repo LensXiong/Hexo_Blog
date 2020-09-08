@@ -87,14 +87,14 @@
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：提到MySQL的性能优化，我想你一定知道：合理创建索引、不能使用SELECT *、不使用NULL字段、为字段选择合适的数据类型…..但是你是否真的理解这些优化技巧？是否理解其背后的工作原理？在实际场景下性能真有提升吗？我想未必。正所谓，知其然，知其所以然。学习本身就是一个不断专研和探究的过程，本篇文章主要是我个人对MySQL逻辑架构、MySQL架构总览、MySQL查询过程的基本原理上的学习和">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/sql-optimization-up/1.png">
-<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/sql-optimization-up/3.png">
-<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/sql-optimization-up/2.png">
-<meta property="og:updated_time" content="2018-09-05T04:23:15.884Z">
+<meta property="og:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/mysql/sql-optimization-up/1.png">
+<meta property="og:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/mysql/sql-optimization-up/3.png">
+<meta property="og:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/mysql/sql-optimization-up/2.png">
+<meta property="og:updated_time" content="2020-04-22T08:12:17.477Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL优化原理 (一)">
 <meta name="twitter:description" content="摘要：提到MySQL的性能优化，我想你一定知道：合理创建索引、不能使用SELECT *、不使用NULL字段、为字段选择合适的数据类型…..但是你是否真的理解这些优化技巧？是否理解其背后的工作原理？在实际场景下性能真有提升吗？我想未必。正所谓，知其然，知其所以然。学习本身就是一个不断专研和探究的过程，本篇文章主要是我个人对MySQL逻辑架构、MySQL架构总览、MySQL查询过程的基本原理上的学习和">
-<meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/sql-optimization-up/1.png">
+<meta name="twitter:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/mysql/sql-optimization-up/1.png">
 
 
 
@@ -382,7 +382,7 @@
 
 <h1 id="MySQL逻辑架构"><a href="#MySQL逻辑架构" class="headerlink" title="MySQL逻辑架构"></a>MySQL逻辑架构</h1><p>首先，如果你能在头脑中构建一幅MySQL各组件之间如何协同工作的架构图，我想这将有助于你深入理解MySQL服务器。</p>
 <p>下图展示了MySQL的逻辑架构图。你必须深深的刻在你的脑海中。</p>
-<p><img src="/hexo_blog/img/article/sql-optimization-up/1.png" alt=""></p>
+<p><img src="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/mysql/sql-optimization-up/1.png" alt=""></p>
 <p>MySQL逻辑架构整体分为三层:</p>
 <blockquote>
 <p>最上层为客户端层</p>
@@ -397,7 +397,7 @@
 </blockquote>
 <p>其主要负责MySQL中的数据存储和提取。和Linux下的文件系统类似，每种存储引擎都有其优势和劣势。中间的服务层通过API与存储引擎通信，这些API接口屏蔽了不同存储引擎间的差异。</p>
 <h1 id="MySQL架构总览"><a href="#MySQL架构总览" class="headerlink" title="MySQL架构总览"></a>MySQL架构总览</h1><p>下图展示了MySQL相关的模块和组件。</p>
-<p><img src="/hexo_blog/img/article/sql-optimization-up/3.png" alt=""></p>
+<p><img src="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/mysql/sql-optimization-up/3.png" alt=""></p>
 <p>各模块和组件之间负责的主要功能：</p>
 <p> 连接管理器：</p>
 <blockquote>
@@ -486,7 +486,7 @@
 <h1 id="MySQL查询过程"><a href="#MySQL查询过程" class="headerlink" title="MySQL查询过程"></a>MySQL查询过程</h1><blockquote>
 <p>当向MySQL发送一个请求的时候，MySQL到底做了些什么呢？</p>
 </blockquote>
-<p><img src="/hexo_blog/img/article/sql-optimization-up/2.png" alt=""></p>
+<p><img src="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/mysql/sql-optimization-up/2.png" alt=""></p>
 <p>MySQL整个查询执行过程，总的来说分为6个步骤：</p>
 <ol>
 <li><p>客户端向MySQL服务器发送一条查询请求</p>
@@ -812,7 +812,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

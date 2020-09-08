@@ -87,12 +87,12 @@
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：如果说SQL注入是一把利剑直接插入目标的胸膛，犀利的锋芒毕露。那么，XSS跨站脚本攻击则是一个“温柔杀手”，一把隐藏在背后的匕首，而它跨站攻击的目标是客户端，也就是我们网站的访问者。XSS攻击是WEB渗透中常见的一种攻击方式，本文通过对XSS的介绍、危害、攻击方式、分类和应用对XSS攻击进行系统的介绍，并针对此攻击梳理出相应的几种防御方式。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/xss/1.png">
-<meta property="og:updated_time" content="2018-09-05T04:24:11.856Z">
+<meta property="og:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/xss/1.png">
+<meta property="og:updated_time" content="2020-04-22T09:03:50.032Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【安全】渗透攻防之XSS脚本攻击">
 <meta name="twitter:description" content="摘要：如果说SQL注入是一把利剑直接插入目标的胸膛，犀利的锋芒毕露。那么，XSS跨站脚本攻击则是一个“温柔杀手”，一把隐藏在背后的匕首，而它跨站攻击的目标是客户端，也就是我们网站的访问者。XSS攻击是WEB渗透中常见的一种攻击方式，本文通过对XSS的介绍、危害、攻击方式、分类和应用对XSS攻击进行系统的介绍，并针对此攻击梳理出相应的几种防御方式。">
-<meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/xss/1.png">
+<meta name="twitter:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/xss/1.png">
 
 
 
@@ -399,10 +399,10 @@
 <p>如果想要通过script脚本获得当前页面的cookie值，通常会用到cookie。</p>
 <p>试想下如果像空间说说中能够写入xss攻击语句，那岂不是看了你说说的人的号你都可以登录。</p>
 <p>② 劫持流量实现恶意跳转。</p>
-<p>这个很简单，就是在网页中想办法插入一句像这样的语句：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"><span class="built_in">window</span>.location.href=<span class="string">"http://www.wwxiong.com"</span>;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这个很简单，就是在网页中想办法插入一句像这样的语句：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;<span class="built_in">window</span>.location.href=<span class="string">"http://www.wwxiong.com"</span>;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
 <p>那么所访问的网站就会被跳转到我的博客首页。</p>
 <p>早在2011年新浪就曾爆出过严重的xss漏洞，导致大量用户自动关注某个微博号并自动转发某条微博。</p>
-<h1 id="XSS攻击的步骤"><a href="#XSS攻击的步骤" class="headerlink" title="XSS攻击的步骤"></a>XSS攻击的步骤</h1><p><img src="/hexo_blog/img/article/xss/1.png" alt=""></p>
+<h1 id="XSS攻击的步骤"><a href="#XSS攻击的步骤" class="headerlink" title="XSS攻击的步骤"></a>XSS攻击的步骤</h1><p><img src="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/xss/1.png" alt=""></p>
 <p>① 攻击者以某种方式发送xss的http链接给目标用户</p>
 <p>② 目标用户登录此网站，在登陆期间打开了攻击者发送的xss链接</p>
 <p>③ 网站执行了此xss攻击脚本</p>
@@ -648,7 +648,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

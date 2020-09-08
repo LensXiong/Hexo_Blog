@@ -87,13 +87,13 @@
 <meta property="og:site_name" content="Wangxiong&#39;s Notes">
 <meta property="og:description" content="摘要：在安全领域，SQL注入是永不过时的黑客技术。黑客中的“白帽子”和”黑帽子”是两个完全对立的群体。对于黑帽子而言，他们只要找到系统的一个切入点就可以达到入侵破坏的目的，而白帽子必须将自己系统所有可能被突破的地方都设防，以保证系统的安全运行。这看起来好像是不公平的，但是安全世界里的规则就是这样。本文在重点阐述了SQL注入的原理和攻击过程的基础上，从服务器层面、数据库层面、PHP脚本语言层面以及编">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/sql-injection/2.png">
-<meta property="og:image" content="http://wwxiong.com/hexo_blog/img/article/sql-injection/1.png">
-<meta property="og:updated_time" content="2018-09-05T04:23:54.263Z">
+<meta property="og:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/sql-injection/2.png">
+<meta property="og:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/sql-injection/1.png">
+<meta property="og:updated_time" content="2020-04-22T09:13:10.333Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【安全】渗透攻防之SQL注入攻击">
 <meta name="twitter:description" content="摘要：在安全领域，SQL注入是永不过时的黑客技术。黑客中的“白帽子”和”黑帽子”是两个完全对立的群体。对于黑帽子而言，他们只要找到系统的一个切入点就可以达到入侵破坏的目的，而白帽子必须将自己系统所有可能被突破的地方都设防，以保证系统的安全运行。这看起来好像是不公平的，但是安全世界里的规则就是这样。本文在重点阐述了SQL注入的原理和攻击过程的基础上，从服务器层面、数据库层面、PHP脚本语言层面以及编">
-<meta name="twitter:image" content="http://wwxiong.com/hexo_blog/img/article/sql-injection/2.png">
+<meta name="twitter:image" content="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/sql-injection/2.png">
 
 
 
@@ -381,23 +381,23 @@
 <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>TalkTalk的信息泄漏事件导致约15万人的敏感信息被暴露，涉嫌造成这一事件的其中一名黑客使用的并不是很新的技术。</p>
 <p>事实上，该技术的「年纪」比这名15岁黑客还要大两岁。</p>
 <p>这项技术就是大名鼎鼎的SQL注入，它曾经被用来窃取世界卫生组织员工的信息，偷过华尔街日报数据，甚至还攻击过美国联邦政府机构。</p>
-<p><img src="/hexo_blog/img/article/sql-injection/2.png" alt=""></p>
+<p><img src="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/sql-injection/2.png" alt=""></p>
 <p>如果你没有被这张图片震撼到，说明你离黑客的道路暂时还很遥远。</p>
 <p>这是一张相当有技术含量的号牌遮挡，其对交警系统SQL Injection的hack䅁例。</p>
 <p>当摄像头拍到你车牌号并把其转成文本后，插入数据库时的SQL注入。</p>
 <p>在交警系统数据没有备份的情况下，我想此时，你应该知道后果有多严重。</p>
 <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>SQL（Structured Query Language）: SQL是一种用来和数据库交互的语言文本。</p>
 <p>SQL注入(SQL Injection)：攻击者把SQL命令插入到Web表单的输入域或页面请求的字符串，欺骗服务器执行恶意的SQL命令。</p>
-<p><img src="/hexo_blog/img/article/sql-injection/1.png" alt=""></p>
+<p><img src="http://wwxiong.oss-cn-beijing.aliyuncs.com/blog-img/technology/safe/sql-injection/1.png" alt=""></p>
 <p>上图是<a href="https://xkcd.com/" target="_blank" rel="noopener">Xkcd</a>上的一幅漫画。该学生的姓名:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Robert&apos;); DROP TABLE students;--&apos;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Robert'); <span class="keyword">DROP</span> <span class="keyword">TABLE</span> students;<span class="comment">--'</span></span><br></pre></td></tr></table></figure>
 <p>最终结果会导致students表被删除。</p>
 <h1 id="注入原理"><a href="#注入原理" class="headerlink" title="注入原理"></a>注入原理</h1><p>攻击者通过Web应用程序利用SQL语句或字符串将非法的数据插入到服务器端数据库中，获取数据库的管理用户权限，然后将数据库管理用户权限提升至操作系统管理用户权限，控制服务器操作系统，获取重要信息及机密文件。</p>
 <p>SQL注入漏洞攻击主要是通过借助于HDSI、NBSI和Domain等SQL注入漏洞扫描工具扫描出Web页面中存在的SQL注入漏洞，从而定位SQL注入点，通过执行非法的SQL语句或字符串达到入侵者想要的操作。</p>
 <h1 id="攻击过程"><a href="#攻击过程" class="headerlink" title="攻击过程"></a>攻击过程</h1><h2 id="SQL注入漏洞的判断"><a href="#SQL注入漏洞的判断" class="headerlink" title="SQL注入漏洞的判断"></a>SQL注入漏洞的判断</h2><p>SQL注入可以说是一种漏洞，也可以说是一种攻击。</p>
 <p>当程序中的变量处理不当，没有对用户提交的数据类型进行校验，编写不安全的代码，构造非法的SQL语句或字符串，都可能产生这个漏洞。</p>
 <p>一般来说，SQL注入一般存在于形如：</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span><span class="comment">//wwxiong.com/test.php?id=1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://wwxiong.com/test.php?id=1</span><br></pre></td></tr></table></figure>
 <p>等带有参数的PHP动态网页中。</p>
 <p>有时一个动态网页中可能只有一个参数，有时可能有N个参数，有时是整型参数，有时是字符串型参数，不能一概而论。</p>
 <p>总之只要是带有参数的动态网页且此网页访问了数据库，那么就有可能存在SQL注入。</p>
@@ -408,8 +408,8 @@
 <p>一般来说，ACCESS与SQL－SERVER是最常用的数据库服务器，尽管它们都支持T－SQL标准，但还有不同之处，而且不同的数据库有不同的攻击方法，必须要区别对待。 </p>
 <h1 id="模拟攻击"><a href="#模拟攻击" class="headerlink" title="模拟攻击"></a>模拟攻击</h1><p>假设某个Web应用有一个登录页面，这个登录页面控制着用户是否有权访问应用，它要求用户输入一个名称和密码。</p>
 <p>登录页面中输入的内容将直接用来构造动态的SQL命令，或者直接用作存储过程的参数，例如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$query = '<span class="keyword">SELECT</span> * <span class="keyword">from</span> <span class="keyword">Users</span> <span class="keyword">WHERE</span> login = <span class="string">' . $username . '</span> <span class="keyword">AND</span> <span class="keyword">password</span> = <span class="string">' . $password;</span></span><br></pre></td></tr></table></figure></p>
-<p>攻击者在用户名输入框中输入:<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">' or '<span class="number">1</span>'='<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<p>攻击者在密码输入框中输入：<br><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">' <span class="keyword">or</span> <span class="string">'1'</span>=<span class="string">'1'</span></span><br></pre></td></tr></table></figure></p>
+<p>攻击者在用户名输入框中输入:<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">' or '1'='1</span><br></pre></td></tr></table></figure></p>
+<p>攻击者在密码输入框中输入：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">' or '1'='1'</span><br></pre></td></tr></table></figure></p>
 <p>用户输入的内容提交给服务器之后，服务器运行上面的代码构造出查询用户的SQL命令，但由于攻击者输入的内容非常特殊，所以最后得到的SQL命令变成：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">from</span> <span class="keyword">Users</span> <span class="keyword">WHERE</span> login = <span class="string">''</span> <span class="keyword">or</span> <span class="string">'1'</span>=<span class="string">'1'</span> <span class="keyword">AND</span> <span class="keyword">password</span> = <span class="string">''</span> <span class="keyword">or</span> <span class="string">'1'</span>=<span class="string">'1'</span>；</span><br></pre></td></tr></table></figure></p>
 <p>服务器执行查询或存储过程，将用户输入的身份信息和服务器中保存的身份信息进行对比。</p>
 <p>由于SQL命令实际上已被注入式攻击修改，已经不能真正验证用户身份，所以系统会错误地授权给攻击者。</p>
@@ -420,15 +420,15 @@
 <p>① 修改服务器初始配置<br>② 及时安装服务器安全补丁<br>③ 关闭服务器的错误提示信息<br>④ 配置目录权限<br>⑤ 删除危险的服务器组件<br>⑥ 及时分析系统日志</p>
 <h2 id="数据库安全"><a href="#数据库安全" class="headerlink" title="数据库安全"></a>数据库安全</h2><p>正确的数据库安全配置同样也是降低SQL注入风险的方法之一，主要从以下几个方面进行配置：</p>
 <p>① 修改数据库初始配置<br>② 及时升级数据库<br>③ 最小权力法则</p>
-<h2 id="脚本语言配置"><a href="#脚本语言配置" class="headerlink" title="脚本语言配置"></a>脚本语言配置</h2><p>对于PHP编程语言，在<a href="http://www.cnphp.info/php-ini-config-file-chinese-translate.html" target="_blank" rel="noopener">php.ini</a>文件中可以配置一些涉及安全性的设置，通过这些设置可以增加SQL的注入难度，降低SQL注入风险。主要的从以下几个方面设置：<br>① 开启<a href="http://php.net/manual/zh/info.configuration.php#ini.magic-quotes-gpc" target="_blank" rel="noopener">magic_quotes_gpc</a>魔术函数<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">magic_quotes_gpc</span> = <span class="literal">On</span></span><br></pre></td></tr></table></figure></p>
-<p>作用：判断解析用户提示的数据，如包括有POST、GET、COOKIE过来的数据增加转义字符”\”，以确保这些数据不会引起程序，特别是数据库语句因为特殊字符引起的污染而出现致命的错误。<br>② 关闭PHP中注册为全局变量配置<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">register_globals</span> = <span class="literal">Off</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="脚本语言配置"><a href="#脚本语言配置" class="headerlink" title="脚本语言配置"></a>脚本语言配置</h2><p>对于PHP编程语言，在<a href="http://www.cnphp.info/php-ini-config-file-chinese-translate.html" target="_blank" rel="noopener">php.ini</a>文件中可以配置一些涉及安全性的设置，通过这些设置可以增加SQL的注入难度，降低SQL注入风险。主要的从以下几个方面设置：<br>① 开启<a href="http://php.net/manual/zh/info.configuration.php#ini.magic-quotes-gpc" target="_blank" rel="noopener">magic_quotes_gpc</a>魔术函数<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">magic_quotes_gpc = On</span><br></pre></td></tr></table></figure></p>
+<p>作用：判断解析用户提示的数据，如包括有POST、GET、COOKIE过来的数据增加转义字符”\”，以确保这些数据不会引起程序，特别是数据库语句因为特殊字符引起的污染而出现致命的错误。<br>② 关闭PHP中注册为全局变量配置<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">register_globals = Off</span><br></pre></td></tr></table></figure></p>
 <p><a href="http://www.cnblogs.com/wawahaha/p/4820591.html" target="_blank" rel="noopener">register_globals</a>的意思是注册为全局变量，所以当On的时候，传递过来的值会被直接的注册为全局变量直接使用，而Off的时候，我们需要到特定的数组里去得到它。</p>
 <p>当 register_globals打开以后，各种变量都被注入代码，例如来自HTML表单的请求变量。再加上PHP在使用变量之前是无需进行初始化的，这就使得更容易写出不安全的代码。</p>
 <p>③ 开启PHP<a href="https://yq.aliyun.com/ziliao/8621" target="_blank" rel="noopener">安全模式</a></p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">safe_mode</span> = <span class="literal">On</span></span><br></pre></td></tr></table></figure>
-<p>④ 将用户可操作的文件限制在某目录下<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">open_basedir</span> = <span class="literal">On</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">safe_mode = On</span><br></pre></td></tr></table></figure>
+<p>④ 将用户可操作的文件限制在某目录下<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open_basedir = On</span><br></pre></td></tr></table></figure></p>
 <p>使用<a href="http://blog.csdn.net/fdipzone/article/details/54562656" target="_blank" rel="noopener">open_basedir</a>可以限制程序可操作的目录和文件，提高系统安全性。但会影响I/O性能导致系统执行变慢，因此需要根据具体需求，在安全与性能上做平衡。</p>
-<p>⑤ 关闭错误提示<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">display_errors</span> = <span class="literal">Off</span></span><br></pre></td></tr></table></figure></p>
+<p>⑤ 关闭错误提示<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">display_errors = Off</span><br></pre></td></tr></table></figure></p>
 <h2 id="安全编程角度"><a href="#安全编程角度" class="headerlink" title="安全编程角度"></a>安全编程角度</h2><p>作为一个优秀的服务端的开发人员，当你在开发代码的时候你必须时刻保持安全意识。</p>
 <p>因为当你在服务器上放任何涉及钱的东西时，就有可能会有人尝试破解它。</p>
 <p>SQL注入攻击实质上是构造畸形的SQL语句，通过WEB应用程序送达数据库系统执行的。</p>
@@ -675,7 +675,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2016-2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
